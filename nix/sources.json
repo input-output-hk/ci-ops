@@ -1,4 +1,16 @@
 {
+    "hydra": {
+        "branch": "iohk-19.03",
+        "description": "Hydra, the Nix-based continuous build system",
+        "homepage": "http://nixos.org/hydra",
+        "owner": "input-output-hk",
+        "repo": "hydra",
+        "rev": "0768891e3cd3ef067d28742098f1dea8462fca75",
+        "sha256": "1aw3p7jm2gsakdqqx4pzhkfx12hh1nxk3wkabcvml5ci814f6jic",
+        "type": "tarball",
+        "url": "https://github.com/input-output-hk/hydra/archive/0768891e3cd3ef067d28742098f1dea8462fca75.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
     "iohk-nix": {
         "branch": "master",
         "description": "nix scripts shared across projects",

@@ -94,7 +94,9 @@ in {
         wantedBy = [ "multi-user.target" ];
         requires = [ "network.target" ];
         after = [ "network.target" ];
-        serviceConfig.ExecStart = "${pkgs.prometheus-statsd-exporter}/bin/statsd_exporter --statsd.listen-udp=:8125 --web.listen-address=:9102";
+        script = ''
+          ${pkgs.prometheus-statsd-exporter}/bin/statsd_bridge -statsd.listen-address ":8125" -web.listen-address ":9102" -statsd.add-suffix=false || ${pkgs.prometheus-statsd-exporter}/bin/statsd_exporter --statsd.listen-udp=":8125" --web.listen-address=":9102"
+        '';
       };
 
       services = {

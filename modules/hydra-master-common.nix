@@ -9,6 +9,12 @@ in {
     extraOptions = ''
       auto-optimise-store = true
       allowed-uris = https://github.com/NixOS/nixpkgs/archive https://github.com/NixOS/nixpkgs-channels/archive https://github.com/input-output-hk
+
+      # Max of 2 hours to build any given derivation on Linux.
+      # See ../nix-darwin/modules/basics.nix for macOS.
+      timeout = 7200
+
+      connect-timeout = 10
     '';
     binaryCaches = mkForce [ "https://cache.nixos.org" ];
   };

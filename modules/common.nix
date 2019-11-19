@@ -18,13 +18,11 @@ in {
     iptables
     jq
     lsof
-    lsof
     mosh
     ncdu
     sysstat
     tcpdump
     tig
-    tree
     tree
     vim
   ];
@@ -40,10 +38,9 @@ in {
   users.users.root.openssh.authorizedKeys.keys = devOpsKeys;
 
   services = {
-    monitoring-exporters.graylogHost = "monitor:5044";
+    monitoring-exporters.graylogHost = "monitoring-ip:5044"; # TODO
 
-    nginx.mapHashBucketSize =
-      if config.deployment.targetEnv == "libvirtd" then 128 else null;
+    nginx.mapHashBucketSize = if config.deployment.targetEnv == "libvirtd" then 128 else null;
 
     openssh = {
       passwordAuthentication = false;

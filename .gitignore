@@ -1,0 +1,11 @@
+.envrc
+globals.nix
+static/
+secrets/
+stats/
+backup/
+*.swp
+result*
+static*
+/dpl-*
+*-backup

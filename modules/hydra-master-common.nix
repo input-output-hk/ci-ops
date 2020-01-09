@@ -29,7 +29,7 @@ in {
     port = 8080;
     useSubstitutes = true;
     notificationSender = "hi@iohk.io";
-    logo = ./iohk-logo.png;
+    logo = ./hydra/iohk-logo.png;
   };
 
   services.postgresql = {

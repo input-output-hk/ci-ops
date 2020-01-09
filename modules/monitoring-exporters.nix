@@ -2,8 +2,7 @@
 
 with lib;
 
-let
-  cfg = config.services.monitoring-exporters;
+let cfg = config.services.monitoring-exporters;
 in {
 
   options = {
@@ -61,17 +60,14 @@ in {
 
       ownIp = mkOption {
         type = types.str;
-        description = "the address a remote prometheus node will use to contact this machine";
+        description =
+          "the address a remote prometheus node will use to contact this machine";
       };
     };
   };
 
   config = mkIf cfg.enable (mkMerge [
-    {
-      nixpkgs.overlays = [
-        (import ../overlays/monitoring-exporters.nix)
-      ];
-    }
+    { nixpkgs.overlays = [ (import ../overlays/monitoring-exporters.nix) ]; }
 
     (mkIf (config.services.nginx.enable && cfg.metrics) {
       services.nginx = {
@@ -94,9 +90,8 @@ in {
         wantedBy = [ "multi-user.target" ];
         requires = [ "network.target" ];
         after = [ "network.target" ];
-        script = ''
-          ${pkgs.prometheus-statsd-exporter}/bin/statsd_bridge -statsd.listen-address ":8125" -web.listen-address ":9102" -statsd.add-suffix=false || ${pkgs.prometheus-statsd-exporter}/bin/statsd_exporter --statsd.listen-udp=":8125" --web.listen-address=":9102"
-        '';
+        serviceConfig.ExecStart =
+          "${pkgs.prometheus-statsd-exporter}/bin/statsd_exporter --statsd.listen-udp=:8125 --web.listen-address=:9102";
       };
 
       services = {
@@ -132,18 +127,22 @@ in {
     (mkIf cfg.logging {
       services.journalbeat = {
         enable = true;
+        package = pkgs.journalbeat7;
         extraConfig = ''
-        journalbeat:
-          seek_position: cursor
-          cursor_seek_fallback: tail
-          write_cursor_state: true
-          cursor_flush_period: 5s
-          clean_field_names: true
-          convert_to_numbers: false
-          move_metadata_to_field: journal
-          default_type: journal
-        output.logstash:
-          hosts: ["${cfg.graylogHost}"]
+          journalbeat:
+            seek_position: cursor
+            cursor_seek_fallback: tail
+            write_cursor_state: true
+            cursor_flush_period: 5s
+            clean_field_names: true
+            convert_to_numbers: false
+            move_metadata_to_field: journal
+            default_type: journal
+          output.logstash:
+            hosts: ["${cfg.graylogHost}"]
+          journalbeat.inputs:
+            - paths:
+              - "/var/log/journal/"
         '';
       };
     })

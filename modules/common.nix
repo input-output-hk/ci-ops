@@ -1,13 +1,14 @@
-{ pkgs, lib, name, config, ... }:
+{ pkgs, lib, name, config, resources, ... }:
 let
-  sshKeys = import ((import ../nix/sources.nix).iohk-ops + "/lib/ssh-keys.nix") {
-    inherit lib;
-  };
+  sshKeys =
+    import ((import ../nix/sources.nix).iohk-ops + "/lib/ssh-keys.nix") {
+      inherit lib;
+    };
   inherit (sshKeys) allKeysFrom devOps;
   devOpsKeys = allKeysFrom devOps;
 in {
 
-  imports = [ ./aws.nix ../modules/monitoring-exporters.nix ];
+  imports = [ ./aws.nix ./monitoring-exporters.nix ];
 
   networking.hostName = name;
 
@@ -15,12 +16,14 @@ in {
     bat
     git
     graphviz
+    htop
     iptables
     jq
     lsof
     mosh
     ncdu
     sysstat
+    sqliteInteractive
     tcpdump
     tig
     tree
@@ -37,10 +40,17 @@ in {
   users.mutableUsers = false;
   users.users.root.openssh.authorizedKeys.keys = devOpsKeys;
 
-  services = {
-    monitoring-exporters.graylogHost = "monitoring-ip:5044"; # TODO
+  users.users.debug = {
+    isNormalUser = true;
+    hashedPassword = "$6$1Ys4mXwnwyfAWnPf$OjsZ.srTzlDcPEZ.PZyFVjEfZF6k9T8qFLXbP5Ebw54dR1KGZLUrIWOv4t.gHmVYh8o79cPVDevLhhn7PH40W/";
+    extraGroups = [ "wheel" ];
+  };
+  security.sudo.wheelNeedsPassword = true;
 
-    nginx.mapHashBucketSize = if config.deployment.targetEnv == "libvirtd" then 128 else null;
+  services = {
+    monitoring-exporters.graylogHost = "monitoring:5044";
+
+    nginx.mapHashBucketSize = 128;
 
     openssh = {
       passwordAuthentication = false;
@@ -92,4 +102,8 @@ in {
     from = 60000;
     to = 61000;
   }];
+
+  deployment.ec2.securityGroups = [
+    resources.ec2SecurityGroups."allow-graylog-nodes-${config.node.region}"
+  ];
 }

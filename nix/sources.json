@@ -23,42 +23,6 @@
         "url": "https://github.com/input-output-hk/iohk-nix/archive/dc2a549d7eae3918f7b596288c774296bd910291.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
-    "iohk-ops": {
-        "branch": "master",
-        "description": "NixOps deployment configuration for IOHK devops",
-        "homepage": "",
-        "owner": "input-output-hk",
-        "repo": "iohk-ops",
-        "rev": "d61dd51f7b961e244ed485cac51d3126f695b250",
-        "sha256": "0nzzcgkrsq8m4kcjr430rybindfkys8kn5vdnnzmmhw5c2i33c7x",
-        "type": "tarball",
-        "url": "https://github.com/input-output-hk/iohk-ops/archive/d61dd51f7b961e244ed485cac51d3126f695b250.tar.gz",
-        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
-    },
-    "jormungandr-faucet": {
-        "branch": "nixos-19.09",
-        "description": "faucet for jormungandr",
-        "homepage": null,
-        "owner": "input-output-hk",
-        "repo": "jormungandr-faucet",
-        "rev": "051ece0910e5c2fdc67f16353c0e0ee253b88923",
-        "sha256": "1az0ci1gpbymspc487rhr002m29p915q3i1bn1wk0ky8jy7jmywm",
-        "type": "tarball",
-        "url": "https://github.com/input-output-hk/jormungandr-faucet/archive/051ece0910e5c2fdc67f16353c0e0ee253b88923.tar.gz",
-        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
-    },
-    "jormungandr-nix": {
-        "branch": "nixos-19.09",
-        "description": "jormungandr nix scripts",
-        "homepage": null,
-        "owner": "input-output-hk",
-        "repo": "jormungandr-nix",
-        "rev": "10168c9896f1d3cb499b3f9f98b90fdbf4e66086",
-        "sha256": "1w379rwnlc3ajlv3fnxpnk6m3vxj9h8664j8si7fmrl6dlslxcrb",
-        "type": "tarball",
-        "url": "https://github.com/input-output-hk/jormungandr-nix/archive/10168c9896f1d3cb499b3f9f98b90fdbf4e66086.tar.gz",
-        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
-    },
     "nixops-core": {
         "branch": "nixops-core-pr-int",
         "description": "NixOps, the NixOS-based cloud deployment tool",
@@ -89,10 +53,10 @@
         "homepage": null,
         "owner": "input-output-hk",
         "repo": "nixops-packet",
-        "rev": "b96a78c57d315bb292318f7fb4f198b1483e188b",
-        "sha256": "15b7x6rilhmg42wmprqjaqadwcn8351a4wkf76m90rfqsk1piw64",
+        "rev": "f1415ec20f46ea24a7e5fa6f8dec8a420f41b6f8",
+        "sha256": "0f0snsh0hblsqhpailh9v1mp1m8snkxwr954nc2yxqxd1k8qz423",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/nixops-packet/archive/b96a78c57d315bb292318f7fb4f198b1483e188b.tar.gz",
+        "url": "https://github.com/input-output-hk/nixops-packet/archive/f1415ec20f46ea24a7e5fa6f8dec8a420f41b6f8.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "nixpkgs": {
@@ -128,6 +92,18 @@
         "sha256": "1m3glylq7vxca3h8r99s3ga5arvblkz6ipc2vvzs83zzr9gdn1p5",
         "type": "tarball",
         "url": "https://github.com/NixOS/nixpkgs-channels/archive/8e1fdad7c69a055b431580db717d6d9270e18175.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "ops-lib": {
+        "branch": "master",
+        "description": "NixOps deployment configuration library for IOHK devops ",
+        "homepage": null,
+        "owner": "input-output-hk",
+        "repo": "ops-lib",
+        "rev": "cf640dd2d47af0666af5a5f5bf41d3c3f7d3102e",
+        "sha256": "1gs8cqsaqdn9yl6x9x03awr140r8xmqjgvvx1mk2460891xz4lyd",
+        "type": "tarball",
+        "url": "https://github.com/input-output-hk/ops-lib/archive/cf640dd2d47af0666af5a5f5bf41d3c3f7d3102e.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     }
 }

@@ -1,16 +1,8 @@
-{ pkgs, lib, name, config, resources, ... }:
-let
-  sshKeys =
-    import ((import ../nix/sources.nix).iohk-ops + "/lib/ssh-keys.nix") {
-      inherit lib;
-    };
-  inherit (sshKeys) allKeysFrom devOps;
-  devOpsKeys = allKeysFrom devOps;
-in {
-
-  imports = [ ./aws.nix ./monitoring-exporters.nix ];
-
-  networking.hostName = name;
+{ pkgs, lib, config, resources, ssh-keys, ... }: {
+  imports = [
+    ./cloud.nix
+    ./monitoring-exporters.nix
+  ];
 
   environment.systemPackages = with pkgs; [
     bat
@@ -38,8 +30,9 @@ in {
   };
 
   users.mutableUsers = false;
-  users.users.root.openssh.authorizedKeys.keys = devOpsKeys;
+  users.users.root.openssh.authorizedKeys.keys = ssh-keys.devOps;
 
+  # TODO Temporary user addition to deal with systemd arp problem on packet
   users.users.debug = {
     isNormalUser = true;
     hashedPassword = "$6$1Ys4mXwnwyfAWnPf$OjsZ.srTzlDcPEZ.PZyFVjEfZF6k9T8qFLXbP5Ebw54dR1KGZLUrIWOv4t.gHmVYh8o79cPVDevLhhn7PH40W/";
@@ -48,7 +41,7 @@ in {
   security.sudo.wheelNeedsPassword = true;
 
   services = {
-    monitoring-exporters.graylogHost = "monitoring:5044";
+    monitoring-exporters.graylogHost = if config.networking.wireguard.enable then "monitoring-wg:5044" else "monitoring:5044";
 
     nginx.mapHashBucketSize = 128;
 
@@ -102,8 +95,4 @@ in {
     from = 60000;
     to = 61000;
   }];
-
-  deployment.ec2.securityGroups = [
-    resources.ec2SecurityGroups."allow-graylog-nodes-${config.node.region}"
-  ];
 }

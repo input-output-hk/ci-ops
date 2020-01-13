@@ -15,10 +15,6 @@ let
       rules = lib.optionals (nodes ? "monitor")
         [{
           protocol = "tcp";
-          fromPort = 8000; toPort = 8000; # jormungandr prometheus exporter
-          sourceIp = monitoringSourceIp;
-        }{
-          protocol = "tcp";
           fromPort = 9100; toPort = 9100; # prometheus exporters
           sourceIp = monitoringSourceIp;
         }{
@@ -28,10 +24,6 @@ let
         }{
           protocol = "tcp";
           fromPort = 9113; toPort = 9113; # nginx exporter
-          sourceIp = monitoringSourceIp;
-        }{
-          protocol = "tcp";
-          fromPort = 12760; toPort = 12761; # iohk-monitoring-framework
           sourceIp = monitoringSourceIp;
         }];
     };

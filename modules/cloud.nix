@@ -34,7 +34,7 @@ in {
               "me-south-1" # Middle East (Bahrain)
               "sa-east-1" # South America (São Paulo)
             ];
-            description = "Region.  Must be set (use deployments/config.nix).";
+            description = "Region.";
             default = "eu-central-1";
           };
 
@@ -78,55 +78,17 @@ in {
             default = config.cluster.allocateElasticIP;
           };
 
-          isJormungandr = mkOption {
-            type = bool;
-            default = cfg.isRelay || cfg.isStake;
-          };
-
-          isRelay = mkOption {
-            type = bool;
-            default = cfg.isFaucet
-                   || cfg.isExplorer
-                   || cfg.isTrustedPeer
-                   || cfg.isExplorerApi;
-          };
-
-          isTrustedPeer = mkOption {
-            type = bool;
-            default = false;
-          };
-
-          isTrustedPoolPeer = mkOption {
-            type = bool;
-            default = false;
-          };
-
-          isStake = mkOption {
-            type = bool;
-            default = false;
-          };
-
           isMonitoring = mkOption {
             type = bool;
             default = false;
           };
 
-          isExplorer = mkOption {
+          isHydra = mkOption {
             type = bool;
             default = false;
           };
 
-          isExplorerApi = mkOption {
-            type = bool;
-            default = false;
-          };
-
-          isFaucet = mkOption {
-            type = bool;
-            default = false;
-          };
-
-          dontGenerateKey = mkOption {
+          isBuildkite = mkOption {
             type = bool;
             default = false;
           };

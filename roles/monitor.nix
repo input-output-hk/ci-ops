@@ -7,8 +7,7 @@ let
   monitoringFor = nodeName: node:
     let cfg = node.config.node;
     in {
-      hasJormungandrPrometheus = cfg.isRelay || cfg.isStake || cfg.isTrustedPoolPeer || cfg.isTrustedPeer;
-      hasNginx = cfg.isFaucet || cfg.isExplorer || cfg.isMonitoring;
+      hasNginx = cfg.isMonitoring;
       labels = { alias = nodeName; };
     };
 
@@ -18,7 +17,6 @@ let
 in {
   imports = [
     ../modules/monitoring-services.nix
-    ../modules/common.nix
     ../modules/monitoring-alerts.nix
   ];
 
@@ -45,8 +43,7 @@ in {
     monitoredNodes = mapAttrs'
       (nodeName: node: nameValuePair nodeName (monitoringFor nodeName node)) nodes;
 
-    applicationDashboards =
-      [ (sources.jormungandr-nix + "/nixos/jormungandr-monitor/grafana.json") ];
+    applicationDashboards = [ ];
   };
 
   systemd.services.graylog.environment.JAVA_OPTS = ''

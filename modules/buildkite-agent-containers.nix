@@ -1,7 +1,10 @@
-{ config, lib, pkgs, name, ... }:
-
+{ config, lib, pkgs, name, ssh-keys, ... }:
 let
-  commonLib = import ../lib.nix;
+  sources = import ../nix/sources.nix;
+  pkgs = import ../nix { };
+  inherit (pkgs.packages) pp;
+  inherit (builtins) filter attriValues mapAttrs;
+
   cfg = config.services.buildkite-containers;
 
 in with lib;
@@ -19,12 +22,11 @@ in with lib;
         type = types.str;
         default = "1";
         description = ''
-          A host identifier suffix which, is typically a CI server number, is used
-          as part of the container name when the default container list is deployed.
-          Container names are limited to 7 characters, so the default naming convention
-          is ci${hostIdSuffix}-<containerNum>.  An example container name, using a
-          hostIdSuffix of 2 for example, may then be ci2-4, indicating a 4th CI
-          container on a 2nd host CI server.
+          A host identifier suffix which is typically a CI server number and is used
+          as part of the container name.  Container names are limited to 7 characters,
+          so the default naming convention is ci''${hostIdSuffix}-''${containerNum}.
+          An example container name, using a hostIdSuffix of 2 for example, may then
+          be ci2-4, indicating a 4th CI container on a 2nd host CI server.
         '';
         example = "1";
       };
@@ -38,25 +40,23 @@ in with lib;
           containers will pushed to each host which includes this module.  If this
           option is provided a list of attributes, each representing a Buildkite
           container, this list of containers will be used instead of the predefined
-          list.  See the buildkite-agent-container.nix module for possible customizations.
-          Note that container names cannot be more than 7 characters.
+          list. Note that container names cannot be more than 7 characters.
         '';
         example = ''
-          [ { containerName = "ci1-1"; ipo4 = "10"; metadata = "system=x86_64-linux,queue=custom"; }
-            { containerName = "ci1-2"; ipo4 = "11"; metadata = "system=x86_64-linux,queue=custom"; } ];
+          [ { containerName = "ci1-1"; guestIp = "10.254.1.11"; metadata = "system=x86_64-linux,queue=custom"; }
+            { containerName = "ci1-2"; guestIp = "10.254.1.12"; metadata = "system=x86_64-linux,queue=custom"; } ];
         '';
       };
     };
   };
 
   config = let
-    createBuildkiteContainer = { containerName                                 # The desired container name
-                               , baseVethIp ? "10.254.1"                       # The first 3 octets of the IPv4 host and guest virtual eth nic IP
-                               , hostIpo4 ? "1"                                # The fourth octet of the IPv4 host virtual eth nic IP
-                               , ipo4 ? "10"                                   # The fourth octet of the IPv4 container guest virtual eth nic IP
-                               , metadata ? "system=x86_64-linux,queue=test"   # Agent metadata customization
-                               , prio ? null                                   # Agent priority
-                              }: {
+    createBuildkiteContainer = { containerName                           # The desired container name
+                               , hostIp ? "10.254.1.1"                   # The IPv4 host virtual eth nic IP
+                               , guestIp ? "10.254.1.11"                 # The IPv4 container guest virtual eth nic IP
+                               , metadata ? "system=x86_64-linux"        # Agent metadata customization
+                               , prio ? null                             # Agent priority
+                               }: {
       name = containerName;
       value = {
         autoStart = true;
@@ -73,13 +73,14 @@ in with lib;
           };
         };
         privateNetwork = true;
-        hostAddress = baseVethIp + "." + hostIpo4;
-        localAddress = baseVethIp + "." + ipo4;
+        hostAddress = hostIp;
+        localAddress = guestIp;
         config = {
           imports = [
             ./nix_nsswitch.nix
             # Docker module required in both the host and guest containers
             ./docker-builder.nix
+            # common.nix doesn't get automatically added to containers like to nodes
             ./common.nix
           ];
           services.monitoring-exporters.enable = false;
@@ -156,12 +157,18 @@ in with lib;
       };
     };
   in {
-    users.users.root.openssh.authorizedKeys.keys = commonLib.ciInfraKeys;
+    users.users.root.openssh.authorizedKeys.keys = ssh-keys.ciInfra;
+
+    services.auto-gc = {
+      nixAutoMaxFreedGB  = 30;
+      nixAutoMinFreeGB   = 11;
+      nixAbsoluteTimedGB = 10;
+    };
 
     # To go on the host -- and get shared to the container(s)
     deployment.keys = {
       aws-creds = {
-        keyFile = ./. + "/../static/buildkite-hook";
+        keyFile = ./. + "/../secrets/buildkite-hook";
         destDir = "/var/lib/buildkite-agent/hooks";
         user    = "buildkite-agent";
         permissions = "0770";
@@ -169,7 +176,7 @@ in with lib;
 
       # Project-specific credentials to install on Buildkite agents.
       buildkite-extra-creds = {
-        keyFile = ./. + "/../static/buildkite-hook-extra-creds.sh";
+        keyFile = ./. + "/../secrets/buildkite-hook-extra-creds.sh";
         destDir = "/var/lib/buildkite-agent/hooks";
         user    = "buildkite-agent";
         permissions = "0770";
@@ -177,36 +184,42 @@ in with lib;
 
       # SSH keypair for buildkite-agent user
       buildkite-ssh-private = {
-        keyFile = ./. + "/../static/buildkite-ssh";
+        keyFile = ./. + "/../secrets/buildkite-ssh";
         user    = "buildkite-agent";
       };
       buildkite-ssh-public = {
-        keyFile = ./. + "/../static/buildkite-ssh.pub";
+        keyFile = ./. + "/../secrets/buildkite-ssh.pub";
         user    = "buildkite-agent";
       };
 
       # GitHub deploy key for input-output-hk/hackage.nix
       buildkite-hackage-ssh-private = {
-        keyFile = ./. + "/../static/buildkite-hackage-ssh";
+        keyFile = ./. + "/../secrets/buildkite-hackage-ssh";
         user    = "buildkite-agent";
       };
 
       # GitHub deploy key for input-output-hk/stackage.nix
       buildkite-stackage-ssh-private = {
-        keyFile = ./. + "/../static/buildkite-stackage-ssh";
+        keyFile = ./. + "/../secrets/buildkite-stackage-ssh";
         user    = "buildkite-agent";
       };
 
       # GitHub deploy key for input-output-hk/haskell.nix
       # (used to update gh-pages documentation)
       buildkite-haskell-dot-nix-ssh-private = {
-        keyFile = ./. + "/../static/buildkite-haskell-dot-nix-ssh";
+        keyFile = ./. + "/../secrets/buildkite-haskell-dot-nix-ssh";
         user    = "buildkite-agent";
       };
 
       # API Token for BuildKite
       buildkite-token = {
-        keyFile = ./. + "/../static/buildkite_token";
+        keyFile = ./. + "/../secrets/buildkite_token";
+        user    = "buildkite-agent";
+      };
+
+      # DockerHub password/token (base64-encoded in json)
+      dockerhub-auth = {
+        keyFile = ./. + "/../secrets/dockerhub-auth-config.json";
         user    = "buildkite-agent";
       };
     };
@@ -225,6 +238,7 @@ in with lib;
       # To ensure buildkite-agent user sharing of keys in guests
       uid = 10000;
     };
+
     environment.systemPackages = [ pkgs.nixos-container ];
     networking.nat.enable = true;
     networking.nat.internalInterfaces = [ "ve-+" ];
@@ -235,10 +249,10 @@ in with lib;
 
     containers = let
       buildkiteContainerList = if (length cfg.containerList == 0) then ([
-        { containerName = "ci${cfg.hostIdSuffix}-1"; ipo4 = "10"; prio = "9"; }
-        { containerName = "ci${cfg.hostIdSuffix}-2"; ipo4 = "11"; prio = "8"; }
-        { containerName = "ci${cfg.hostIdSuffix}-3"; ipo4 = "12"; prio = "7"; }
-        { containerName = "ci${cfg.hostIdSuffix}-4"; ipo4 = "13"; prio = "6"; }
+        { containerName = "ci${cfg.hostIdSuffix}-1"; guestIp = "10.254.1.11"; prio = "9"; }
+        { containerName = "ci${cfg.hostIdSuffix}-2"; guestIp = "10.254.1.12"; prio = "8"; }
+        { containerName = "ci${cfg.hostIdSuffix}-3"; guestIp = "10.254.1.13"; prio = "7"; }
+        { containerName = "ci${cfg.hostIdSuffix}-4"; guestIp = "10.254.1.14"; prio = "6"; }
       ]) else cfg.containerList;
     in
       builtins.listToAttrs (map createBuildkiteContainer buildkiteContainerList);

@@ -310,6 +310,7 @@ in {
 
   config = mkIf cfg.enable (mkMerge [
     (lib.mkIf cfg.enableWireguard {
+      services.node-wireguard.enable = false;
       networking.firewall.allowedUDPPorts = [ 17777 ];
 
       deployment.keys."wg_${name}".keyFile = ../. + "/secrets/wireguard/${name}.private";
@@ -318,7 +319,7 @@ in {
       boot.extraModulePackages = [ config.boot.kernelPackages.wireguard ];
 
       networking.extraHosts = concatStringsSep "\n" (
-        map (host: "${host.ip} ${host.name}")
+        map (host: "${host.ip} ${host.name}-wg")
             (mapAttrsToList (nodeName: node:
               { ip = node.config.node.wireguardIP; name = nodeName; }
             ) nodes)
@@ -845,11 +846,12 @@ in {
               job_name = "node";
               scrape_interval = "10s";
               static_configs = let
+                hostIp = key: if cfg.enableWireguard then (key + "-wg") else key;
                 makeNodeConfig = key: value: {
-                  targets = [ "${key}:9100" "${key}:9102" ]
-                    ++ (optional value.hasNativePrometheus "${key}:12760")
-                    ++ (optional value.hasSecondNativePrometheus "${key}:12761")
-                    ++ (optional value.hasJormungandrPrometheus "${key}:8000");
+                  targets = [ "${hostIp key}:9100" "${hostIp key}:9102" ]
+                    ++ (optional value.hasNativePrometheus "${hostIp key}:12760")
+                    ++ (optional value.hasSecondNativePrometheus "${hostIp key}:12761")
+                    ++ (optional value.hasJormungandrPrometheus "${hostIp key}:8000");
                   labels = { alias = key; } // value.labels;
                 };
               in mapAttrsToList makeNodeConfig cfg.monitoredNodes;
@@ -859,8 +861,9 @@ in {
               scrape_interval = "5s";
               metrics_path = "/status/format/prometheus";
               static_configs = let
+                hostIp = key: if cfg.enableWireguard then (key + "-wg") else key;
                 makeNodeConfig = key: value: {
-                  targets = [ "${key}:9113" ];
+                  targets = [ "${hostIp key}:9113" ];
                   labels = { alias = key; } // value.labels;
                 };
                 onlyNginx = n: v: v.hasNginx;

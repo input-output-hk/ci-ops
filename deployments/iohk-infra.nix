@@ -12,15 +12,14 @@ let
 
   settings = {
     resources.packetKeyPairs.global = credentials;
-    resources.route53RecordSets = lib.mapAttrs' (name: value: {
+
+    resources.route53RecordSets = __listToAttrs (map (name: {
       name = "${name}-route53";
       value = { resources, ... }: {
         domainName = "${name}.${globals.domain}.";
         zoneName = "${globals.domain}.";
         recordValues = [ resources.machines.${name} ];
       };
-    }) { # todo, need to use resources.machines
-      monitoring = 1;
-    };
+    }) (__filter (n: n != "network" && n != "resources") (__attrNames cluster)));
   };
 in cluster // settings

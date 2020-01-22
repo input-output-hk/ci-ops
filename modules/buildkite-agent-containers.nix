@@ -1,10 +1,5 @@
 { config, lib, pkgs, name, ssh-keys, ... }:
 let
-  sources = import ../nix/sources.nix;
-  pkgs = import ../nix { };
-  inherit (pkgs.packages) pp;
-  inherit (builtins) filter attriValues mapAttrs;
-
   cfg = config.services.buildkite-containers;
 
 in with lib;
@@ -47,6 +42,18 @@ in with lib;
             { containerName = "ci1-2"; guestIp = "10.254.1.12"; metadata = "system=x86_64-linux,queue=custom"; } ];
         '';
       };
+
+      weeklyCachePurge = mkOption {
+        type = types.bool;
+        default = true;
+        description = "Whether to delete the shared /cache dir weekly";
+      };
+
+      weeklyCachePurgeOnCalendar = mkOption {
+        type = types.str;
+        default = "Sat *-*-* 00:00:00";
+        description = "The default weekly day and time to perform a weekly /cache dir purge, if enabled.  Uses systemd onCalendar format.";
+      };
     };
   };
 
@@ -85,6 +92,9 @@ in with lib;
           ];
           services.monitoring-exporters.enable = false;
           services.ntp.enable = mkForce false;
+
+          systemd.services.buildkite-agent.serviceConfig.LimitNOFILE = 1024 * 512;
+
           services.buildkite-agent = {
             enable = true;
             name   = name + "-" + containerName;
@@ -97,6 +107,7 @@ in with lib;
                git git-lfs
                nix
             ];
+
             hooks.environment = ''
               # Provide a minimal build environment
               export NIX_BUILD_SHELL="/run/current-system/sw/bin/bash"
@@ -120,7 +131,7 @@ in with lib;
             '';
             hooks.pre-exit = ''
               # Clean up the scratch and tmp directories
-              rm -rf /scratch/* /tmp/*
+              rm -rf /scratch/* /tmp/* || true
             '';
             extraConfig = ''
               git-clean-flags="-ffdqx"
@@ -158,12 +169,6 @@ in with lib;
     };
   in {
     users.users.root.openssh.authorizedKeys.keys = ssh-keys.ciInfra;
-
-    services.auto-gc = {
-      nixAutoMaxFreedGB  = 30;
-      nixAutoMinFreeGB   = 11;
-      nixAbsoluteTimedGB = 10;
-    };
 
     # To go on the host -- and get shared to the container(s)
     deployment.keys = {
@@ -246,6 +251,18 @@ in with lib;
 
     services.fstrim.enable = true;
     services.fstrim.interval = "daily";
+
+    systemd.services.weekly-cache-purge = mkIf cfg.weeklyCachePurge {
+      script = "rm -rf /cache/* || true";
+    };
+
+    systemd.timers.weekly-cache-purge = mkIf cfg.weeklyCachePurge {
+      timerConfig = {
+        Unit = "weekly-cache-purge.service";
+        OnCalendar = cfg.weeklyCachePurgeOnCalendar;
+      };
+      wantedBy = [ "timers.target" ];
+    };
 
     containers = let
       buildkiteContainerList = if (length cfg.containerList == 0) then ([

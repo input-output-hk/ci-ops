@@ -51,5 +51,4 @@ in {
   '';
 
   services.elasticsearch.extraJavaOptions = [ "-Xms6g" "-Xmx6g" ];
-  services.zfs.trim.enabled = true;
 }

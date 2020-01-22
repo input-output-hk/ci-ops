@@ -23,6 +23,17 @@
         "url": "https://github.com/input-output-hk/iohk-nix/archive/dc2a549d7eae3918f7b596288c774296bd910291.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
+    "niv": {
+        "branch": "master",
+        "description": "Easy dependency management for Nix projects",
+        "homepage": "https://github.com/nmattia/niv",
+        "owner": "nmattia",
+        "repo": "niv",
+        "rev": "1dd094156b249586b66c16200ecfd365c7428dc0",
+        "sha256": "1b2vjnn8iac5iiqszjc2v1s1ygh0yri998c0k3s4x4kn0dsqik21",
+        "url": "https://github.com/nmattia/niv/archive/1dd094156b249586b66c16200ecfd365c7428dc0.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
     "nixops-core": {
         "branch": "nixops-core-pr-int",
         "description": "NixOps, the NixOS-based cloud deployment tool",
@@ -48,38 +59,27 @@
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "nixops-packet": {
-        "branch": "c2-medium-reserved-changes",
+        "branch": "cpr-support",
         "description": "NixOps Packet.net Plugin",
         "homepage": null,
         "owner": "input-output-hk",
         "repo": "nixops-packet",
-        "rev": "f1415ec20f46ea24a7e5fa6f8dec8a420f41b6f8",
-        "sha256": "0f0snsh0hblsqhpailh9v1mp1m8snkxwr954nc2yxqxd1k8qz423",
+        "rev": "41fe0992f9cfe4b3ad37aba8d113a826a4a3997f",
+        "sha256": "165a07fy6yymgsw9xs9g6w0ml39kc1mxclhqfrd7vbn2xdzgjc50",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/nixops-packet/archive/f1415ec20f46ea24a7e5fa6f8dec8a420f41b6f8.tar.gz",
+        "url": "https://github.com/input-output-hk/nixops-packet/archive/41fe0992f9cfe4b3ad37aba8d113a826a4a3997f.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "nixpkgs": {
-        "branch": "acme-with-simp_le-0.16.0",
+        "branch": "release-19.09",
         "description": "Nix Packages collection",
         "homepage": null,
-        "owner": "manveru",
+        "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "956169b37546dafb90996330306415d7238249a4",
-        "sha256": "0z2p4hjqh6ks7z70bahma2mw3pfhayyr63axk1zf85s2xk8iz2iz",
+        "rev": "f79f998f3163481a4d4ae90e8ea516df3980fe9f",
+        "sha256": "15ba2rrgr948h9mawirzs898w7kn2wzny4075ylgv3000hihqvyk",
         "type": "tarball",
-        "url": "https://github.com/manveru/nixpkgs/archive/956169b37546dafb90996330306415d7238249a4.tar.gz",
-        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
-    },
-    "niv": {
-        "branch": "master",
-        "description": "Easy dependency management for Nix projects",
-        "homepage": "https://github.com/nmattia/niv",
-        "owner": "nmattia",
-        "repo": "niv",
-        "rev": "1dd094156b249586b66c16200ecfd365c7428dc0",
-        "sha256": "1b2vjnn8iac5iiqszjc2v1s1ygh0yri998c0k3s4x4kn0dsqik21",
-        "url": "https://github.com/nmattia/niv/archive/1dd094156b249586b66c16200ecfd365c7428dc0.tar.gz",
+        "url": "https://github.com/nixos/nixpkgs/archive/f79f998f3163481a4d4ae90e8ea516df3980fe9f.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "nixpkgs-old": {

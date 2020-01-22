@@ -8,11 +8,15 @@ let
   sources = import ./sources.nix;
   original-ssh-keys = import (sources.ops-lib + "/overlays/ssh-keys.nix") lib;
   allKeysFrom = keys: __concatLists (__attrValues keys);
-  inherit (original-ssh-keys) devOps csl-developers;
+  inherit (original-ssh-keys) devOps csl-developers remoteBuilderKeys;
 
   ssh-keys = {
     devOps = allKeysFrom devOps;
     ciInfra = ssh-keys.devOps ++ allKeysFrom { inherit (csl-developers) angerman; };
+    buildSlaveKeys = {
+      macos = ssh-keys.devOps ++ allKeysFrom remoteBuilderKeys;
+      linux = remoteBuilderKeys.hydraBuildFarm;
+    };
   };
 
   globals = import ../globals.nix;
@@ -33,8 +37,7 @@ let
       require = [ ../modules/common.nix ../modules/wireguard.nix ];
       deployment = {
         targetEnv = targetEnv;
-        # TODO Why is this not appearing in the description?  Remove trace.
-        targetHost = __trace (name + "." + globals.domain) (name + "." + globals.domain);
+        targetHost = name + "." + globals.domain;
       };
       _module.args = { inherit globals ssh-keys; };
     } args;

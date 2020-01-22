@@ -1,38 +1,49 @@
 { pkgs, config, lib, ... }:
 let
   cfg = config.services.auto-gc;
+  inherit (lib) types mkIf mkOption;
 in {
   options = {
     services.auto-gc = {
-      nixAutoMaxFreedGB = lib.mkOption {
-        type = lib.types.int;
+      nixAutoMaxFreedGB = mkOption {
+        type = types.int;
         default = 110;
-        description = "An absolute amount to free at";
+        description = "An maximum absolute amount to free up to on the auto GC";
       };
 
-      nixAutoMinFreeGB = lib.mkOption {
-        type = lib.types.int;
+      nixAutoMinFreeGB = mkOption {
+        type = types.int;
         default = 30;
-        description = "The minimum amount to trigger a GC at";
+        description = "The minimum amount to trigger an auto GC at";
       };
 
-      nixAbsoluteTimedGB = lib.mkOption {
-        type = lib.types.int;
-        default = 25;
-        description = "The max absolute level to free to on the /nix/store mount for the timed GC";
+      nixHourlyMaxFreedGB = mkOption {
+        type = types.int;
+        default = 110;
+        description = "The maximum absolute level to free up to on the /nix/store mount for the hourly timed GC";
+      };
+
+      nixHourlyMinFreeGB = mkOption {
+        type = types.int;
+        default = 20;
+        description = "The minimum amount to trigger the /nix/store mount hourly timed GC at";
+      };
+
+      nixWeeklyGcFull = mkOption {
+        type = types.bool;
+        default = false;
+        description = "Whether to perform a full GC weekly.  Default false.";
+      };
+
+      nixWeeklyGcOnCalendar = mkOption {
+        type = types.str;
+        default = "Sat *-*-* 00:00:00";
+        description = "The default weekly day and time to perform a full GC, if enabled.  Uses systemd onCalendar format.";
       };
     };
   };
   config = {
     nix = {
-      gc = {
-        automatic = true;
-        dates = "*:15:00";
-
-        # Set the max absolute level to free to nixAbsoluteTimedGB on the /nix/store mount
-        options = ''--max-freed "$((${toString cfg.nixAbsoluteTimedGB} * 1024**3 - 1024 * $(df -P -k /nix/store | tail -n 1 | ${pkgs.gawk}/bin/awk '{ print $4 }')))"'';
-      };
-
       # This GC is run automatically by nix-build
       extraOptions = ''
         # Try to ensure between ${toString cfg.nixAutoMinFreeGB}G and ${toString cfg.nixAutoMaxFreedGB}G of free space by
@@ -41,6 +52,37 @@ in {
         min-free = ${toString (cfg.nixAutoMinFreeGB * 1024 * 1024 * 1024)}
         max-free = ${toString (cfg.nixAutoMaxFreedGB * 1024 * 1024 * 1024)}
       '';
+    };
+
+    systemd.services.gc-hourly = {
+      script = ''
+        free=$(${pkgs.coreutils}/bin/df --block-size=M --output=avail /nix/store | tail -n1 | sed s/M//)
+        echo "Automatic GC: ''${free}M available"
+        # Set the max absolute level to free to nixHourlyMaxFreedGB on the /nix/store mount
+        if [ $free -lt ${toString (cfg.nixHourlyMinFreeGB * 1024)} ]; then
+          ${config.nix.package}/bin/nix-collect-garbage --max-freed ${toString (cfg.nixHourlyMaxFreedGB * 1024 * 1024 * 1024)}
+        fi
+      '';
+    };
+
+    systemd.timers.gc-hourly = {
+      timerConfig = {
+        Unit = "gc-hourly.service";
+        OnCalendar = "*-*-* *:15:00";
+      };
+      wantedBy = [ "timers.target" ];
+    };
+
+    systemd.services.gc-weekly = mkIf cfg.nixWeeklyGcFull {
+      script = "${config.nix.package}/bin/nix-collect-garbage";
+    };
+
+    systemd.timers.gc-weekly = mkIf cfg.nixWeeklyGcFull {
+      timerConfig = {
+        Unit = "gc-weekly.service";
+        OnCalendar = cfg.nixWeeklyGcOnCalendar;
+      };
+      wantedBy = [ "timers.target" ];
     };
   };
 }

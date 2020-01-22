@@ -88,6 +88,11 @@ in {
             default = false;
           };
 
+          isHydraSlave = mkOption {
+            type = bool;
+            default = false;
+          };
+
           isBuildkite = mkOption {
             type = bool;
             default = false;

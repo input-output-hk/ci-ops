@@ -20,7 +20,7 @@ in {
 
   config = lib.mkIf cfg.enable {
     networking.firewall.allowedUDPPorts = [ listenPort ];
-    networking.extraHosts = ''
+    networking.extraHosts = lib.mkIf (nodes ? monitoring) ''
       ${nodes.monitoring.config.node.wireguardIP} monitoring-wg
     '';
 
@@ -43,7 +43,7 @@ in {
       address = [ "${config.node.wireguardIP}/24" ];
       privateKeyFile = "/run/keys/${uniqueKey}";
 
-      peers = [
+      peers = lib.mkIf (nodes ? monitoring) [
         {
           allowedIPs = [ "${nodes.monitoring.config.node.wireguardIP}/32" ];
           publicKey = lib.fileContents ../secrets/wireguard/monitoring.public;

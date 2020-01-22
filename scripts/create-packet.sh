@@ -4,11 +4,11 @@ set -euxo pipefail
 
 # Credential setup
 
-if [ ! -f ./static/graylog-creds.nix ]; then
+if [ ! -f ./secrets/graylog-creds.nix ]; then
   nix-shell ./scripts/gen-graylog-creds.nix
 fi
 
-if [ ! -f ./static/grafana-creds.nix ]; then
+if [ ! -f ./secrets/grafana-creds.nix ]; then
   nix-shell ./scripts/gen-grafana-creds.nix
 fi
 

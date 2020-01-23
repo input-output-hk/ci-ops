@@ -17,6 +17,11 @@ let
         default = false;
         description = "if nginx stats should be scraped";
       };
+      hasStatsD = mkOption {
+        type = types.bool;
+        default = false;
+        description = "if StatsD stats should be scraped";
+      };
       hasNativePrometheus = mkOption {
         type = types.bool;
         default = false;
@@ -60,6 +65,22 @@ in {
       enableWireguard = mkOption {
         type = types.bool;
         default = false;
+      };
+
+      useWireguardListeners = mkOption {
+        type = types.bool;
+        default = false;
+        description = ''
+          Bind the wg ip instead of globally where possible.
+        '';
+      };
+
+      ownIp = mkOption {
+        type = types.str;
+        description = ''
+          The address a remote prometheus node will use to contact this machine.
+          Typically set to the wireguard ip if available.
+        '';
       };
 
       metrics = mkOption {
@@ -313,11 +334,6 @@ in {
       services.node-wireguard.enable = false;
       networking.firewall.allowedUDPPorts = [ 17777 ];
 
-      deployment.keys."wg_${name}".keyFile = ../. + "/secrets/wireguard/${name}.private";
-      deployment.keys.wg_shared.keyFile = ../. + "/secrets/wireguard/shared.private";
-
-      boot.extraModulePackages = [ config.boot.kernelPackages.wireguard ];
-
       networking.extraHosts = concatStringsSep "\n" (
         map (host: "${host.ip} ${host.name}-wg")
             (mapAttrsToList (nodeName: node:
@@ -325,12 +341,39 @@ in {
             ) nodes)
       );
 
+      deployment.keys."wg_${name}".keyFile = ../. + "/secrets/wireguard/${name}.private";
+      deployment.keys.wg_shared.keyFile = ../. + "/secrets/wireguard/shared.private";
+
+      systemd.services."wg-quick-wg0" = {
+        after = [ "wg_${name}.sk-key.service" "wg_shared.sk-key.service" ];
+        wants = [ "wg_${name}.sk-key.service" "wg_shared.sk-key.service" ];
+        requiredBy =    (optional config.services.monitoring-exporters.enable "prometheus-node-exporter.service")
+                     ++ (optional config.services.nginx.enable "nginx.service");
+      };
+
+      boot.extraModulePackages = [ config.boot.kernelPackages.wireguard ];
+
       networking.wg-quick.interfaces.wg0 = {
         listenPort = 17777;
         address = [ "${config.node.wireguardIP}/24" ];
         privateKeyFile = "/run/keys/wg_${name}";
+        preUp = ''
+          function check-key {
+            for i in {1..10}; do
+              if [ -f "$1" ]; then
+                echo "Wireguard key \"$1\" found."
+                break
+              fi
+              if [ "$i" -eq 10 ]; then
+                echo "Wireguard key \"$1\" NOT found. Timed out."
+              fi
+              sleep 1
+            done
+          }
+          check-key "/run/keys/wg_shared"
+          check-key "/run/keys/wg_${name}"
+        '';
 
-        # TODO: remove monitoring from this list
         peers = mapAttrsToList (nodeName: node:
           {
             allowedIPs = [ "${node.config.node.wireguardIP}/32" ];
@@ -502,7 +545,7 @@ in {
         grafana = {
           enable = true;
           users.allowSignUp = false;
-          addr = "";
+          addr = "127.0.0.1";
           domain = "${cfg.webhost}";
           rootUrl = "%(protocol)ss://%(domain)s/grafana/";
 
@@ -579,6 +622,7 @@ in {
 
         prometheus = {
           enable = true;
+          listenAddress = "127.0.0.1:9090";
           webExternalUrl = "https://${cfg.webhost}/prometheus/";
           extraFlags = [ "--storage.tsdb.retention=8760h" ];
 
@@ -590,6 +634,7 @@ in {
 
           alertmanager = {
             enable = cfg.pagerDuty.serviceKey != null;
+            listenAddress ="127.0.0.1";
             configuration = {
               route = {
                 group_by = [ "alertname" "alias" ];
@@ -624,6 +669,7 @@ in {
           exporters = {
             blackbox = {
               enable = true;
+              listenAddress = "127.0.0.1";
               configFile = pkgs.writeText "blackbox-exporter.yaml"
                 (builtins.toJSON {
                   modules = {
@@ -848,7 +894,8 @@ in {
               static_configs = let
                 hostIp = key: if cfg.enableWireguard then (key + "-wg") else key;
                 makeNodeConfig = key: value: {
-                  targets = [ "${hostIp key}:9100" "${hostIp key}:9102" ]
+                  targets = [ "${hostIp key}:9100" ]
+                    ++ (optional value.hasStatsD "${hostIp key}:9102")
                     ++ (optional value.hasNativePrometheus "${hostIp key}:12760")
                     ++ (optional value.hasSecondNativePrometheus "${hostIp key}:12761")
                     ++ (optional value.hasJormungandrPrometheus "${hostIp key}:8000");
@@ -1013,13 +1060,14 @@ in {
           elasticsearchHosts = [ "http://localhost:9200" ];
           # Elasticsearch config below is for a single node deployment
           extraConfig = ''
-            http_bind_address = 0.0.0.0:9000
+            http_bind_address = 127.0.0.1:9000
             elasticsearch_shards = 1
             elasticsearch_replicas = 0
           '';
         };
         elasticsearch = {
           enable = true;
+          listenAddress = "127.0.0.1";
           package = pkgs.elasticsearch6-oss;
           # Prevent graylog deflector indexing by turning off auto create index option
           extraConf = ''
@@ -1032,7 +1080,11 @@ in {
       systemd.services.prometheus.serviceConfig.LimitNOFILE = "524288";
 
       systemd.services.graylog-preload = let
-        graylogConfig = ./graylog/graylogConfig.json;
+        graylogConfig = pkgs.substituteAll {
+          src = ./graylog/graylogConfig.json;
+          interface = if cfg.useWireguardListeners then "${cfg.ownIp}" else "0.0.0.0";
+          isExecutable = false;
+        };
         password = traceValFn (x:
           if x == "changeme" then ''
             *

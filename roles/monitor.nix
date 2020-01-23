@@ -30,6 +30,9 @@ in {
   services.monitoring-services = {
     enable = true;
     enableWireguard = true;
+    useWireguardListeners = true;
+    ownIp = config.node.wireguardIP;
+
     webhost = config.node.fqdn;
     enableACME = config.deployment.targetEnv != "libvirtd";
     extraHeader = "Deployment Name: ${deploymentName}<br>";

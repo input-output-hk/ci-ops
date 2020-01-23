@@ -1,4 +1,4 @@
-{ pkgs, lib, config, resources, ssh-keys, ... }: {
+{ pkgs, lib, config, resources, name, ssh-keys, ... }: {
   imports = [
     ./cloud.nix
     ./monitoring-exporters.nix
@@ -32,16 +32,12 @@
   users.mutableUsers = false;
   users.users.root.openssh.authorizedKeys.keys = ssh-keys.devOps;
 
-  # TODO Temporary user addition to deal with systemd arp problem on packet
-  users.users.debug = {
-    isNormalUser = true;
-    hashedPassword = "$6$1Ys4mXwnwyfAWnPf$OjsZ.srTzlDcPEZ.PZyFVjEfZF6k9T8qFLXbP5Ebw54dR1KGZLUrIWOv4t.gHmVYh8o79cPVDevLhhn7PH40W/";
-    extraGroups = [ "wheel" ];
-  };
-  security.sudo.wheelNeedsPassword = true;
-
   services = {
-    monitoring-exporters.graylogHost = if config.networking.wireguard.enable then "monitoring-wg:5044" else "monitoring:5044";
+    monitoring-exporters = {
+      graylogHost = if config.services.node-wireguard.enable then "monitoring-wg:5044" else "monitoring:5044";
+      ownIp = config.node.wireguardIP;
+      useWireguardListeners = true;
+    };
 
     nginx.mapHashBucketSize = 128;
 

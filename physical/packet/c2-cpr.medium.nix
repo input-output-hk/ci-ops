@@ -1,4 +1,4 @@
-{ ... }: {
+{ config, pkgs, ... }: {
   imports = [ ./. ];
   services.zfs.trim.enable = true;
   systemd.services.zfs-config = {
@@ -10,61 +10,60 @@
   };
   deployment.packet = {
     plan = "c2.medium.x86";
-    reservationId = "next-available";
-    storage = {
-      disks = [
-        {
-          device = "/dev/disk/by-packet-category/boot0";
-          partitions = [
-            {
-              label = "BIOS";
-              number = 1;
-              size = "512M";
-            }
-            {
-              label = "SWAP";
-              number = 2;
-              size = "3993600";
-            }
-            {
-              label = "ROOT";
-              number = 3;
-              size = 0;
-            }
-          ];
-        }
-      ];
-      filesystems = [
-        {
-          mount = {
-            device = "/dev/disk/by-packet-category/boot0-part1";
-            format = "vfat";
-            point = "/boot";
-            create = {
-              options = [
-                "32"
-                "-n"
-                "EFI"
-              ];
-            };
-          };
-        }
-        {
-          mount = {
-            device = "/dev/disk/by-packet-category/boot0-part2";
-            format = "swap";
-            point = "none";
-            create = {
-              options = [
-                "-L"
-                "SWAP"
-              ];
-            };
-          };
-        }
-      ];
-    };
     customData = {
+      cpr_storage = {
+        disks = [
+          {
+            device = "/dev/disk/by-packet-category/boot0";
+            partitions = [
+              {
+                label = "BIOS";
+                number = 1;
+                size = "512M";
+              }
+              {
+                label = "SWAP";
+                number = 2;
+                size = "3993600";
+              }
+              {
+                label = "ROOT";
+                number = 3;
+                size = 0;
+              }
+            ];
+          }
+        ];
+        filesystems = [
+          {
+            mount = {
+              device = "/dev/disk/by-packet-category/boot0-part1";
+              format = "vfat";
+              point = "/boot";
+              create = {
+                options = [
+                  "32"
+                  "-n"
+                  "EFI"
+                ];
+              };
+            };
+          }
+          {
+            mount = {
+              device = "/dev/disk/by-packet-category/boot0-part2";
+              format = "swap";
+              point = "none";
+              create = {
+                options = [
+                  "-L"
+                  "SWAP"
+                ];
+              };
+            };
+          }
+        ];
+      };
 
       cpr_zfs = {
         pools = {

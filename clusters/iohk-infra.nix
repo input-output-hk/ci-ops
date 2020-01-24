@@ -31,7 +31,7 @@ let
     packet-ipxe-hydra-1 = {
       imports = [
         medium-cpr
-        # ../roles/hydra.nix
+        ../roles/hydra.nix
       ];
       deployment.packet = { inherit ipxeScriptUrl facility reservationId; };
       node.isHydra = true;

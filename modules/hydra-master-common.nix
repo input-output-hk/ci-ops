@@ -1,14 +1,10 @@
-{ resources, config, pkgs, lib, ... }:
+{ config, pkgs, lib, ... }:
 
-with lib;
-
-let
-  iohk-pkgs = import ../default.nix {};
-in {
+with lib; {
   nix = {
     extraOptions = ''
       auto-optimise-store = true
-      allowed-uris = https://github.com/NixOS/nixpkgs/archive https://github.com/NixOS/nixpkgs-channels/archive https://github.com/input-output-hk
+      allowed-uris = https://github.com/NixOS https://github.com/input-output-hk
 
       # Max of 2 hours to build any given derivation on Linux.
       # See ../nix-darwin/modules/basics.nix for macOS.

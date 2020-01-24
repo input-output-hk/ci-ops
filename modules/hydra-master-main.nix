@@ -7,19 +7,26 @@ let
     speedFactor = 1;
     sshKey = "/etc/nix/id_buildfarm";
     sshUser = "root";
-    system = "x86_64-linux,i686-linux";
+    systems = [ "i686-linux" "x86_64-linux" ];
     supportedFeatures = [ "kvm" "nixos-test" "big-parallel" ];
   };
   mkLinux = hostName: commonBuildMachineOpt // {
     inherit hostName;
-    maxJobs = 12; # TODO
+    maxJobs = 10;
+    speedFactor = 1;
   };
   mkMac = hostName: commonBuildMachineOpt // {
     inherit hostName;
     maxJobs = 8;
-    system = "x86_64-darwin";
+    system = [ "x86_64-darwin" ];
     sshUser = "builder";
     supportedFeatures = [];
+  };
+  localMachine = {
+    hostName = "localhost";
+    mandatoryFeatures = [ "local" ];
+    systems = [ "x86_64-linux" "i686-linux" ];
+    maxJobs = 16;
   };
   mkGithubStatus = { jobset, inputs }: ''
     <githubstatus>
@@ -30,10 +37,11 @@ let
     </githubstatus>
   '';
   mkStatusBlocks = concatMapStringsSep "" mkGithubStatus;
+
 in {
   environment.etc = lib.singleton {
     target = "nix/id_buildfarm";
-    source = ../static/id_buildfarm;
+    source = ../secrets/id_buildfarm;
     uid = config.ids.uids.hydra-queue-runner;
     gid = config.ids.gids.hydra;
     mode = "0400";
@@ -54,16 +62,19 @@ in {
     distributedBuilds = true;
     # TODO add localhost
     buildMachines = [ # TODO
-      (mkLinux "packet-hydra-buildkite-1.ci.iohkdev.io")
-      (mkLinux "packet-hydra-buildkite-2.ci.iohkdev.io")
+      (mkLinux "packet-ipxe-1.ci.iohkdev.io")
+      (mkLinux "packet-ipxe-2.ci.iohkdev.io")
+      (mkLinux "packet-ipxe-3.ci.iohkdev.io")
+
+      #((mkMac "mac-mini-1") // { speedFactor = 2; })
+      #((mkMac "mac-mini-2") // { speedFactor = 2; })
+      localMachine
     ];
-    binaryCachePublicKeys = [ # TODO
-      #"cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
-    ];
+    binaryCaches = mkForce [ "https://cache.nixos.org" ];
   };
 
   services.hydra = {
-    hydraURL = "https://hydra.iohk.io";
+    hydraURL = "https://hydra.ci.iohkdev.io";
     package = pkgs.callPackage ../pkgs/hydra.nix {};
     # max output is 4GB because of amis
     # auth token needs `repo:status`
@@ -81,7 +92,7 @@ in {
       upload_logs_to_binary_cache = true
 
       <github_authorization>
-        input-output-hk = ${builtins.readFile ../static/github_token}
+        input-output-hk = ${builtins.readFile ../secrets/github_token}
       </github_authorization>
 
       ${mkStatusBlocks [
@@ -124,29 +135,22 @@ in {
     '';
   };
   services.grafana = {
-    enable = true; # TODO?
+    enable = true;
     users.allowSignUp = true;
-    domain = "hydra.iohk.io";
+    domain = "hydra.ci.iohkdev.io";
     rootUrl = "%(protocol)ss://%(domain)s/grafana/";
     extraOptions = {
       AUTH_GOOGLE_ENABLED = "true";
       AUTH_GOOGLE_CLIENT_ID = "778964826061-5v0m922g1qcbc1mdtpaf8ffevlso2v7p.apps.googleusercontent.com";
-      AUTH_GOOGLE_CLIENT_SECRET = builtins.readFile ../static/google_oauth_hydra_grafana.secret;
+      AUTH_GOOGLE_CLIENT_SECRET = builtins.readFile ../secrets/google_oauth_hydra_grafana.secret;
     };
   };
-
-  #users.users.debug = {
-  #  isNormalUser = true;
-  #  extraGroups = [ "wheel" ];
-  #  hashedPassword = "$6$QATPTe6nhL$iYsq8ZWGpROFHTfPhANEFCXQxg7JE5emifO.KhJXkq13rYzMW5GnPRaLq2NDd7Fk6VUgrI4.l7jerCedXOtz3.";
-  #};
-  security.sudo.wheelNeedsPassword = true;
 
   networking.firewall.allowedTCPPorts = [ 80 443 ];
   environment.systemPackages = with pkgs; [ goaccess ];
   services.nginx = {
     virtualHosts = {
-      "hydra.iohk.io" = {
+      "hydra.ci.iohkdev.io" = {
         forceSSL = true;
         enableACME = true;
         locations."/".extraConfig = ''

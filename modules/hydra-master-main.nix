@@ -18,7 +18,7 @@ let
   mkMac = hostName: commonBuildMachineOpt // {
     inherit hostName;
     maxJobs = 8;
-    system = [ "x86_64-darwin" ];
+    systems = [ "x86_64-darwin" ];
     sshUser = "builder";
     supportedFeatures = [];
   };
@@ -65,9 +65,8 @@ in {
       (mkLinux "packet-ipxe-1.ci.iohkdev.io")
       (mkLinux "packet-ipxe-2.ci.iohkdev.io")
       (mkLinux "packet-ipxe-3.ci.iohkdev.io")
-
-      #((mkMac "mac-mini-1") // { speedFactor = 2; })
-      #((mkMac "mac-mini-2") // { speedFactor = 2; })
+      ((mkMac "mac-mini-1") // { speedFactor = 2; })
+      ((mkMac "mac-mini-2") // { speedFactor = 2; })
       localMachine
     ];
     binaryCaches = mkForce [ "https://cache.nixos.org" ];

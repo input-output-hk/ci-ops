@@ -1,6 +1,6 @@
 { pkgs, ... }:
 let
-  # TODO: switch to 19.03 if this PR gets merged before freeze
+  # TODO: switch to 19.03 if this PR gets merged before freeze; switch to niv pin
   pkgsUnstable = import (builtins.fetchTarball "https://github.com/nixos/nixpkgs/archive/a8d26fc34a7ceb52d098e384f316b8e4b19651bb.tar.gz") {
     config = {};
     overlays = [];

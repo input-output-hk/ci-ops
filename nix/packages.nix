@@ -1,6 +1,9 @@
-{ }:
-let inherit (builtins) typeOf trace attrNames toString;
+{ callPackage }:
+let
+  inherit (builtins) typeOf trace attrNames toString;
+  sources = import ./sources.nix;
 in {
+  cachecache = callPackage (sources.cachecache) {};
   pp = v:
     let type = typeOf v;
     in if type == "list" then

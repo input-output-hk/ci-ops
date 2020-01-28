@@ -910,6 +910,48 @@ in {
               in mapAttrsToList makeNodeConfig cfg.monitoredNodes;
             }
             {
+              job_name = "${name}-host";
+              scrape_interval = "10s";
+              metrics_path = "/monitorama/host";
+              static_configs = [
+                {
+                  targets = [
+                    "mac-mini-1-wg:9111"
+                    "mac-mini-2-wg:9111"
+                  ];
+                  labels.role = "mac-host";
+                }
+              ];
+            }
+            {
+              job_name = "${name}-ci";
+              scrape_interval = "10s";
+              metrics_path = "/monitorama/ci";
+              static_configs = [
+                {
+                  targets = [
+                    "mac-mini-1-wg:9111"
+                    "mac-mini-2-wg:9111"
+                  ];
+                  labels.role = "build-slave";
+                }
+              ];
+            }
+            {
+              job_name = "${name}-signing";
+              scrape_interval = "10s";
+              metrics_path = "/monitorama/signing";
+              static_configs = [
+                {
+                  targets = [
+                    "mac-mini-1-wg:9111"
+                    "mac-mini-2-wg:9111"
+                  ];
+                  labels.role = "build-slave";
+                }
+              ];
+            }
+            {
               job_name = "nginx";
               scrape_interval = "5s";
               metrics_path = "/status/format/prometheus";

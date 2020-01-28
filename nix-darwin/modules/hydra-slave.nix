@@ -3,7 +3,9 @@
 with lib;
 
 let
-  opsLib = import ../../lib.nix;
+  ssh-keys = import ../../lib/ssh-keys.nix lib;
+
+  allowedKeys = ssh-keys.allKeysFrom (ssh-keys.remoteBuilderKeys // ssh-keys.devOps);
 
   environment = concatStringsSep " "
     [ "NIX_REMOTE=daemon"
@@ -34,6 +36,6 @@ in
   '';
 
   environment.etc."per-user/builder/ssh/authorized_keys".text =
-    concatMapStringsSep "\n" (key: ''command="${environment} ${config.nix.package}/bin/nix-store --serve --write" ${key}'') opsLib.buildSlaveKeys.macos + "\n";
+    concatMapStringsSep "\n" (key: ''command="${environment} ${config.nix.package}/bin/nix-store --serve --write" ${key}'') allowedKeys + "\n";
 
 }

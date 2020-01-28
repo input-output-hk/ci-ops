@@ -88,6 +88,16 @@ in {
             default = false;
           };
 
+          isBors = mkOption {
+            type = bool;
+            default = false;
+          };
+
+          isMac = mkOption {
+            type = bool;
+            default = false;
+          };
+
           isHydraSlave = mkOption {
             type = bool;
             default = false;

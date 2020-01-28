@@ -1,6 +1,7 @@
 { targetEnv, small, small-cpr, medium, medium-cpr, medium-cpr-reserved }:
 let
   mkNodes = import ../nix/mk-nodes.nix { inherit targetEnv; };
+  mkMacs = import ../nix/mk-macs.nix;
   pkgs = import ../nix { };
   lib = pkgs.lib;
   globals = import ../globals.nix;
@@ -32,16 +33,31 @@ let
       imports = [
         medium-cpr
         ../roles/hydra.nix
+        ../roles/bors.nix
       ];
       deployment.packet = { inherit ipxeScriptUrl facility reservationId; };
       node.isHydra = true;
+      node.isBors = true;
     };
 
     packet-ipxe-1 = mkHydraSlaveBuildkite "1";
     packet-ipxe-2 = mkHydraSlaveBuildkite "2";
     packet-ipxe-3 = mkHydraSlaveBuildkite "3";
   };
+
+  macs = mkMacs {
+    mac-mini-1 = {
+      imports = [ ../roles/mac.nix ];
+      hostid = "742a9d59";
+      node.isMac = true;
+    };
+    mac-mini-2 = {
+      imports = [ ../roles/mac.nix ];
+      hostid = "34d9f89a";
+      node.isMac = true;
+    };
+  };
 in {
   network.description = globals.deployment;
   network.enableRollback = true;
-} // nodes
+} // nodes // macs

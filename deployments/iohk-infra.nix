@@ -23,6 +23,6 @@ let
         zoneName = "${globals.domain}.";
         recordValues = [ resources.machines.${name} ];
       };
-    }) (__filter (n: n != "network" && n != "resources") (__attrNames cluster)));
+    }) (__filter (n: n != "network" && n != "resources" && n != "mac-mini-1" && n != "mac-mini-2") (__attrNames cluster)));
   };
 in cluster // settings

@@ -1,15 +1,16 @@
 { role ? "ci", host, port, hostname }:
 
 let
-  pkgs = import (import ../fetch-nixpkgs.nix) {};
+  sources = import ../nix/sources.nix;
+  pkgs = import (sources.nixpkgs) {};
   nix-darwin = pkgs.fetchFromGitHub {
     owner = "LnL7";
     repo = "nix-darwin";
-    rev = "8d557721a9511d8e6b26c140363ab44d2c98f76b";
-    sha256 = "0gv4b3yfi4k01gyy6djjmln44q7hg3iqm4lalm9b7kgzmgnpx4fp";
+    rev = "1d09aa2681bb3fbebb6cf9a40c21c6c871117146";
+    sha256 = "1jva0c2sk51xvgdk1hanqb6xf04li1c0jdhlhx98813650kqx7ms";
   };
   system = (import nix-darwin {
-    nixpkgs = pkgs.path;
+    nixpkgs = sources.nixpkgs;
     configuration = "${guestConfDir}/darwin-configuration.nix";
     system = "x86_64-darwin";
   }).system;
@@ -29,12 +30,8 @@ let
     cp -r --no-preserve=mode ${./services} nix-darwin/services
     cp -r --no-preserve=mode ${../nix} nix
     cp ${./test.nix} nix-darwin/test.nix
-    cp ${../lib.nix} lib.nix
-    cp ${../iohk-nix.json} iohk-nix.json
-    cp ${../nixpkgs-src.json} nixpkgs-src.json
     mkdir lib
-    cp ${../lib/ssh-keys.nix} lib/ssh-keys.nix
-    cp ${../fetch-nixpkgs.nix} fetch-nixpkgs.nix
+    cp ${sources.ops-lib + "/overlays/ssh-keys.nix"} lib/ssh-keys.nix
     cd ..
     cp -r ${../modules/macs/guest}/* .
     substituteAll apply.sh apply.sh

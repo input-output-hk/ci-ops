@@ -152,6 +152,7 @@ in {
       "hydra.ci.iohkdev.io" = {
         forceSSL = true;
         enableACME = true;
+        serverAliases = [ "hydra.iohk.io" ];
         locations."/".extraConfig = ''
           proxy_pass http://127.0.0.1:8080;
           proxy_set_header Host $host;

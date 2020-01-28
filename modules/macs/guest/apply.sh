@@ -85,14 +85,14 @@ EOF
     ls -la /private/var/run || true
     ln -s /private/var/run /run || true
     nix-channel --add https://nixos.org/channels/nixos-19.03 nixpkgs
-    nix-channel --add https://github.com/LnL7/nix-darwin/archive/master.tar.gz darwin
+    nix-channel --add https://github.com/LnL7/nix-darwin/archive/1d09aa2681bb3fbebb6cf9a40c21c6c871117146.tar.gz darwin # TODO, fix this
     nix-channel --update
 
     sudo -i -H -u nixos -- nix-channel --add https://nixos.org/channels/nixos-19.03 nixpkgs
-    sudo -i -H -u nixos -- nix-channel --add https://github.com/LnL7/nix-darwin/archive/master.tar.gz darwin
+    sudo -i -H -u nixos -- nix-channel --add https://github.com/LnL7/nix-darwin/archive/1d09aa2681bb3fbebb6cf9a40c21c6c871117146.tar.gz darwin # TODO, fix this
     sudo -i -H -u nixos -- nix-channel --update
 
-    export NIX_PATH=$NIX_PATH:darwin=https://github.com/LnL7/nix-darwin/archive/master.tar.gz
+    export NIX_PATH=$NIX_PATH:darwin=https://github.com/LnL7/nix-darwin/archive/1d09aa2681bb3fbebb6cf9a40c21c6c871117146.tar.gz # TODO, fix this
 
     installer=$(nix-build https://github.com/LnL7/nix-darwin/archive/master.tar.gz -A installer --no-out-link)
     set +e

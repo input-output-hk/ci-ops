@@ -4,7 +4,7 @@ with lib;
 
 let
   cfg = config.services.cachecache;
-  iohkops = import ../. { inherit pkgs; };
+  iohkops = import ../.;
 in {
   options = {
     services.cachecache.enable = mkEnableOption "enable cachecache";

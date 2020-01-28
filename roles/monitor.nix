@@ -7,6 +7,7 @@ let
   monitoringFor = nodeName: node:
     let cfg = node.config.node;
     in {
+      hasHydraPrometheus = cfg.isHydra;
       hasNginx = cfg.isMonitoring;
       labels = { alias = nodeName; };
     };

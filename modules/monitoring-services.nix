@@ -33,6 +33,11 @@ let
         description =
           "if a second native prometheus exporter should be scraped";
       };
+      hasHydraPrometheus = mkOption {
+        type = types.bool;
+        default = false;
+        description = "if a Hydra Prometheus exporter should be scraped";
+      };
       hasJormungandrPrometheus = mkOption {
         type = types.bool;
         default = false;
@@ -898,6 +903,7 @@ in {
                     ++ (optional value.hasStatsD "${hostIp key}:9102")
                     ++ (optional value.hasNativePrometheus "${hostIp key}:12760")
                     ++ (optional value.hasSecondNativePrometheus "${hostIp key}:12761")
+                    ++ (optional value.hasHydraPrometheus "${hostIp key}:8000")
                     ++ (optional value.hasJormungandrPrometheus "${hostIp key}:8000");
                   labels = { alias = key; } // value.labels;
                 };

@@ -76,10 +76,10 @@
         "homepage": null,
         "owner": "input-output-hk",
         "repo": "nixops-packet",
-        "rev": "41fe0992f9cfe4b3ad37aba8d113a826a4a3997f",
-        "sha256": "165a07fy6yymgsw9xs9g6w0ml39kc1mxclhqfrd7vbn2xdzgjc50",
+        "rev": "f7d00f8c0ab55a082afcb9d86e960512f27373f1",
+        "sha256": "1g0p1qkv92d0x6f0r4j8i8r6c8y7zlh12vxhji1idl4zqajfj6c9",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/nixops-packet/archive/41fe0992f9cfe4b3ad37aba8d113a826a4a3997f.tar.gz",
+        "url": "https://github.com/input-output-hk/nixops-packet/archive/f7d00f8c0ab55a082afcb9d86e960512f27373f1.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "nixpkgs": {

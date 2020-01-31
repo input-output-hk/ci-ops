@@ -73,7 +73,7 @@ in {
   };
 
   services.hydra = {
-    hydraURL = "https://hydra.ci.iohkdev.io";
+    hydraURL = "https://hydra.iohk.io";
     package = pkgs.callPackage ../pkgs/hydra.nix {};
     # max output is 4GB because of amis
     # auth token needs `repo:status`

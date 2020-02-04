@@ -1,14 +1,17 @@
-# Configuring a MacOS X Buildkite Agent
+# Configuring MacOS CI Machines
 
 This directory contains an install script and configuration for
-running build slave on a macOS system. There are currently two roles:
+running CI roles on a macOS system. There are currently four roles:
 
- * [Buildkite Agent][agents]
- * [Hydra build slave][machines]
+ * [Buildkite Agent][agents] role
+ * [Hydra build slave][machines] role
+ * CI role (combined buildkite agent and hydra slave role)
+ * Signing role (Daedalus buildkite agent, with xcode signing)
+
 
 There are *a few manual steps* required on the target mac. After that,
 deployments and redeployments are done through SSH from a *deployment
-host* (your laptop probably).
+host*.
 
 [agents]: https://buildkite.com/organizations/input-output-hk/agents
 [machines]: https://hydra.iohk.io/machines
@@ -21,7 +24,7 @@ host* (your laptop probably).
 
 ## Deployment host
 
-* Needs a clone of `iohk-ops` somewhere.
+* Needs a clone of `ci-ops` somewhere.
 
 * Set up entries for the macs in `~/.ssh/config` and make sure you
   have confirmed the host keys.
@@ -35,11 +38,11 @@ host* (your laptop probably).
        curl https://nixos.org/nix/install | sh
        source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
 
-2. Run the prepare script. Specify on the command line whether it will
-   be buildkite or hydra.
+2. Run the prepare script. Specify on the command line which role the
+   Mac will be:
 
-       nix-build -I iohk-ops=https://github.com/input-output-hk/iohk-ops/archive/develop.tar.gz '<iohk-ops/nix-darwin>'
-       ./result/bin/deploy [ buildkite | hydra ]
+       nix-build -I ci-ops=https://github.com/input-output-hk/ci-ops/archive/master.tar.gz '<ci-ops/nix-darwin>'
+       ./result/bin/deploy [ buildkite | hydra | ci | signing ]
 
    This will prepare the system so that `nix-darwin` can be installed.
 
@@ -48,10 +51,7 @@ host* (your laptop probably).
    It will take a while to start because it needs to download GHC to
    run, but should complete without errors.
 
-3. Put the agent token for DataDog in
-   `/Users/admin/.datadog_api_key`. Get this token from another Mac.
-
-4. (Buildkite only) Set up the `/Users/admin/buildkite` directory with
+3. (Buildkite only) Set up the `/Users/admin/buildkite` directory with
    the necessary secrets as follows:
 
    a. The following variables are required in
@@ -69,12 +69,12 @@ host* (your laptop probably).
 
 ### From the deployment host
 
-1. `cd iohk-ops/nix-darwin`
+1. `cd ci-ops/nix-darwin`
 2. `./deploy.hs --role ./roles/ROLE.nix HOSTS...`
 
 Replace *HOSTS* with the ssh host name of the target mac(s).
 
-Replace *ROLE* with `buildkite-agent` or `hydra-slave` as necessary.
+Replace *ROLE* with `buildkite-agent`, `hydra-slave`, `ci` or `signing` as necessary.
 
 Re-run this command as necessary to update the configuration of the Mac.
 
@@ -82,9 +82,6 @@ Re-run this command as necessary to update the configuration of the Mac.
 
 It built a `nix-darwin` system from the given configuration and
 activated it on the target mac.
-
-The Mac should be registered in DataDog and sending stats.
-The datadog logs are in `/var/log/datadog`.
 
 Check that all necessary services are running with
 `sudo launchctl list | grep org.nixos`.
@@ -119,18 +116,14 @@ revision in pinned in [`lib/nixpkgs.json`](./lib/nixpkgs.json).
 The `buildkite-agent` package is actually plucked from a revision on
 the `nixos-unstable` branch because the version in 18.03 is too old.
 
-The `dd-agent` module is copied from NixOS and modified to work on a
-Mac. It will need a bit more cleaning up before it could be accepted
-into `nix-darwin` upstream.
-
 ## After deploying
 
 ### Buildkite agent: Installer Package Signing Key
 
 So that packaging signing works, follow the instructions in the
-[Installer Signing Certificate Setup section on the Wiki][1].
+[MacOS CI Hosts and Guests][1] on the Wiki.
 
-[1]: https://github.com/input-output-hk/internal-documentation/wiki/Configuring-a-macOS-%28darwin%29-build-slave-for-hydra#installer-signing-certificate-setup
+[1]: https://github.com/input-output-hk/internal-documentation/wiki/MacOS-CI-Host-and-Guests
 
 ### Hydra slave: Build Machines Setup
 
@@ -138,6 +131,6 @@ So that packaging signing works, follow the instructions in the
    `nix.buildMachines` in
    [`../modules/hydra-master.nix`](../modules/hydra-master.nix).
 
-2. After change is merged, redeploy Hydra (see [Operational Manual](https://github.com/input-output-hk/internal-documentation/wiki/Operational-Manual#hydraiohkio-and-cardano-deployer)).
+2. After change is merged, redeploy Hydra (see [Operational Manual](https://github.com/input-output-hk/internal-documentation/wiki/Operational-Manual#hydraiohkio-and-ci-mainnet-deployer)).
 
-3. After the poll interval (something like 5 mintes), the build slave will appear on the [Hydra machines][machines] page.
+3. After the poll interval (something like 5 minutes), the build slave will appear on the [Hydra machines][machines] page.

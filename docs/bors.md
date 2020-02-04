@@ -29,7 +29,7 @@ If there is `ci/hydra` among the required `status` in `bors.toml`,
 then you will need to add Hydra jobsets for the `bors/staging` and
 `bors/trying` branches.
 
-Look in `iohk-ops/jobsets/default.nix` for examples
+Look in `ci-ops/jobsets/default.nix` for examples
 (`iohk-bors-{staging,trying}`).
 
 

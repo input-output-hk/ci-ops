@@ -44,52 +44,76 @@ in
       description = "The amount of time in seconds to use as a pid kill threshold.";
     };
 
-    nix.expire-pids.numberOfProcesses = mkOption {
+    nix.expire-pids.maxProc = mkOption {
       type = types.int;
       default = 10000;
       description = ''The number of processes allowed by a user on a mac.
         This value sets kern.maxproc and kern.maxprocperuid.
+        Note: MacOS has some unusual limits on processes count
+        Refs:
+          https://apple.stackexchange.com/questions/373063/why-is-macos-limited-to-1064-processes
+          https://apple.stackexchange.com/questions/264958/what-does-serverperfmode-1-actually-do-on-macos/
+      '';
+    };
+
+    nix.expire-pids.maxFiles = mkOption {
+      type = types.int;
+      default = 524288;
+      description = ''The number of open files allowed by a user on a mac.
+        This value sets kern.maxfiles and kern.maxfilesperuid.
       '';
     };
   };
 
   config = mkIf cfg.enable {
-    launchd.daemons.nix-expire-pids = {
-      script = ''
-        # Process to filter for
-        PROCESS="${cfg.targetProcess}"
+    launchd.daemons = {
+      nix-expire-pids = {
+        script = ''
+          # Process to filter for
+          PROCESS="${cfg.targetProcess}"
 
-        # Exclude from consideration any matched processes with a particular parent pid
-        PPID_EXCLUSION="${toString cfg.ppidExclusion}"
+          # Exclude from consideration any matched processes with a particular parent pid
+          PPID_EXCLUSION="${toString cfg.ppidExclusion}"
 
-        # Kill threshold, in seconds, for a pid; currently set to 1 second longer than the nix.conf build timeout
-        THRESHOLD="${toString cfg.threshold}"
+          # Kill threshold, in seconds, for a pid; currently set to 1 second longer than the nix.conf build timeout
+          THRESHOLD="${toString cfg.threshold}"
 
-        currentTimestamp=$(date +%s)
-        # shellcheck disable=SC2009
-        processList=$(ps -ef -O lstart | grep "$PROCESS" | grep -vE "([ ]+[0-9]+){2}[ ]+''${PPID_EXCLUSION}[ ]+" | sed -e 's/^[ \t]*//' | tr -s ' ' | cut -f 2,10-14 -d ' ')
+          currentTimestamp=$(date +%s)
+          # shellcheck disable=SC2009
+          processList=$(ps -ef -O lstart | grep "$PROCESS" | grep -vE "([ ]+[0-9]+){2}[ ]+''${PPID_EXCLUSION}[ ]+" | sed -e 's/^[ \t]*//' | tr -s ' ' | cut -f 2,10-14 -d ' ')
 
-        [[ -z "$processList" ]] && echo "No candidate pids found.  Exiting." && exit 0
+          [[ -z "$processList" ]] && echo "No candidate pids found.  Exiting." && exit 0
 
-        killCount="0"
-        while IFS= read -r processInfo
-        do
-          pid=$(cut -f 1 -d ' ' <<< "$processInfo")
-          startTimestamp=$(date -jf "%c" "$(cut -f 2-5 -d ' ' <<< "$processInfo")" +%s)
-          duration="$((currentTimestamp - startTimestamp))"
-          if [ "$duration" -gt "$THRESHOLD" ]; then
-            kill -KILL "$pid"
-            killCount=$((killCount + 1))
-          fi
-        done < <(printf '%s\n' "$processList")
-        echo "$killCount timed out $PROCESS pids running longer than $THRESHOLD seconds killed."
-        exit 0
-      '';
-      serviceConfig = {
-        RunAtLoad = false;
-        StartCalendarInterval = cfg.interval;
-        SoftResourceLimits.NumberOfProcesses = cfg.numberOfProcesses;
-        HardResourceLimits.NumberOfProcesses = cfg.numberOfProcesses;
+          killCount="0"
+          pidCount="0"
+          while IFS= read -r processInfo
+          do
+            pid=$(cut -f 1 -d ' ' <<< "$processInfo")
+            startTimestamp=$(date -jf "%c" "$(cut -f 2-5 -d ' ' <<< "$processInfo")" +%s)
+            duration="$((currentTimestamp - startTimestamp))"
+            if [ "$duration" -gt "$THRESHOLD" ]; then
+              kill -KILL "$pid"
+              killCount=$((killCount + 1))
+            fi
+            pidCount=$((pidCount + 1))
+          done < <(printf '%s\n' "$processList")
+          echo "$killCount timed out $PROCESS pids running longer than $THRESHOLD seconds killed of $pidCount pids evaluated."
+          exit 0
+        '';
+        serviceConfig = {
+          RunAtLoad = false;
+          StartCalendarInterval = cfg.interval;
+        };
+      };
+
+      limit-maxproc = {
+        command = "/bin/launchctl limit maxproc ${toString cfg.maxProc} ${toString cfg.maxProc}";
+        serviceConfig.RunAtLoad = true;
+      };
+
+      limit-maxfiles = {
+        command = "/bin/launchctl limit maxfiles ${toString cfg.maxFiles} ${toString cfg.maxFiles}";
+        serviceConfig.RunAtLoad = true;
       };
     };
   };

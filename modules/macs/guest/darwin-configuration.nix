@@ -18,7 +18,7 @@ let
 in
 
 {
-  imports = [ ./iohk-ops/nix-darwin/roles/active-role.nix ];
+  imports = [ ./ci-ops/nix-darwin/roles/active-role.nix ];
   environment.systemPackages =
     [
       #config.nix.package

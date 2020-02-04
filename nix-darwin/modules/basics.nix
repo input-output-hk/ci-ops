@@ -6,8 +6,7 @@ let
   allowedKeys = ssh-keys.allKeysFrom (ssh-keys.remoteBuilderKeys // ssh-keys.devOps);
   nix-darwin = (import ../test.nix { host = null; port = null; hostname = null; }).nix-darwin;
 in {
-  imports = [ ./double-builder-gc.nix ./caffeinate.nix ];
-  # imports = [ ./double-builder-gc.nix ./caffeinate.nix ./expire-pids ];
+  imports = [ ./double-builder-gc.nix ./caffeinate.nix ./expire-pids.nix ];
 
   # List packages installed in system profile. To search by name, run:
   # $ nix-env -qaP | grep wget

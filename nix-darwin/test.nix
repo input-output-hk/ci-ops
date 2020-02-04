@@ -23,8 +23,8 @@ let
   } ''
     mkdir -pv $out
     cd $out
-    mkdir -pv iohk-ops/nix-darwin
-    cd iohk-ops
+    mkdir -pv ci-ops/nix-darwin
+    cd ci-ops
     cp -r --no-preserve=mode ${./roles} nix-darwin/roles
     cp -r --no-preserve=mode ${./modules} nix-darwin/modules
     cp -r --no-preserve=mode ${./services} nix-darwin/services
@@ -35,7 +35,7 @@ let
     cd ..
     cp -r ${../modules/macs/guest}/* .
     substituteAll apply.sh apply.sh
-    cd iohk-ops/nix-darwin/roles
+    cd ci-ops/nix-darwin/roles
     ln -sv ${role}.nix active-role.nix
   '';
 in {

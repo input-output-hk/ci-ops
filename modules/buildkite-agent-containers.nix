@@ -115,7 +115,7 @@ in with lib;
 
               # Provide NIX_PATH, unless it's already set by the pipeline
               if [ -z "''${NIX_PATH:-}" ]; then
-                  # see iohk-ops/modules/common.nix (system.extraSystemBuilderCmds)
+                  # see ci-ops/modules/common.nix (system.extraSystemBuilderCmds)
                   export NIX_PATH="nixpkgs=/run/current-system/nixpkgs"
               fi
 

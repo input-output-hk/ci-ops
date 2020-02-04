@@ -1,4 +1,4 @@
-{ config, ... }: {
+{ config, pkgs, ... }: {
   imports = [ ./. ];
   services.zfs.trim.enable = true;
   systemd.services.zfs-config = {

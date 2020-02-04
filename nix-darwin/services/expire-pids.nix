@@ -69,6 +69,8 @@ in
     launchd.daemons = {
       nix-expire-pids = {
         script = ''
+          # shellcheck disable=SC2009
+
           # Process to filter for
           PROCESS="${cfg.targetProcess}"
 
@@ -79,10 +81,11 @@ in
           THRESHOLD="${toString cfg.threshold}"
 
           currentTimestamp=$(date +%s)
-          # shellcheck disable=SC2009
           processList=$(ps -ef -O lstart | grep "$PROCESS" | grep -vE "([ ]+[0-9]+){2}[ ]+''${PPID_EXCLUSION}[ ]+" | sed -e 's/^[ \t]*//' | tr -s ' ' | cut -f 2,10-14 -d ' ')
+          runningCount=$(ps aux | grep -c ^)
+          rssRam=$(ps -caxm -orss= | awk '{ sum += $1 } END { print sum/1024 }')
 
-          [[ -z "$processList" ]] && echo "No candidate pids found.  Exiting." && exit 0
+          [[ -z "$processList" ]] && echo "$(date): No candidate pids found.  A total of $runningCount processes running with $rssRam MiB RAM used.  Exiting." && exit 0
 
           killCount="0"
           pidCount="0"
@@ -97,12 +100,14 @@ in
             fi
             pidCount=$((pidCount + 1))
           done < <(printf '%s\n' "$processList")
-          echo "$killCount timed out $PROCESS pids running longer than $THRESHOLD seconds killed of $pidCount pids evaluated."
+          echo "$(date): Killed $killCount timed out $PROCESS pids running of $pidCount pids evaluated and a total of $runningCount processes running with $rssRam MiB RAM used."
           exit 0
         '';
         serviceConfig = {
           RunAtLoad = false;
           StartCalendarInterval = cfg.interval;
+          StandardErrorPath = "/var/log/expire-pids.log";
+          StandardOutPath = "/var/log/expire-pids.log";
         };
       };
 

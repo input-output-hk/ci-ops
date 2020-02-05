@@ -1,7 +1,7 @@
-{ config, lib, pkgs, name, ssh-keys, ... }:
+{ config, lib, pkgs, name, ... }:
 let
   cfg = config.services.buildkite-containers;
-
+  ssh-keys = config.services.ssh-keys;
 in with lib;
 {
   imports = [
@@ -131,7 +131,7 @@ in with lib;
             '';
             hooks.pre-exit = ''
               # Clean up the scratch and tmp directories
-              rm -rf /scratch/* /tmp/* || true
+              rm -rf /scratch/* /tmp/* &> /dev/null || true
             '';
             extraConfig = ''
               git-clean-flags="-ffdqx"

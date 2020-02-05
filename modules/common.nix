@@ -1,7 +1,11 @@
-{ pkgs, lib, config, resources, name, ssh-keys, ... }: {
+{ pkgs, lib, config, resources, name, ... }:
+let
+  ssh-keys = config.services.ssh-keys;
+in {
   imports = [
     ./cloud.nix
     ./monitoring-exporters.nix
+    ./ssh-keys.nix
   ];
 
   environment.systemPackages = with pkgs; [

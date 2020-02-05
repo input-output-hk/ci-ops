@@ -57,7 +57,7 @@ in with lib; {
       '';
       hooks.pre-exit = ''
         # Clean up the scratch directory
-        rm -rf /scratch/*
+        rm -rf /scratch/* &> /dev/null || true
       '';
       extraConfig = ''
         no-pty=true

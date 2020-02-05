@@ -5,20 +5,6 @@ let
     range listToAttrs mapAttrsToList nameValuePair foldl forEach filterAttrs
     recursiveUpdate;
 
-  sources = import ./sources.nix;
-  original-ssh-keys = import (sources.ops-lib + "/overlays/ssh-keys.nix") lib;
-  allKeysFrom = keys: __concatLists (__attrValues keys);
-  inherit (original-ssh-keys) devOps csl-developers remoteBuilderKeys;
-
-  ssh-keys = {
-    devOps = allKeysFrom devOps;
-    ciInfra = ssh-keys.devOps ++ allKeysFrom { inherit (csl-developers) angerman; };
-    buildSlaveKeys = {
-      macos = ssh-keys.devOps ++ allKeysFrom remoteBuilderKeys;
-      linux = remoteBuilderKeys.hydraBuildFarm;
-    };
-  };
-
   globals = import ../globals.nix;
 
   # defs: passed from clusters/$NIXOPS-DEPLOYMENT.nix as the node defs
@@ -39,7 +25,7 @@ let
         targetEnv = targetEnv;
         targetHost = name + "." + globals.domain;
       };
-      _module.args = { inherit globals ssh-keys; };
+      _module.args = { inherit globals; };
     } args;
 
   definitionToNode = name:

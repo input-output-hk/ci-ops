@@ -1,6 +1,7 @@
-{ config, lib, pkgs, name, ssh-keys, ... }:
+{ config, lib, pkgs, name, ... }:
 let
   cfg = config.services.hydra-slave;
+  ssh-keys = config.services.ssh-keys;
 in with lib;
 {
   imports = [ ./auto-gc.nix

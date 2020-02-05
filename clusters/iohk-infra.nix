@@ -15,6 +15,7 @@ let
       medium-cpr
       ../roles/hydra-slave.nix
       ../roles/buildkite-agent-containers.nix
+      ../roles/hercules-agent.nix
     ];
     deployment.packet = { inherit ipxeScriptUrl facility reservationId; };
     node.isBuildkite = true;

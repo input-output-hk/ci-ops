@@ -3,12 +3,7 @@
 let
   sources = import ../nix/sources.nix;
   pkgs = import (sources.nixpkgs) {};
-  nix-darwin = pkgs.fetchFromGitHub {
-    owner = "LnL7";
-    repo = "nix-darwin";
-    rev = "1d09aa2681bb3fbebb6cf9a40c21c6c871117146";
-    sha256 = "1jva0c2sk51xvgdk1hanqb6xf04li1c0jdhlhx98813650kqx7ms";
-  };
+  inherit (sources) nix-darwin;
   system = (import nix-darwin {
     nixpkgs = sources.nixpkgs;
     configuration = "${guestConfDir}/darwin-configuration.nix";
@@ -20,6 +15,7 @@ let
   # that prevents the guest from being rebooted when things it doesnt read get modified
   guestConfDir = pkgs.runCommand "guest-config-dir" {
     inherit host port hostname;
+    nixDarwinUrl = sources.nix-darwin.url;
   } ''
     mkdir -pv $out
     cd $out

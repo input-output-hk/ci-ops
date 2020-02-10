@@ -15,6 +15,6 @@
   boot.loader.grub.splashImage = null;
   services.postgresql.superUser = "root";
   services.grafana.enable = true;
-  nix.binaryCaches = lib.mkForce [ "https://cache.nixos.org" "https://cache.nixos.org" "https://cache.nixos.org" ];
+  nix.binaryCaches = lib.mkForce [ "https://cache.nixos.org" ];
   networking.firewall.allowedTCPPorts = [ 80 443 9100 9113 ];
 }

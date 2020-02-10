@@ -2,8 +2,7 @@
 
 with lib;
 
-let
-  cfg = config.services.monitoring-exporters;
+let cfg = config.services.monitoring-exporters;
 in {
 
   options = {
@@ -13,7 +12,7 @@ in {
         default = true;
         description = ''
           Enable monitoring exporters.  Metrics exporters are
-          prometheus, statsd and nginx by default.  Log exporting is
+          prometheus and nginx by default.  Log exporting is
           available via journalbeat by default.
           Metrics export can be selectively disabled with the metrics option.
           Log export be selectively disabled with the logging option.
@@ -24,8 +23,7 @@ in {
         type = types.bool;
         default = true;
         description = ''
-          Enable metrics exporters via prometheus, statsd
-          and nginx.
+          Enable metrics exporters via prometheus and nginx.
           See also the corresponding metrics server option in
           the monitoring-services.nix module:
           config.services.monitoring-services.metrics
@@ -59,26 +57,35 @@ in {
         '';
       };
 
+      useWireguardListeners = mkOption {
+        type = types.bool;
+        default = false;
+        description = ''
+          Bind the wg ip instead of globally where possible.
+        '';
+      };
+
       ownIp = mkOption {
         type = types.str;
-        description = "the address a remote prometheus node will use to contact this machine";
+        description = ''
+          The address a remote prometheus node will use to contact this machine.
+          Typically set to the wireguard ip if available.
+        '';
       };
     };
   };
 
-  config = mkIf cfg.enable (mkMerge [
-    {
-      nixpkgs.overlays = [
-        (import ../overlays/monitoring-exporters.nix)
-      ];
-    }
+  config = let
+    bindingIp = if cfg.useWireguardListeners then "${cfg.ownIp}" else "0.0.0.0";
+  in mkIf cfg.enable (mkMerge [
+    { nixpkgs.overlays = [ (import ../overlays/monitoring-exporters.nix) ]; }
 
     (mkIf (config.services.nginx.enable && cfg.metrics) {
       services.nginx = {
         appendHttpConfig = ''
           vhost_traffic_status_zone;
           server {
-            listen 9113;
+            listen ${bindingIp}:9113;
             location /status {
               vhost_traffic_status_display;
               vhost_traffic_status_display_format html;
@@ -90,16 +97,10 @@ in {
     })
 
     (mkIf cfg.metrics {
-      systemd.services."statd-exporter" = {
-        wantedBy = [ "multi-user.target" ];
-        requires = [ "network.target" ];
-        after = [ "network.target" ];
-        serviceConfig.ExecStart = "${pkgs.prometheus-statsd-exporter}/bin/statsd_exporter --statsd.listen-udp=:8125 --web.listen-address=:9102";
-      };
-
       services = {
         prometheus.exporters.node = {
           enable = true;
+          listenAddress = bindingIp;
           enabledCollectors = [
             "systemd"
             "tcpstat"
@@ -124,24 +125,29 @@ in {
           ];
         };
       };
-      networking.firewall.allowedTCPPorts = [ 9100 9102 ];
+      # Node exporter default port
+      networking.firewall.allowedTCPPorts = [ 9100 ];
     })
 
     (mkIf cfg.logging {
       services.journalbeat = {
         enable = true;
+        package = pkgs.journalbeat7;
         extraConfig = ''
-        journalbeat:
-          seek_position: cursor
-          cursor_seek_fallback: tail
-          write_cursor_state: true
-          cursor_flush_period: 5s
-          clean_field_names: true
-          convert_to_numbers: false
-          move_metadata_to_field: journal
-          default_type: journal
-        output.logstash:
-          hosts: ["${cfg.graylogHost}"]
+          journalbeat:
+            seek_position: cursor
+            cursor_seek_fallback: tail
+            write_cursor_state: true
+            cursor_flush_period: 5s
+            clean_field_names: true
+            convert_to_numbers: false
+            move_metadata_to_field: journal
+            default_type: journal
+          output.logstash:
+            hosts: ["${cfg.graylogHost}"]
+          journalbeat.inputs:
+            - paths:
+              - "/var/log/journal/"
         '';
       };
     })

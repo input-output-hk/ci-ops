@@ -1,11 +1,8 @@
-{ config, lib, ... }:
-
-with lib;
-
+{ config, lib, pkgs, name, ... }:
 let
-  commonLib = import ../lib.nix;
   cfg = config.services.hydra-slave;
-in
+  ssh-keys = config.services.ssh-keys;
+in with lib;
 {
   imports = [ ./auto-gc.nix
               ./nix_nsswitch.nix
@@ -31,10 +28,10 @@ in
     nix = {
       buildCores = mkForce cfg.cores;
       trustedBinaryCaches = mkForce [];
-      binaryCaches = mkForce [ "https://cache.nixos.org" "https://iohk-nix-cache-temp.s3-eu-central-1.amazonaws.com/" ];
+      binaryCaches = mkForce [ "https://cache.nixos.org" "https://hydra.iohk.io" ];
       binaryCachePublicKeys = mkForce [
         "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
-        "hydra.iohk.io-1:pBSKwSWbeqlB7LnSdnxguemXjso7IVv6/h4W2joTycA="
+        "hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ="
       ];
       extraOptions = ''
         # Max of 2 hours to build any given derivation on Linux.
@@ -44,9 +41,9 @@ in
     };
 
     users.extraUsers.root.openssh.authorizedKeys.keys =
-      commonLib.ciInfraKeys ++
+      ssh-keys.ciInfra ++
       map (key: ''
         command="nice -n20 nix-store --serve --write" ${key}
-      '') commonLib.buildSlaveKeys.linux;
+      '') ssh-keys.buildSlaveKeys.linux;
   };
 }

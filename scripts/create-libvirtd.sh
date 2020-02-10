@@ -14,12 +14,11 @@ if [ ! -d /var/lib/libvirt/images ]; then
   sudo chmod g+w /var/lib/libvirt/images
 fi
 
-# NixOps setup
+# If monitoring server is desired, see `create-aws.sh`
+# for examples of setting up grafana and graylog creds
 
-export NIXOPS_DEPLOYMENT=jormungandr-performance-libvirtd
+# NixOps setup
 
 nixops destroy || true
 nixops delete || true
-nixops create ./deployments/jormungandr-performance-libvirtd.nix -I nixpkgs=./nix
-nixops set-args --arg globals 'import ./globals.nix'
-nixops deploy
+nixops create ./deployments/$NIXOPS_DEPLOYMENT.nix

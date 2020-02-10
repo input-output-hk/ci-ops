@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, name, nodes, ... }:
 
 with lib;
 
@@ -17,6 +17,11 @@ let
         default = false;
         description = "if nginx stats should be scraped";
       };
+      hasStatsD = mkOption {
+        type = types.bool;
+        default = false;
+        description = "if StatsD stats should be scraped";
+      };
       hasNativePrometheus = mkOption {
         type = types.bool;
         default = false;
@@ -27,6 +32,11 @@ let
         default = false;
         description =
           "if a second native prometheus exporter should be scraped";
+      };
+      hasHydraPrometheus = mkOption {
+        type = types.bool;
+        default = false;
+        description = "if a Hydra Prometheus exporter should be scraped";
       };
       hasJormungandrPrometheus = mkOption {
         type = types.bool;
@@ -60,6 +70,22 @@ in {
       enableWireguard = mkOption {
         type = types.bool;
         default = false;
+      };
+
+      useWireguardListeners = mkOption {
+        type = types.bool;
+        default = false;
+        description = ''
+          Bind the wg ip instead of globally where possible.
+        '';
+      };
+
+      ownIp = mkOption {
+        type = types.str;
+        description = ''
+          The address a remote prometheus node will use to contact this machine.
+          Typically set to the wireguard ip if available.
+        '';
       };
 
       metrics = mkOption {
@@ -153,8 +179,8 @@ in {
       };
 
       applicationDashboards = mkOption {
-        type = types.nullOr types.path;
-        default = null;
+        type = types.listOf types.path;
+        default = [];
         description = ''
           Application specific dashboards.
         '';
@@ -310,16 +336,60 @@ in {
 
   config = mkIf cfg.enable (mkMerge [
     (lib.mkIf cfg.enableWireguard {
+      services.node-wireguard.enable = false;
+      networking.firewall.allowedUDPPorts = [ 17777 ];
+
+      networking.extraHosts = concatStringsSep "\n" (
+        map (host: "${host.ip} ${host.name}-wg")
+            (mapAttrsToList (nodeName: node:
+              { ip = node.config.node.wireguardIP; name = nodeName; }
+            ) nodes)
+      );
+
+      deployment.keys."wg_${name}".keyFile = ../. + "/secrets/wireguard/${name}.private";
+      deployment.keys.wg_shared.keyFile = ../. + "/secrets/wireguard/shared.private";
+
+      systemd.services."wg-quick-wg0" = {
+        after = [ "wg_${name}.sk-key.service" "wg_shared.sk-key.service" ];
+        wants = [ "wg_${name}.sk-key.service" "wg_shared.sk-key.service" ];
+        requiredBy =    (optional config.services.monitoring-exporters.enable "prometheus-node-exporter.service")
+                     ++ (optional config.services.nginx.enable "nginx.service");
+      };
+
       boot.extraModulePackages = [ config.boot.kernelPackages.wireguard ];
-      networking.firewall.allowedUDPPorts = [ 51820 ];
-      networking.wireguard.interfaces = {
-        wg0 = {
-          ips = [ "192.168.20.1/24" ];
-          listenPort = 51820;
-          privateKeyFile = "/etc/wireguard/monitoring.wgprivate";
-        };
+
+      networking.wg-quick.interfaces.wg0 = {
+        listenPort = 17777;
+        address = [ "${config.node.wireguardIP}/24" ];
+        privateKeyFile = "/run/keys/wg_${name}";
+        preUp = ''
+          function check-key {
+            for i in {1..10}; do
+              if [ -f "$1" ]; then
+                echo "Wireguard key \"$1\" found."
+                break
+              fi
+              if [ "$i" -eq 10 ]; then
+                echo "Wireguard key \"$1\" NOT found. Timed out."
+              fi
+              sleep 1
+            done
+          }
+          check-key "/run/keys/wg_shared"
+          check-key "/run/keys/wg_${name}"
+        '';
+
+        peers = mapAttrsToList (nodeName: node:
+          {
+            allowedIPs = [ "${node.config.node.wireguardIP}/32" ];
+            publicKey = lib.fileContents (../. + "/secrets/wireguard/${nodeName}.public");
+            presharedKeyFile = "/run/keys/wg_shared";
+            persistentKeepalive = 25;
+          }
+        ) nodes;
       };
     })
+
     (lib.mkIf cfg.oauth.enable (let
       oauthProxyConfig = ''
         auth_request /oauth2/auth;
@@ -476,17 +546,20 @@ in {
             '';
           };
         };
+
         grafana = {
           enable = true;
           users.allowSignUp = false;
-          addr = "";
+          addr = "127.0.0.1";
           domain = "${cfg.webhost}";
           rootUrl = "%(protocol)ss://%(domain)s/grafana/";
+
           extraOptions = lib.mkIf cfg.oauth.enable {
             AUTH_GOOGLE_ENABLED = "true";
             AUTH_GOOGLE_CLIENT_ID = cfg.oauth.clientID;
             AUTH_GOOGLE_CLIENT_SECRET = cfg.oauth.clientSecret;
           };
+
           provision = {
             enable = true;
             datasources = [{
@@ -494,15 +567,24 @@ in {
               name = "prometheus";
               url = "http://localhost:9090/prometheus";
             }];
+
             dashboards = [{
               name = "generic";
               options.path = ./grafana/generic;
-            }] ++ (if (cfg.applicationDashboards != null) then [{
+            }] ++ (if (cfg.applicationDashboards != []) then [{
               name = "application";
-              options.path = cfg.applicationDashboards;
+              options.path = pkgs.runCommandNoCC "dashboards-application" {
+                files = cfg.applicationDashboards;
+              } ''
+                mkdir $out
+                for f in $files; do
+                  cp $f $out
+                done
+              '';
             }] else
               [ ]);
           };
+
           security = {
             adminPassword = traceValFn (x:
               if x == "changeme" then ''
@@ -545,6 +627,7 @@ in {
 
         prometheus = {
           enable = true;
+          listenAddress = "127.0.0.1:9090";
           webExternalUrl = "https://${cfg.webhost}/prometheus/";
           extraFlags = [ "--storage.tsdb.retention=8760h" ];
 
@@ -556,6 +639,7 @@ in {
 
           alertmanager = {
             enable = cfg.pagerDuty.serviceKey != null;
+            listenAddress ="127.0.0.1";
             configuration = {
               route = {
                 group_by = [ "alertname" "alias" ];
@@ -590,6 +674,7 @@ in {
           exporters = {
             blackbox = {
               enable = true;
+              listenAddress = "127.0.0.1";
               configFile = pkgs.writeText "blackbox-exporter.yaml"
                 (builtins.toJSON {
                   modules = {
@@ -812,22 +897,68 @@ in {
               job_name = "node";
               scrape_interval = "10s";
               static_configs = let
+                hostIp = key: if cfg.enableWireguard then (key + "-wg") else key;
                 makeNodeConfig = key: value: {
-                  targets = [ "${key}:9100" "${key}:9102" ]
-                    ++ (optional value.hasNativePrometheus "${key}:12760")
-                    ++ (optional value.hasSecondNativePrometheus "${key}:12761")
-                    ++ (optional value.hasJormungandrPrometheus "${key}:8000");
+                  targets = [ "${hostIp key}:9100" ]
+                    ++ (optional value.hasStatsD "${hostIp key}:9102")
+                    ++ (optional value.hasNativePrometheus "${hostIp key}:12760")
+                    ++ (optional value.hasSecondNativePrometheus "${hostIp key}:12761")
+                    ++ (optional value.hasHydraPrometheus "${hostIp key}:8000")
+                    ++ (optional value.hasJormungandrPrometheus "${hostIp key}:8000");
                   labels = { alias = key; } // value.labels;
                 };
               in mapAttrsToList makeNodeConfig cfg.monitoredNodes;
+            }
+            {
+              job_name = "${name}-host";
+              scrape_interval = "10s";
+              metrics_path = "/monitorama/host";
+              static_configs = [
+                {
+                  targets = [
+                    "mac-mini-1-wg:9111"
+                    "mac-mini-2-wg:9111"
+                  ];
+                  labels.role = "mac-host";
+                }
+              ];
+            }
+            {
+              job_name = "${name}-ci";
+              scrape_interval = "10s";
+              metrics_path = "/monitorama/ci";
+              static_configs = [
+                {
+                  targets = [
+                    "mac-mini-1-wg:9111"
+                    "mac-mini-2-wg:9111"
+                  ];
+                  labels.role = "build-slave";
+                }
+              ];
+            }
+            {
+              job_name = "${name}-signing";
+              scrape_interval = "10s";
+              metrics_path = "/monitorama/signing";
+              static_configs = [
+                {
+                  targets = [
+                    "mac-mini-1-wg:9111"
+                    "mac-mini-2-wg:9111"
+                  ];
+                  labels.role = "build-slave";
+                }
+              ];
             }
             {
               job_name = "nginx";
               scrape_interval = "5s";
               metrics_path = "/status/format/prometheus";
               static_configs = let
+                hostIp = key: if cfg.enableWireguard then (key + "-wg") else key;
                 makeNodeConfig = key: value: {
-                  targets = [ "${key}:9113" ];
+                  targets = [ "${hostIp key}:9113" ];
                   labels = { alias = key; } // value.labels;
                 };
                 onlyNginx = n: v: v.hasNginx;
@@ -977,13 +1108,14 @@ in {
           elasticsearchHosts = [ "http://localhost:9200" ];
           # Elasticsearch config below is for a single node deployment
           extraConfig = ''
-            http_bind_address = 0.0.0.0:9000
+            http_bind_address = 127.0.0.1:9000
             elasticsearch_shards = 1
             elasticsearch_replicas = 0
           '';
         };
         elasticsearch = {
           enable = true;
+          listenAddress = "127.0.0.1";
           package = pkgs.elasticsearch6-oss;
           # Prevent graylog deflector indexing by turning off auto create index option
           extraConf = ''
@@ -992,8 +1124,15 @@ in {
         };
         mongodb.enable = true;
       };
+
+      systemd.services.prometheus.serviceConfig.LimitNOFILE = "524288";
+
       systemd.services.graylog-preload = let
-        graylogConfig = ./graylog/graylogConfig.json;
+        graylogConfig = pkgs.substituteAll {
+          src = ./graylog/graylogConfig.json;
+          interface = if cfg.useWireguardListeners then "${cfg.ownIp}" else "0.0.0.0";
+          isExecutable = false;
+        };
         password = traceValFn (x:
           if x == "changeme" then ''
             *

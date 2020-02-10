@@ -1,10 +1,12 @@
 { config, lib, pkgs, ... }:
 
 let
-  opsLib = import ../../lib.nix;
+  ssh-keys = import ../../lib/ssh-keys.nix lib;
+
+  allowedKeys = ssh-keys.allKeysFrom (ssh-keys.remoteBuilderKeys // ssh-keys.devOps);
   nix-darwin = (import ../test.nix { host = null; port = null; hostname = null; }).nix-darwin;
 in {
-  imports = [ ./double-builder-gc.nix ./caffeinate.nix ];
+  imports = [ ./double-builder-gc.nix ./caffeinate.nix ./expire-pids.nix ];
 
   # List packages installed in system profile. To search by name, run:
   # $ nix-env -qaP | grep wget
@@ -66,10 +68,10 @@ in {
   ########################################################################
 
   environment.etc."per-user/root/ssh/authorized_keys".text
-    = lib.concatStringsSep "\n" opsLib.ciInfraKeys + "\n";
+    = lib.concatStringsSep "\n" allowedKeys + "\n";
 
   environment.etc."per-user/nixos/ssh/authorized_keys".text
-    = lib.concatStringsSep "\n" opsLib.ciInfraKeys + "\n";
+    = lib.concatStringsSep "\n" allowedKeys + "\n";
 
   ########################################################################
 

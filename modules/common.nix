@@ -1,30 +1,27 @@
-{ pkgs, lib, name, config, ... }:
+{ pkgs, lib, config, resources, name, ... }:
 let
-  sshKeys = import ((import ../nix/sources.nix).iohk-ops + "/lib/ssh-keys.nix") {
-    inherit lib;
-  };
-  inherit (sshKeys) allKeysFrom devOps;
-  devOpsKeys = allKeysFrom devOps;
+  ssh-keys = config.services.ssh-keys;
 in {
-
-  imports = [ ./aws.nix ../modules/monitoring-exporters.nix ];
-
-  networking.hostName = name;
+  imports = [
+    ./cloud.nix
+    ./monitoring-exporters.nix
+    ./ssh-keys.nix
+  ];
 
   environment.systemPackages = with pkgs; [
     bat
     git
     graphviz
+    htop
     iptables
     jq
-    lsof
     lsof
     mosh
     ncdu
     sysstat
+    sqliteInteractive
     tcpdump
     tig
-    tree
     tree
     vim
   ];
@@ -37,13 +34,16 @@ in {
   };
 
   users.mutableUsers = false;
-  users.users.root.openssh.authorizedKeys.keys = devOpsKeys;
+  users.users.root.openssh.authorizedKeys.keys = ssh-keys.devOps;
 
   services = {
-    monitoring-exporters.graylogHost = "monitor:5044";
+    monitoring-exporters = {
+      graylogHost = if config.services.node-wireguard.enable then "monitoring-wg:5044" else "monitoring:5044";
+      ownIp = config.node.wireguardIP;
+      useWireguardListeners = true;
+    };
 
-    nginx.mapHashBucketSize =
-      if config.deployment.targetEnv == "libvirtd" then 128 else null;
+    nginx.mapHashBucketSize = 128;
 
     openssh = {
       passwordAuthentication = false;

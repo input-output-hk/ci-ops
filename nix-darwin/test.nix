@@ -1,15 +1,11 @@
 { role ? "ci", host, port, hostname }:
 
 let
-  pkgs = import (import ../fetch-nixpkgs.nix) {};
-  nix-darwin = pkgs.fetchFromGitHub {
-    owner = "LnL7";
-    repo = "nix-darwin";
-    rev = "8d557721a9511d8e6b26c140363ab44d2c98f76b";
-    sha256 = "0gv4b3yfi4k01gyy6djjmln44q7hg3iqm4lalm9b7kgzmgnpx4fp";
-  };
+  sources = import ../nix/sources.nix;
+  pkgs = import (sources.nixpkgs) {};
+  inherit (sources) nix-darwin;
   system = (import nix-darwin {
-    nixpkgs = pkgs.path;
+    nixpkgs = sources.nixpkgs;
     configuration = "${guestConfDir}/darwin-configuration.nix";
     system = "x86_64-darwin";
   }).system;
@@ -19,26 +15,23 @@ let
   # that prevents the guest from being rebooted when things it doesnt read get modified
   guestConfDir = pkgs.runCommand "guest-config-dir" {
     inherit host port hostname;
+    nixDarwinUrl = sources.nix-darwin.url;
   } ''
     mkdir -pv $out
     cd $out
-    mkdir -pv iohk-ops/nix-darwin
-    cd iohk-ops
+    mkdir -pv ci-ops/nix-darwin
+    cd ci-ops
     cp -r --no-preserve=mode ${./roles} nix-darwin/roles
     cp -r --no-preserve=mode ${./modules} nix-darwin/modules
     cp -r --no-preserve=mode ${./services} nix-darwin/services
     cp -r --no-preserve=mode ${../nix} nix
     cp ${./test.nix} nix-darwin/test.nix
-    cp ${../lib.nix} lib.nix
-    cp ${../iohk-nix.json} iohk-nix.json
-    cp ${../nixpkgs-src.json} nixpkgs-src.json
     mkdir lib
-    cp ${../lib/ssh-keys.nix} lib/ssh-keys.nix
-    cp ${../fetch-nixpkgs.nix} fetch-nixpkgs.nix
+    cp ${sources.ops-lib + "/overlays/ssh-keys.nix"} lib/ssh-keys.nix
     cd ..
     cp -r ${../modules/macs/guest}/* .
     substituteAll apply.sh apply.sh
-    cd iohk-ops/nix-darwin/roles
+    cd ci-ops/nix-darwin/roles
     ln -sv ${role}.nix active-role.nix
   '';
 in {

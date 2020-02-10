@@ -7,19 +7,26 @@ let
     speedFactor = 1;
     sshKey = "/etc/nix/id_buildfarm";
     sshUser = "root";
-    system = "x86_64-linux,i686-linux";
+    systems = [ "i686-linux" "x86_64-linux" ];
     supportedFeatures = [ "kvm" "nixos-test" "big-parallel" ];
   };
   mkLinux = hostName: commonBuildMachineOpt // {
     inherit hostName;
-    maxJobs = 12;
+    maxJobs = 10;
+    speedFactor = 1;
   };
   mkMac = hostName: commonBuildMachineOpt // {
     inherit hostName;
     maxJobs = 8;
-    system = "x86_64-darwin";
+    systems = [ "x86_64-darwin" ];
     sshUser = "builder";
     supportedFeatures = [];
+  };
+  localMachine = {
+    hostName = "localhost";
+    mandatoryFeatures = [ "local" ];
+    systems = [ "x86_64-linux" "i686-linux" ];
+    maxJobs = 16;
   };
   mkGithubStatus = { jobset, inputs }: ''
     <githubstatus>
@@ -30,10 +37,11 @@ let
     </githubstatus>
   '';
   mkStatusBlocks = concatMapStringsSep "" mkGithubStatus;
+
 in {
   environment.etc = lib.singleton {
     target = "nix/id_buildfarm";
-    source = ../static/id_buildfarm;
+    source = ../secrets/id_buildfarm;
     uid = config.ids.uids.hydra-queue-runner;
     gid = config.ids.gids.hydra;
     mode = "0400";
@@ -52,14 +60,16 @@ in {
 
   nix = {
     distributedBuilds = true;
-    buildMachines = [
-      (mkLinux "packet-hydra-buildkite-1.ci.iohkdev.io")
-      (mkLinux "packet-hydra-buildkite-2.ci.iohkdev.io")
+    # TODO add localhost
+    buildMachines = [ # TODO
+      (mkLinux "packet-ipxe-1.ci.iohkdev.io")
+      (mkLinux "packet-ipxe-2.ci.iohkdev.io")
+      (mkLinux "packet-ipxe-3.ci.iohkdev.io")
+      ((mkMac "mac-mini-1") // { speedFactor = 2; })
+      ((mkMac "mac-mini-2") // { speedFactor = 2; })
+      localMachine
     ];
     binaryCaches = mkForce [ "https://cache.nixos.org" ];
-    binaryCachePublicKeys = mkForce [
-      "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
-    ];
   };
 
   services.hydra = {
@@ -74,80 +84,75 @@ in {
 
       max_concurrent_evals = 14
 
-      store_uri = s3://iohk-nix-cache-temp?secret-key=/etc/nix/hydra.iohk.io-1/secret&log-compression=br&region=eu-central-1
-      server_store_uri = https://iohk-nix-cache-temp.s3-eu-central-1.amazonaws.com/
-      binary_cache_public_uri = https://iohk-nix-cache-temp.s3-eu-central-1.amazonaws.com/
-      log_prefix = https://iohk-nix-cache-temp.s3-eu-central-1.amazonaws.com/
+      store_uri = s3://iohk-nix-cache?secret-key=/etc/nix/hydra.iohk.io-1/secret&log-compression=br&region=eu-central-1
+      server_store_uri = https://iohk-nix-cache.s3-eu-central-1.amazonaws.com/
+      binary_cache_public_uri = https://iohk-nix-cache.s3-eu-central-1.amazonaws.com/
+      log_prefix = https://iohk-nix-cache.s3-eu-central-1.amazonaws.com/
       upload_logs_to_binary_cache = true
 
       <github_authorization>
-        input-output-hk = ${builtins.readFile ../static/github_token}
+        input-output-hk = ${builtins.readFile ../secrets/github_token}
       </github_authorization>
+
+      ${mkStatusBlocks [
+        { jobset = "iohk-ops"; inputs = "jobsets"; }
+        { jobset = "cardano-base"; inputs = "cardano-base"; }
+        { jobset = "cardano-byron-proxy"; inputs = "cardano-byron-proxy"; }
+        { jobset = "cardano-prelude"; inputs = "cardano-prelude"; }
+        { jobset = "decentralized-software-updates"; inputs = "decentralized-software-updates"; }
+        { jobset = "cardano-ledger-specs"; inputs = "cardano-ledger-specs"; }
+        { jobset = "cardano-ledger"; inputs = "cardano-ledger"; }
+        { jobset = "cardano-wallet"; inputs = "cardano-wallet"; }
+        { jobset = "cardano-shell"; inputs = "cardano-shell"; }
+        { jobset = "cardano-node"; inputs = "cardano-node"; }
+        { jobset = "cardano-explorer"; inputs = "cardano-explorer"; }
+        { jobset = "jormungandr"; inputs = "jormungandr"; }
+        { jobset = "cardano"; inputs = "cardano"; }
+        { jobset = "plutus"; inputs = "plutus"; }
+        { jobset = "log-classifier"; inputs = "log-classifier"; }
+        { jobset = "ouroboros-network"; inputs = "ouroboros-network"; }
+        { jobset = "iohk-monitoring"; inputs = "iohk-monitoring"; }
+        { jobset = "haskell-nix"; inputs = "haskell-nix"; }
+        { jobset = "tools"; inputs = "tools"; }
+        { jobset = "iohk-nix"; inputs = "iohk-nix"; }
+      ]}
+
+      # DEVOPS-1208 This CI status for cardano-sl is needed while the
+      # Daedalus Windows installer is built on AppVeyor or Buildkite
+      <githubstatus>
+        jobs = Cardano:cardano-sl.*:daedalus-mingw32-pkg
+        inputs = cardano
+        excludeBuildFromContext = 1
+        useShortContext = 1
+      </githubstatus>
+      <githubstatus>
+        jobs = Cardano:daedalus.*:tests\..*
+        inputs = daedalus
+        excludeBuildFromContext = 1
+        useShortContext = 1
+      </githubstatus>
     '';
-
-      #${mkStatusBlocks [
-      #  { jobset = "iohk-ops"; inputs = "jobsets"; }
-      #  { jobset = "cardano-base"; inputs = "cardano-base"; }
-      #  { jobset = "cardano-byron-proxy"; inputs = "cardano-byron-proxy"; }
-      #  { jobset = "cardano-prelude"; inputs = "cardano-prelude"; }
-      #  { jobset = "decentralized-software-updates"; inputs = "decentralized-software-updates"; }
-      #  { jobset = "cardano-ledger-specs"; inputs = "cardano-ledger-specs"; }
-      #  { jobset = "cardano-ledger"; inputs = "cardano-ledger"; }
-      #  { jobset = "cardano-wallet"; inputs = "cardano-wallet"; }
-      #  { jobset = "cardano-shell"; inputs = "cardano-shell"; }
-      #  { jobset = "cardano-node"; inputs = "cardano-node"; }
-      #  { jobset = "cardano"; inputs = "cardano"; }
-      #  { jobset = "plutus"; inputs = "plutus"; }
-      #  { jobset = "log-classifier"; inputs = "log-classifier"; }
-      #  { jobset = "ouroboros-network"; inputs = "ouroboros-network"; }
-      #  { jobset = "iohk-monitoring"; inputs = "iohk-monitoring"; }
-      #  { jobset = "haskell-nix"; inputs = "haskell-nix"; }
-      #  { jobset = "tools"; inputs = "tools"; }
-      #  { jobset = "iohk-nix"; inputs = "iohk-nix"; }
-      #  { jobset = "cardano-explorer"; inputs = "cardano-explorer"; }
-      #]}
-
-      ## DEVOPS-1208 This CI status for cardano-sl is needed while the
-      ## Daedalus Windows installer is built on AppVeyor or Buildkite
-      #<githubstatus>
-      #  jobs = Cardano:cardano-sl.*:daedalus-mingw32-pkg
-      #  inputs = cardano
-      #  excludeBuildFromContext = 1
-      #  useShortContext = 1
-      #</githubstatus>
-      #<githubstatus>
-      #  jobs = Cardano:daedalus.*:tests\..*
-      #  inputs = daedalus
-      #  excludeBuildFromContext = 1
-      #  useShortContext = 1
-      #</githubstatus>
   };
   services.grafana = {
-    enable = false;
+    enable = true;
     users.allowSignUp = true;
-    domain = "hydra.iohk.io";
+    domain = "hydra.ci.iohkdev.io";
     rootUrl = "%(protocol)ss://%(domain)s/grafana/";
     extraOptions = {
       AUTH_GOOGLE_ENABLED = "true";
       AUTH_GOOGLE_CLIENT_ID = "778964826061-5v0m922g1qcbc1mdtpaf8ffevlso2v7p.apps.googleusercontent.com";
-      AUTH_GOOGLE_CLIENT_SECRET = builtins.readFile ../static/google_oauth_hydra_grafana.secret;
+      AUTH_GOOGLE_CLIENT_SECRET = builtins.readFile ../secrets/google_oauth_hydra_grafana.secret;
     };
   };
-
-  users.users.debug = {
-    isNormalUser = true;
-    extraGroups = [ "wheel" ];
-    hashedPassword = "$6$QATPTe6nhL$iYsq8ZWGpROFHTfPhANEFCXQxg7JE5emifO.KhJXkq13rYzMW5GnPRaLq2NDd7Fk6VUgrI4.l7jerCedXOtz3.";
-  };
-  security.sudo.wheelNeedsPassword = true;
 
   networking.firewall.allowedTCPPorts = [ 80 443 ];
   environment.systemPackages = with pkgs; [ goaccess ];
   services.nginx = {
     virtualHosts = {
-      "hydra.iohk.io" = {
-        forceSSL = false;
-        enableACME = false;
+      "hydra.ci.iohkdev.io" = {
+        forceSSL = true;
+        enableACME = true;
+        serverAliases = [ "hydra.iohk.io" ];
         locations."/".extraConfig = ''
           proxy_pass http://127.0.0.1:8080;
           proxy_set_header Host $host;
@@ -156,7 +161,7 @@ in {
           proxy_set_header X-Forwarded-Proto $scheme;
         '';
         locations."~ /(nix-cache-info|.*\\.narinfo|nar/*)".extraConfig = ''
-          return 301 https://iohk-nix-cache-temp.s3-eu-central-1.amazonaws.com$request_uri;
+          return 301 https://iohk-nix-cache.s3-eu-central-1.amazonaws.com$request_uri;
         '';
         locations."/graph/".extraConfig = ''
           proxy_pass http://127.0.0.1:8081;

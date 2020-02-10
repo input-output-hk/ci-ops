@@ -6,12 +6,12 @@ let
 in {
   deployment.targetEnv = "ec2";
 
-  imports = [ ../../modules/aws.nix ];
+  imports = [ ../../modules/cloud.nix ];
 
   deployment.ec2 = {
     region = mkDefault "eu-central-1";
 
-    keyPair = mkDefault resources.ec2KeyPairs."jormungandr-${region}";
+    keyPair = mkDefault resources.ec2KeyPairs."ci-${region}";
 
     ebsInitialRootDiskSize = mkDefault 30;
 
@@ -23,8 +23,7 @@ in {
     ];
   };
 
-  networking.hostName = mkDefault
-    "${config.deployment.name}.${config.deployment.targetEnv}.${name}";
+  networking.hostName = mkDefault name;
 
   deployment.route53 = lib.mkIf (config.node.fqdn != null) {
     inherit (config.node) accessKeyId;

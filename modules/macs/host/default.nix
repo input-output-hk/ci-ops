@@ -26,7 +26,7 @@ let
             At /Volumes/CONFIG/etc/ssh/ will be SSH host keys which
             should be copied to /etc/ssh/ on the host. Additionally,
             the script should finish by unmounting /Volumes/CONFIG
-            otherwise it is possible for programs runnig on the guest
+            otherwise it is possible for programs running on the guest
             to read the SSH host keys.
           '';
         };

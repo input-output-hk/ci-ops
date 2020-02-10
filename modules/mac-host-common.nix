@@ -1,4 +1,4 @@
-{ pkgs, lib, config, ... }:
+{ pkgs, lib, config, globals, ... }:
 
 let
   cfg = config.macosGuest;
@@ -15,6 +15,12 @@ in {
     #};
   };
   config = {
+    deployment.keys = {
+      wg_shared = {
+        keyFile = ../secrets/wireguard/shared.private;
+        destDir = "/etc/wireguard";
+      };
+    };
     boot = {
       initrd.availableKernelModules = [ "xhci_pci" "ahci" "usb_storage" "usbhid" "sd_mod" "zfsUnstable" "nvme" ];
       kernelModules = [ "kvm-intel" ];
@@ -41,7 +47,7 @@ in {
     '';
     networking.wireguard.interfaces.wg0 = let
       genPeer = n: name: endpoint: {
-        publicKey = lib.strings.removeSuffix "\n" (builtins.readFile (../static + "/${name}.wgpublic"));
+        publicKey = lib.strings.removeSuffix "\n" (builtins.readFile (../secrets/wireguard + "/${name}.public"));
         allowedIPs = [ "192.168.20.${toString n}/32" ];
         persistentKeepalive = 30;
         inherit endpoint;
@@ -63,12 +69,33 @@ in {
           persistentKeepalive = 30;
         }
         (genPeer 2 "hydra" "hydra.iohk.io:51820")
-        (genPeer 3 "cardano-deployer" "${lib.strings.removeSuffix "\n" (builtins.readFile ../static/deployer-ip.txt)}:51820")
+        (genPeer 3 "cardano-deployer" "${lib.strings.removeSuffix "\n" (builtins.readFile ../secrets/old-deployer-ip.txt)}:51820")
         {
           publicKey = "MRowDI1eC9B5Hx/zgPk5yyq2eWSq6kYFW5Sjm7w52AY=";
           allowedIPs = [ "192.168.24.1/32" ];
           persistentKeepalive = 30;
           endpoint = "173.61.28.54:51820";
+        }
+
+        # TODO: Add preshared key; migrate all to port 17777
+        { # New CI Deployer
+          publicKey = "ZWLewe0yVJ45eW39quTiyvC/kaxy8xNcVpD9QVvxwkk=";
+          allowedIPs = [ "10.90.1.1/32" ];
+          persistentKeepalive = 25;
+          endpoint = "${globals.deployerIp}:17777";
+        }
+        { # New CI Monitoring
+          publicKey = "Xfbn71lJWmyj64OKHvjrd33l03I42qe+7v8FA/QM4hc=";
+          allowedIPs = [ "10.90.0.1/32" ];
+          persistentKeepalive = 25;
+          endpoint = "monitoring.ci.iohkdev.io:17777";
+          presharedKeyFile = "/etc/wireguard/wg_shared";
+        }
+        { # New CI Hydra
+          publicKey = "kGVeMqf0nrEfTt1goLPRwoRc7Mt61jhoz2QkWXs07yk=";
+          allowedIPs = [ "10.90.0.2/32" ];
+          persistentKeepalive = 25;
+          endpoint = "hydra.ci.iohkdev.io:17777";
         }
       ];
     };
@@ -141,7 +168,7 @@ in {
       };
       machines = {
         ci = {
-          zvolName = "tank/mojave-image1";
+          zvolName = "tank/mojave-image1-128gb";
           network = {
             interiorNetworkPrefix = "192.168.3";
             guestSshPort = 2200;
@@ -163,7 +190,7 @@ in {
           };
         };
         signing = {
-          zvolName = "tank/mojave-image2-xcode";
+          zvolName = "tank/mojave-image2-xcode-128gb";
           network = {
             interiorNetworkPrefix = "192.168.4";
             guestSshPort = 2201;

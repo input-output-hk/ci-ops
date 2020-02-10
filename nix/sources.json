@@ -1,4 +1,40 @@
 {
+    "cachecache": {
+        "branch": "master",
+        "description": null,
+        "homepage": null,
+        "owner": "cleverca22",
+        "repo": "cachecache",
+        "rev": "37959a2dcce5c93bf424da899d3d5eaf2b3f1768",
+        "sha256": "1d92agrsgs1g05ps3l7wbbib9knq86gq335k5kakzl9rlzdaj4z0",
+        "type": "tarball",
+        "url": "https://github.com/cleverca22/cachecache/archive/37959a2dcce5c93bf424da899d3d5eaf2b3f1768.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "hercules-ci-agent": {
+        "branch": "stable",
+        "description": "https://hercules-ci.com build agent",
+        "homepage": "",
+        "owner": "hercules-ci",
+        "repo": "hercules-ci-agent",
+        "rev": "c5ebe9f3de174c16cceb656b8244e3d5deb177a6",
+        "sha256": "07i5xcl9n4r9w58lq99l70iqzcmhybbdw97wyk83jfs40mz3v141",
+        "type": "tarball",
+        "url": "https://github.com/hercules-ci/hercules-ci-agent/archive/c5ebe9f3de174c16cceb656b8244e3d5deb177a6.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "hydra": {
+        "branch": "iohk-19.03",
+        "description": "Hydra, the Nix-based continuous build system",
+        "homepage": "http://nixos.org/hydra",
+        "owner": "input-output-hk",
+        "repo": "hydra",
+        "rev": "0768891e3cd3ef067d28742098f1dea8462fca75",
+        "sha256": "1aw3p7jm2gsakdqqx4pzhkfx12hh1nxk3wkabcvml5ci814f6jic",
+        "type": "tarball",
+        "url": "https://github.com/input-output-hk/hydra/archive/0768891e3cd3ef067d28742098f1dea8462fca75.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
     "iohk-nix": {
         "branch": "master",
         "description": "nix scripts shared across projects",
@@ -9,42 +45,6 @@
         "sha256": "1ckxbslimvvk20v3k6v311xw7rn2kz2c9v0n9yw8s9sx97lp34ng",
         "type": "tarball",
         "url": "https://github.com/input-output-hk/iohk-nix/archive/dc2a549d7eae3918f7b596288c774296bd910291.tar.gz",
-        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
-    },
-    "iohk-ops": {
-        "branch": "master",
-        "description": "NixOps deployment configuration for IOHK devops",
-        "homepage": "",
-        "owner": "input-output-hk",
-        "repo": "iohk-ops",
-        "rev": "d61dd51f7b961e244ed485cac51d3126f695b250",
-        "sha256": "0nzzcgkrsq8m4kcjr430rybindfkys8kn5vdnnzmmhw5c2i33c7x",
-        "type": "tarball",
-        "url": "https://github.com/input-output-hk/iohk-ops/archive/d61dd51f7b961e244ed485cac51d3126f695b250.tar.gz",
-        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
-    },
-    "jormungandr-faucet": {
-        "branch": "nixos-19.09",
-        "description": "faucet for jormungandr",
-        "homepage": null,
-        "owner": "input-output-hk",
-        "repo": "jormungandr-faucet",
-        "rev": "051ece0910e5c2fdc67f16353c0e0ee253b88923",
-        "sha256": "1az0ci1gpbymspc487rhr002m29p915q3i1bn1wk0ky8jy7jmywm",
-        "type": "tarball",
-        "url": "https://github.com/input-output-hk/jormungandr-faucet/archive/051ece0910e5c2fdc67f16353c0e0ee253b88923.tar.gz",
-        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
-    },
-    "jormungandr-nix": {
-        "branch": "nixos-19.09",
-        "description": "jormungandr nix scripts",
-        "homepage": null,
-        "owner": "input-output-hk",
-        "repo": "jormungandr-nix",
-        "rev": "10168c9896f1d3cb499b3f9f98b90fdbf4e66086",
-        "sha256": "1w379rwnlc3ajlv3fnxpnk6m3vxj9h8664j8si7fmrl6dlslxcrb",
-        "type": "tarball",
-        "url": "https://github.com/input-output-hk/jormungandr-nix/archive/10168c9896f1d3cb499b3f9f98b90fdbf4e66086.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "niv": {
@@ -58,7 +58,67 @@
         "url": "https://github.com/nmattia/niv/archive/1dd094156b249586b66c16200ecfd365c7428dc0.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
+    "nix-darwin": {
+        "branch": "master",
+        "description": "nix modules for darwin",
+        "homepage": "",
+        "owner": "LnL7",
+        "repo": "nix-darwin",
+        "rev": "1d09aa2681bb3fbebb6cf9a40c21c6c871117146",
+        "sha256": "1jva0c2sk51xvgdk1hanqb6xf04li1c0jdhlhx98813650kqx7ms",
+        "type": "tarball",
+        "url": "https://github.com/LnL7/nix-darwin/archive/1d09aa2681bb3fbebb6cf9a40c21c6c871117146.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "nixops-core": {
+        "branch": "nixops-core-pr-int",
+        "description": "NixOps, the NixOS-based cloud deployment tool",
+        "homepage": "http://nixos.org/",
+        "owner": "input-output-hk",
+        "repo": "nixops",
+        "rev": "28dd42a2dc9f6bada1ea587de80cde8dae0ddbf0",
+        "sha256": "0a74c8f0hpb60s91f3igx63zx8amblp3iqr6ic3fdr28nvmvbhgr",
+        "type": "tarball",
+        "url": "https://github.com/input-output-hk/nixops/archive/28dd42a2dc9f6bada1ea587de80cde8dae0ddbf0.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "nixops-libvirtd": {
+        "branch": "master",
+        "description": "NixOps libvirtd backend plugin [maintainer=@AmineChikhaoui]",
+        "homepage": "",
+        "owner": "nix-community",
+        "repo": "nixops-libvirtd",
+        "rev": "1c29f6c716dad9ad58aa863ebc9575422459bf95",
+        "sha256": "0g2ag4mhgrxws3h4q8cvfh4ks1chgpjm018ayqd48lagyvi32l8m",
+        "type": "tarball",
+        "url": "https://github.com/nix-community/nixops-libvirtd/archive/1c29f6c716dad9ad58aa863ebc9575422459bf95.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "nixops-packet": {
+        "branch": "cpr-support",
+        "description": "NixOps Packet.net Plugin",
+        "homepage": null,
+        "owner": "input-output-hk",
+        "repo": "nixops-packet",
+        "rev": "f7d00f8c0ab55a082afcb9d86e960512f27373f1",
+        "sha256": "1g0p1qkv92d0x6f0r4j8i8r6c8y7zlh12vxhji1idl4zqajfj6c9",
+        "type": "tarball",
+        "url": "https://github.com/input-output-hk/nixops-packet/archive/f7d00f8c0ab55a082afcb9d86e960512f27373f1.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
     "nixpkgs": {
+        "branch": "release-19.09",
+        "description": "Nix Packages collection",
+        "homepage": null,
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "f79f998f3163481a4d4ae90e8ea516df3980fe9f",
+        "sha256": "15ba2rrgr948h9mawirzs898w7kn2wzny4075ylgv3000hihqvyk",
+        "type": "tarball",
+        "url": "https://github.com/nixos/nixpkgs/archive/f79f998f3163481a4d4ae90e8ea516df3980fe9f.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "nixpkgs-old": {
         "branch": "nixos-19.09",
         "description": "A read-only mirror of NixOS/nixpkgs tracking the released channels. Send issues and PRs to",
         "homepage": "https://github.com/NixOS/nixpkgs",
@@ -68,6 +128,18 @@
         "sha256": "1m3glylq7vxca3h8r99s3ga5arvblkz6ipc2vvzs83zzr9gdn1p5",
         "type": "tarball",
         "url": "https://github.com/NixOS/nixpkgs-channels/archive/8e1fdad7c69a055b431580db717d6d9270e18175.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "ops-lib": {
+        "branch": "master",
+        "description": "NixOps deployment configuration library for IOHK devops ",
+        "homepage": null,
+        "owner": "input-output-hk",
+        "repo": "ops-lib",
+        "rev": "cf640dd2d47af0666af5a5f5bf41d3c3f7d3102e",
+        "sha256": "1gs8cqsaqdn9yl6x9x03awr140r8xmqjgvvx1mk2460891xz4lyd",
+        "type": "tarball",
+        "url": "https://github.com/input-output-hk/ops-lib/archive/cf640dd2d47af0666af5a5f5bf41d3c3f7d3102e.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     }
 }

@@ -38,6 +38,7 @@
 , cardanoNodePrsJSON ? ./simple-pr-dummy.json
 , cardanoBasePrsJSON ? ./simple-pr-dummy.json
 , iohkNixPrsJSON ? ./simple-pr-dummy.json
+, ciOpsPrsJSON ? ./simple-pr-dummy.json
 , haskellNixPrsJSON ? ./simple-pr-dummy.json
 , toolsPrsJSON ? ./simple-pr-dummy.json
 , explorerPrsJSON ? ./simple-pr-dummy.json
@@ -175,6 +176,14 @@ let
       bors = true;
     };
 
+    ci-ops = {
+      description = "IOHK CI Infrastructure Repo";
+      url = "https://github.com/input-output-hk/ci-ops.git";
+      branch = "master";
+      prs = ciOpsPrsJSON;
+      bors = true;
+    };
+
     haskell-nix = {
       description = "Haskell.nix Build System";
       url = "https://github.com/input-output-hk/haskell.nix.git";
@@ -237,7 +246,7 @@ let
     schedulingshares = 42;
     checkinterval = 60;
     inputs = {
-      nixpkgs = mkFetchGithub "https://github.com/NixOS/nixpkgs.git ${nixpkgs-src.rev}";
+      nixpkgs = mkFetchGithub "https://github.com/NixOS/nixpkgs.git ${defaultNixpkgsRev}";
       jobsets = mkFetchGithub "${iohkOpsURI} master";
     };
     enableemail = false;
@@ -338,7 +347,7 @@ let
   # iohk-ops structure is slightly different
 
   iohkOpsURI = "https://github.com/input-output-hk/iohk-ops.git";
-  nixpkgs-src = import ../fetch-nixpkgs.nix;
+  defaultNixpkgsRev = "541d9cce8af7a490fb9085305939569567cb58e6";
   mkNixops = nixopsBranch: nixpkgsRev: {
     nixexprpath = "jobsets/cardano.nix";
     description = "IOHK-Ops";
@@ -354,7 +363,7 @@ let
       description = "PR ${num}: ${info.title}";
       nixexprpath = "jobsets/cardano.nix";
       inputs = {
-        nixpkgs = mkFetchGithub "https://github.com/NixOS/nixpkgs.git ${nixpkgs-src.rev}";
+        nixpkgs = mkFetchGithub "https://github.com/NixOS/nixpkgs.git ${defaultNixpkgsRev}";
         jobsets = mkFetchGithub "${info.base.repo.clone_url} pull/${num}/head";
         nixops = mkFetchGithub "https://github.com/NixOS/NixOps.git tags/v1.5";
       };
@@ -370,9 +379,9 @@ let
     no-opt-cardano-sl = withFasterBuild mainJobsets.cardano-sl;
 
     # iohk-ops (this repo)
-    iohk-ops = mkNixops "master" nixpkgs-src.rev;
-    iohk-ops-bors-staging = highPrio (mkNixops "bors-staging" nixpkgs-src.rev);
-    iohk-ops-bors-trying = mkNixops "bors-trying" nixpkgs-src.rev;
+    iohk-ops = mkNixops "master" defaultNixpkgsRev;
+    iohk-ops-bors-staging = highPrio (mkNixops "bors-staging" defaultNixpkgsRev);
+    iohk-ops-bors-trying = mkNixops "bors-trying" defaultNixpkgsRev;
     rust-cardano = (mkJobset {
       name = "rust-cardano";
       input = "rust-cardano";

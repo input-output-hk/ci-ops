@@ -1,8 +1,13 @@
 { config, lib, pkgs, ... }:
 let
+  sources = import ../../nix/sources.nix;
+  herculesDarwinPkg = (import sources.hercules-ci-agent-darwin {}).hercules-ci-agent;
   herculesHome = "/var/lib/hercules-ci-agent";
 in with lib; {
-  services.hercules-ci-agent.enable = true;
+  services.hercules-ci-agent = {
+    enable = true;
+    package = herculesDarwinPkg;
+  };
 
   # Fix up ownership and perms on secrets.  We use applications
   # so this occurs between creating users and launchd scripts

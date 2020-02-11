@@ -23,6 +23,18 @@
         "url": "https://github.com/hercules-ci/hercules-ci-agent/archive/c5ebe9f3de174c16cceb656b8244e3d5deb177a6.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
+    "hercules-ci-agent-darwin": {
+        "branch": "hercules-ci-agent-0.6.2",
+        "description": "https://hercules-ci.com build agent",
+        "homepage": "",
+        "owner": "hercules-ci",
+        "repo": "hercules-ci-agent",
+        "rev": "c5ea4b24039d6d75d1910d2007a97ba38dd50128",
+        "sha256": "07i5xcl9n4r9w58lq99l70iqzcmhybbdw97wyk83jfs40mz3v141",
+        "type": "tarball",
+        "url": "https://github.com/hercules-ci/hercules-ci-agent/archive/c5ea4b24039d6d75d1910d2007a97ba38dd50128.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
     "hydra": {
         "branch": "iohk-19.03",
         "description": "Hydra, the Nix-based continuous build system",

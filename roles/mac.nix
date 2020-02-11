@@ -23,6 +23,14 @@
         destDir = "/var/lib/macos-vm-persistent-config-signing/buildkite";
         keyFile = ../secrets/buildkite-hook;
       };
+      "cluster-join-token.key" = {
+        destDir = "/var/lib/macos-vm-persistent-config-ci/hercules";
+        keyFile = ../secrets/hercules-ci-token.key;
+      };
+      "binary-caches.json" = {
+        destDir = "/var/lib/macos-vm-persistent-config-ci/hercules";
+        keyFile = ../secrets/cachix-binary-caches.json;
+      };
     };
   };
 }

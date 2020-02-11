@@ -70,6 +70,18 @@
         "url": "https://github.com/LnL7/nix-darwin/archive/1d09aa2681bb3fbebb6cf9a40c21c6c871117146.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
+    "nix-darwin-hercules": {
+        "branch": "master",
+        "description": "nix modules for darwin",
+        "homepage": "",
+        "owner": "hercules-ci",
+        "repo": "nix-darwin",
+        "rev": "e2277706f08d7d1a77e86e5628352e4a1ef66eab",
+        "sha256": "1iwgqph71785qikhymyvb48v6xzzy0skqbdgpcr4sp04jiwkmrvi",
+        "type": "tarball",
+        "url": "https://github.com/hercules-ci/nix-darwin/archive/e2277706f08d7d1a77e86e5628352e4a1ef66eab.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
     "nixops-core": {
         "branch": "nixops-core-pr-int",
         "description": "NixOps, the NixOS-based cloud deployment tool",

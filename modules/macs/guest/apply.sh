@@ -109,6 +109,13 @@ EOF
     fi
 )
 (
+    if [ -d /Volumes/CONFIG/hercules ]
+    then
+      mkdir -p /var/lib/hercules-ci-agent/
+      cp -a /Volumes/CONFIG/hercules /var/lib/hercules-ci-agent/secrets
+    fi
+)
+(
     # shellcheck disable=SC2031
     export USER=root
     # shellcheck disable=SC2031
@@ -122,7 +129,8 @@ EOF
     cp -vf /Volumes/CONFIG/darwin-configuration.nix ~nixos/.nixpkgs/darwin-configuration.nix
     cp -vrf /Volumes/CONFIG/ci-ops ~nixos/.nixpkgs/ci-ops
     chown -R nixos ~nixos/.nixpkgs
-    sudo -i -H -u nixos -- darwin-rebuild switch
+    sudo -i -H -u nixos -- darwin-rebuild switch --option substituters "http://@host@:8081" \
+      --option trusted-public-keys "hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ= cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
 )
 (
     if [ -f /Volumes/CONFIG/signing-config.json ]; then

@@ -14,6 +14,11 @@ in with lib; {
   system.activationScripts.applications.text = ''
     mkdir -p ${herculesHome}/secrets
     chown -R hercules-ci-agent ${herculesHome}
-    chmod -R 0600 ${herculesHome}/secrets
+    chmod 0700 ${herculesHome}/secrets
+    chmod 0600 ${herculesHome}/secrets/*
+  '';
+  system.activationScripts.preActivation.text = ''
+    set -x
+    dscl . -read /Users/hercules-ci-agent || true
   '';
 }

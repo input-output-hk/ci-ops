@@ -74,10 +74,10 @@ in with lib; {
     users.knownUsers = [ "buildkite-agent" ];
     users.knownGroups = [ "buildkite-agent" ];
     users.users.buildkite-agent = {
-      uid = 532;
-      gid = 532;
+      uid = 727;
+      gid = 727;
     };
-    users.groups.buildkite-agent.gid = 532;
+    users.groups.buildkite-agent.gid = 727;
 
     # Fix up group membership and perms on secrets directory.
     # Ensure that buildkite-agent home directory exists with correct

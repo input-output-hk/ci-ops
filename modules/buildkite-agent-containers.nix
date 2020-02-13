@@ -93,7 +93,10 @@ in with lib;
           services.monitoring-exporters.enable = false;
           services.ntp.enable = mkForce false;
 
-          systemd.services.buildkite-agent.serviceConfig.LimitNOFILE = 1024 * 512;
+          systemd.services.buildkite-agent.serviceConfig = {
+            ExecStart = mkForce "${config.services.buildkite-agent.package}/bin/buildkite-agent start --config /var/lib/buildkite-agent/buildkite-agent.cfg";
+            LimitNOFILE = 1024 * 512;
+          };
 
           services.buildkite-agent = {
             enable = true;
@@ -169,6 +172,7 @@ in with lib;
     };
   in {
     users.users.root.openssh.authorizedKeys.keys = ssh-keys.ciInfra;
+    services.buildkite-agent.package = pkgs.buildkite-agent;
 
     # To go on the host -- and get shared to the container(s)
     deployment.keys = {

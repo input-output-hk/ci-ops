@@ -121,7 +121,6 @@ EOF
     # shellcheck disable=SC2031
     export HOME=~root
 
-    rm -f /etc/nix/nix.conf
     rm -f /etc/bashrc
     ln -s /etc/static/bashrc /etc/bashrc
     # shellcheck disable=SC1091
@@ -129,8 +128,9 @@ EOF
     cp -vf /Volumes/CONFIG/darwin-configuration.nix ~nixos/.nixpkgs/darwin-configuration.nix
     cp -vrf /Volumes/CONFIG/ci-ops ~nixos/.nixpkgs/ci-ops
     chown -R nixos ~nixos/.nixpkgs
-    sudo -i -H -u nixos -- darwin-rebuild switch --option substituters "http://@host@:8081" \
-      --option trusted-public-keys "hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ= cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
+    sudo -i -H -u nixos -- darwin-rebuild build
+    rm -f /etc/nix/nix.conf
+    sudo -i -H -u nixos -- darwin-rebuild switch
 )
 (
     if [ -f /Volumes/CONFIG/signing-config.json ]; then

@@ -1,7 +1,7 @@
 { config, lib, pkgs, ... }:
 let
   sources = import ../../nix/sources.nix;
-  herculesDarwinPkg = (import sources.hercules-ci-agent-darwin {}).hercules-ci-agent;
+  herculesDarwinPkg = (import sources.hercules-ci-agent-darwin { system = "x86_64-darwin"; }).hercules-ci-agent;
   herculesHome = "/var/lib/hercules-ci-agent";
 in with lib; {
   services.hercules-ci-agent = {

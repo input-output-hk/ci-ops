@@ -31,6 +31,7 @@ in {
   boot.kernel.sysctl = {
     ## DEVOPS-592
     "kernel.unprivileged_bpf_disabled" = 1;
+    "vm.swappiness" = 0;
   };
 
   users.mutableUsers = false;

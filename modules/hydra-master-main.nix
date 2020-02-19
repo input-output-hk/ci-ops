@@ -72,6 +72,7 @@ in {
     binaryCaches = mkForce [ "https://cache.nixos.org" ];
   };
 
+  systemd.services.hydra-evaluator.environment.GC_INITIAL_HEAP_SIZE = toString (1024*1024*1024*5); # 5gig
   services.hydra = {
     hydraURL = "https://hydra.iohk.io";
     package = pkgs.callPackage ../pkgs/hydra.nix {};

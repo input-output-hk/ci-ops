@@ -106,6 +106,7 @@ in {
         { jobset = "cardano-shell"; inputs = "cardano-shell"; }
         { jobset = "cardano-node"; inputs = "cardano-node"; }
         { jobset = "cardano-explorer"; inputs = "cardano-explorer"; }
+        { jobset = "cardano-rest"; inputs = "cardano-rest"; }
         { jobset = "jormungandr"; inputs = "jormungandr"; }
         { jobset = "cardano"; inputs = "cardano"; }
         { jobset = "plutus"; inputs = "plutus"; }

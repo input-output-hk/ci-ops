@@ -28,14 +28,16 @@ in with lib;
 
       containerList = mkOption {
         type = types.listOf types.attrs;
-        default = [ ];
+        default = [
+          { containerName = "ci${cfg.hostIdSuffix}-1"; guestIp = "10.254.1.11"; prio = "9"; }
+          { containerName = "ci${cfg.hostIdSuffix}-2"; guestIp = "10.254.1.12"; prio = "8"; }
+          { containerName = "ci${cfg.hostIdSuffix}-3"; guestIp = "10.254.1.13"; prio = "7"; }
+          { containerName = "ci${cfg.hostIdSuffix}-4"; guestIp = "10.254.1.14"; prio = "6"; }
+        ];
         description = ''
-          This parameter allows container customization on a per server basis.  If
-          left as a default empty list, a predefined and fixed deployment of
-          containers will pushed to each host which includes this module.  If this
-          option is provided a list of attributes, each representing a Buildkite
-          container, this list of containers will be used instead of the predefined
-          list. Note that container names cannot be more than 7 characters.
+          This parameter allows container customization on a per server basis.
+          The default is for 4 buildkite containers.
+          Note that container names cannot be more than 7 characters.
         '';
         example = ''
           [ { containerName = "ci1-1"; guestIp = "10.254.1.11"; metadata = "system=x86_64-linux,queue=custom"; }
@@ -52,7 +54,7 @@ in with lib;
       weeklyCachePurgeOnCalendar = mkOption {
         type = types.str;
         default = "Sat *-*-* 00:00:00";
-        description = "The default weekly day and time to perform a weekly /cache dir purge, if enabled.  Uses systemd onCalendar format.";
+        description = "The default weekly day and time to perform a weekly /cache dir and swap purge, if enabled.  Uses systemd onCalendar format.";
       };
     };
   };
@@ -93,7 +95,10 @@ in with lib;
           services.monitoring-exporters.enable = false;
           services.ntp.enable = mkForce false;
 
-          systemd.services.buildkite-agent.serviceConfig.LimitNOFILE = 1024 * 512;
+          systemd.services.buildkite-agent.serviceConfig = {
+            ExecStart = mkForce "${config.services.buildkite-agent.package}/bin/buildkite-agent start --config /var/lib/buildkite-agent/buildkite-agent.cfg";
+            LimitNOFILE = 1024 * 512;
+          };
 
           services.buildkite-agent = {
             enable = true;
@@ -169,6 +174,7 @@ in with lib;
     };
   in {
     users.users.root.openssh.authorizedKeys.keys = ssh-keys.ciInfra;
+    services.buildkite-agent.package = pkgs.buildkite-agent;
 
     # To go on the host -- and get shared to the container(s)
     deployment.keys = {
@@ -253,7 +259,11 @@ in with lib;
     services.fstrim.interval = "daily";
 
     systemd.services.weekly-cache-purge = mkIf cfg.weeklyCachePurge {
-      script = "rm -rf /cache/* || true";
+      script = ''
+        rm -rf /cache/* || true
+        swapoff -a
+        swapon -a
+      '';
     };
 
     systemd.timers.weekly-cache-purge = mkIf cfg.weeklyCachePurge {
@@ -264,14 +274,6 @@ in with lib;
       wantedBy = [ "timers.target" ];
     };
 
-    containers = let
-      buildkiteContainerList = if (length cfg.containerList == 0) then ([
-        { containerName = "ci${cfg.hostIdSuffix}-1"; guestIp = "10.254.1.11"; prio = "9"; }
-        { containerName = "ci${cfg.hostIdSuffix}-2"; guestIp = "10.254.1.12"; prio = "8"; }
-        { containerName = "ci${cfg.hostIdSuffix}-3"; guestIp = "10.254.1.13"; prio = "7"; }
-        { containerName = "ci${cfg.hostIdSuffix}-4"; guestIp = "10.254.1.14"; prio = "6"; }
-      ]) else cfg.containerList;
-    in
-      builtins.listToAttrs (map createBuildkiteContainer buildkiteContainerList);
+    containers = builtins.listToAttrs (map createBuildkiteContainer cfg.containerList);
   };
 }

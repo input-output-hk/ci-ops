@@ -109,12 +109,18 @@ EOF
     fi
 )
 (
+    if [ -d /Volumes/CONFIG/hercules ]
+    then
+      mkdir -p /var/lib/hercules-ci-agent/
+      cp -a /Volumes/CONFIG/hercules /var/lib/hercules-ci-agent/secrets
+    fi
+)
+(
     # shellcheck disable=SC2031
     export USER=root
     # shellcheck disable=SC2031
     export HOME=~root
 
-    rm -f /etc/nix/nix.conf
     rm -f /etc/bashrc
     ln -s /etc/static/bashrc /etc/bashrc
     # shellcheck disable=SC1091
@@ -122,6 +128,8 @@ EOF
     cp -vf /Volumes/CONFIG/darwin-configuration.nix ~nixos/.nixpkgs/darwin-configuration.nix
     cp -vrf /Volumes/CONFIG/ci-ops ~nixos/.nixpkgs/ci-ops
     chown -R nixos ~nixos/.nixpkgs
+    sudo -i -H -u nixos -- darwin-rebuild build
+    rm -f /etc/nix/nix.conf
     sudo -i -H -u nixos -- darwin-rebuild switch
 )
 (

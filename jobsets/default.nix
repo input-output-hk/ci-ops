@@ -38,6 +38,7 @@
 , cardanoNodePrsJSON ? ./simple-pr-dummy.json
 , cardanoBasePrsJSON ? ./simple-pr-dummy.json
 , cardanoRestPrsJSON ? ./simple-pr-dummy.json
+, cardanoDbSyncPrsJSON ? ./simple-pr-dummy.json
 , iohkNixPrsJSON ? ./simple-pr-dummy.json
 , ciOpsPrsJSON ? ./simple-pr-dummy.json
 , haskellNixPrsJSON ? ./simple-pr-dummy.json
@@ -227,6 +228,13 @@ let
       description = "Cardano REST API";
       url = "https://github.com/input-output-hk/cardano-rest.git";
       prs = cardanoRestPrsJSON;
+      bors = true;
+    };
+
+    cardano-db-sync = {
+      description = "Cardano DB Sync";
+      url = "https://github.com/input-output-hk/cardano-db-sync.git";
+      prs = cardanoDbSyncPrsJSON;
       bors = true;
     };
 

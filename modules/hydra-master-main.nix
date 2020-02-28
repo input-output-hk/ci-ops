@@ -108,6 +108,7 @@ in {
         { jobset = "cardano-node"; inputs = "cardano-node"; }
         { jobset = "cardano-explorer"; inputs = "cardano-explorer"; }
         { jobset = "cardano-rest"; inputs = "cardano-rest"; }
+        { jobset = "cardano-db-sync"; inputs = "cardano-db-sync"; }
         { jobset = "jormungandr"; inputs = "jormungandr"; }
         { jobset = "cardano"; inputs = "cardano"; }
         { jobset = "plutus"; inputs = "plutus"; }

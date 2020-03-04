@@ -166,7 +166,7 @@ let
     iohk-monitoring = {
       description = "IOHK Monitoring Framework";
       url = "https://github.com/input-output-hk/iohk-monitoring-framework.git";
-      branch = "develop";
+      branch = "master";
       prs = iohkMonitoringPrsJSON;
       bors = true;
     };

@@ -12,27 +12,27 @@
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "hercules-ci-agent": {
-        "branch": "stable",
+        "branch": "master",
         "description": "https://hercules-ci.com build agent",
         "homepage": "",
         "owner": "hercules-ci",
         "repo": "hercules-ci-agent",
-        "rev": "c5ebe9f3de174c16cceb656b8244e3d5deb177a6",
-        "sha256": "07i5xcl9n4r9w58lq99l70iqzcmhybbdw97wyk83jfs40mz3v141",
+        "rev": "1caf41b583f309a3eefad15eda2013148028f25a",
+        "sha256": "0agjxk6gb8mbgils94bpl4lqnz0gq0j54gh5c1dw6w22cl30csf0",
         "type": "tarball",
-        "url": "https://github.com/hercules-ci/hercules-ci-agent/archive/c5ebe9f3de174c16cceb656b8244e3d5deb177a6.tar.gz",
+        "url": "https://github.com/hercules-ci/hercules-ci-agent/archive/1caf41b583f309a3eefad15eda2013148028f25a.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "hercules-ci-agent-darwin": {
-        "branch": "hercules-ci-agent-0.6.2",
+        "branch": "hercules-ci-agent-0.6.3",
         "description": "https://hercules-ci.com build agent",
         "homepage": "",
         "owner": "hercules-ci",
         "repo": "hercules-ci-agent",
-        "rev": "c5ea4b24039d6d75d1910d2007a97ba38dd50128",
-        "sha256": "07i5xcl9n4r9w58lq99l70iqzcmhybbdw97wyk83jfs40mz3v141",
+        "rev": "04a8ae8c99506cfdbeaef141d7387f38c196a4ac",
+        "sha256": "051095amk3zr9cbbgb9d9d91ni44nygb2nckgnc0adn5j5mnzzf7",
         "type": "tarball",
-        "url": "https://github.com/hercules-ci/hercules-ci-agent/archive/c5ea4b24039d6d75d1910d2007a97ba38dd50128.tar.gz",
+        "url": "https://github.com/hercules-ci/hercules-ci-agent/archive/04a8ae8c99506cfdbeaef141d7387f38c196a4ac.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "hydra": {
@@ -83,15 +83,15 @@
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "nix-darwin-hercules": {
-        "branch": "master",
+        "branch": "hercules-ci-agent-releasing-0.6.3",
         "description": "nix modules for darwin",
         "homepage": "",
         "owner": "hercules-ci",
         "repo": "nix-darwin",
-        "rev": "e2277706f08d7d1a77e86e5628352e4a1ef66eab",
-        "sha256": "1iwgqph71785qikhymyvb48v6xzzy0skqbdgpcr4sp04jiwkmrvi",
+        "rev": "5769c2e65494ee6344b00964ad3157b819e43d38",
+        "sha256": "06w43ssb4pyywmkxb61jsh6ks56gbngf7ivr959wg9rfy1zk4slx",
         "type": "tarball",
-        "url": "https://github.com/hercules-ci/nix-darwin/archive/e2277706f08d7d1a77e86e5628352e4a1ef66eab.tar.gz",
+        "url": "https://github.com/hercules-ci/nix-darwin/archive/5769c2e65494ee6344b00964ad3157b819e43d38.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "nixops-core": {

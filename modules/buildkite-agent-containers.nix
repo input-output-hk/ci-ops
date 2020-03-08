@@ -261,8 +261,8 @@ in with lib;
     systemd.services.weekly-cache-purge = mkIf cfg.weeklyCachePurge {
       script = ''
         rm -rf /cache/* || true
-        swapoff -a
-        swapon -a
+        ${pkgs.utillinux}/bin/swapoff -a
+        ${pkgs.utillinux}/bin/swapon -a
       '';
     };
 

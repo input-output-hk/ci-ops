@@ -8,6 +8,9 @@
     '';
     wantedBy = [ "multi-user.target" ];
   };
+  boot.kernelParams = [
+    "zfs.zfs_arc_max=${toString (1024*1024*1024*10)}"
+  ];
   deployment.packet = {
     plan = "c2.medium.x86";
     reservationId = "next-available";

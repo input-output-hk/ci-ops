@@ -11,10 +11,10 @@
 
   services = {
     auto-gc = {
-      nixAutoMaxFreedGB  = 150;
-      nixAutoMinFreeGB   = 120;
-      nixHourlyMaxFreedGB = 150;
-      nixHourlyMinFreeGB = 100;
+      nixAutoMaxFreedGB  = 260;
+      nixAutoMinFreeGB   = 160;
+      nixHourlyMaxFreedGB = 260;
+      nixHourlyMinFreeGB = 150;
       nixWeeklyGcFull = false;
     };
     hydra-monitor = {

@@ -146,13 +146,17 @@ EOF
         security show-keychain-info ci-signing.keychain
         security import /Volumes/CONFIG/iohk-sign.p12 -P "$SIGNING" -k "ci-signing.keychain" -T /usr/bin/productsign
         security set-key-partition-list -S apple-tool:,apple: -s -k "$KEYCHAIN" "ci-signing.keychain"
+        security import /Volumes/CONFIG/iohk-codesign.cer -k /Library/Keychains/System.keychain
+        security import /Volumes/CONFIG/iohk-codesign.p12 -P "$CODESIGNING" -k /Library/Keychains/System.keychain -T /usr/bin/codesign
+
         cp /private/var/root/Library/Keychains/ci-signing.keychain-db /Users/nixos/Library/Keychains/
         chown nixos:staff /Users/nixos/Library/Keychains/ci-signing.keychain-db
         mkdir -p /var/lib/buildkite-agent
         cp /private/var/root/Library/Keychains/ci-signing.keychain-db /var/lib/buildkite-agent/
         cp /Volumes/CONFIG/signing.sh /var/lib/buildkite-agent/
         cp /Volumes/CONFIG/signing-config.json /var/lib/buildkite-agent/
-        chown buildkite-agent:admin /var/lib/buildkite-agent/{ci-signing.keychain-db,signing.sh,signing-config.json}
+        cp /Volumes/CONFIG/code-signing-config.json /var/lib/buildkite-agent/
+        chown buildkite-agent:admin /var/lib/buildkite-agent/{ci-signing.keychain-db,signing.sh,signing-config.json,code-signing-config.json}
         chmod 0400 /var/lib/buildkite-agent/signing.sh
         export KEYCHAIN
         sudo -Eu nixos -- security unlock-keychain -p "$KEYCHAIN" /Users/nixos/Library/Keychains/ci-signing.keychain-db

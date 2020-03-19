@@ -146,7 +146,9 @@ in {
         device = "tank/nix";
       };
       "/boot" = {
-        label = "EFI";
+        # WARNING, this will find the guest /boot within zfs, not the host /boot on nvme
+        # label = "EFI";
+        device = "/dev/nvme0n1p1";
         fsType = "vfat";
       };
     };

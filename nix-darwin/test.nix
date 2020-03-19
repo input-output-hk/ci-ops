@@ -3,7 +3,6 @@
 let
   sources = import ../nix/sources.nix;
   pkgs = import (sources.nixpkgs) {};
-  #inherit (sources) nix-darwin;
   nix-darwin = sources.nix-darwin-hercules;
   system = (import nix-darwin {
     nixpkgs = sources.nixpkgs;
@@ -17,8 +16,6 @@ let
   guestConfDir = pkgs.runCommand "guest-config-dir" {
     inherit host port hostname;
     nixDarwinUrl = nix-darwin.url;
-    #nixDarwinUrl = "https://github.com/LnL7/nix-darwin/archive/1d09aa2681bb3fbebb6cf9a40c21c6c871117146.tar.gz";
-    #nixDarwinUrl = "https://github.com/hercules-ci/nix-darwin/archive/e2277706f08d7d1a77e86e5628352e4a1ef66eab.tar.gz";
   } ''
     mkdir -pv $out
     cd $out

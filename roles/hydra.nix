@@ -11,11 +11,12 @@
 
   services = {
     auto-gc = {
-      nixAutoMaxFreedGB  = 150;
-      nixAutoMinFreeGB   = 120;
-      nixHourlyMaxFreedGB = 150;
-      nixHourlyMinFreeGB = 100;
-      nixWeeklyGcFull = false;
+      nixAutoMaxFreedGB  = 260;
+      nixAutoMinFreeGB   = 160;
+      nixHourlyMaxFreedGB = 260;
+      nixHourlyMinFreeGB = 150;
+      nixWeeklyGcFull = true;
+      nixWeeklyGcOnCalendar = "Sat *-*-* 00:00:00";
     };
     hydra-monitor = {
       enable = true;

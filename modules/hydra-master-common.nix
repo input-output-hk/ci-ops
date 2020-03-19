@@ -2,8 +2,8 @@
 
 with lib; {
   nix = {
+    # autoOptimiseStore = true;
     extraOptions = ''
-      auto-optimise-store = true
       allowed-uris = https://github.com/NixOS https://github.com/input-output-hk
 
       # Max of 2 hours to build any given derivation on Linux.

@@ -15,7 +15,8 @@
       nixAutoMinFreeGB   = 160;
       nixHourlyMaxFreedGB = 260;
       nixHourlyMinFreeGB = 150;
-      nixWeeklyGcFull = false;
+      nixWeeklyGcFull = true;
+      nixWeeklyGcOnCalendar = "Sat *-*-* 00:00:00";
     };
     hydra-monitor = {
       enable = true;

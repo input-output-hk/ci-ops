@@ -11,10 +11,8 @@
 
   services = {
     auto-gc = {
-      nixAutoMaxFreedGB  = 260;
-      nixAutoMinFreeGB   = 160;
-      nixHourlyMaxFreedGB = 260;
-      nixHourlyMinFreeGB = 150;
+      nixAutoGcEnable = false;
+      nixHourlyGcEnable = false;
       nixWeeklyGcFull = true;
       nixWeeklyGcOnCalendar = "Sat *-*-* 00:00:00";
     };

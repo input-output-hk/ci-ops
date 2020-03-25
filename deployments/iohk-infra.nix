@@ -4,6 +4,7 @@ let
 
   cluster = import ../clusters/iohk-infra.nix {
     targetEnv = "packet";
+    smaller = ../physical/packet/t3.small.nix;
     small = ../physical/packet/c1.small.nix;
     small-cpr = ../physical/packet/c1-cpr.small.nix;
     medium = ../physical/packet/c2.medium.nix;

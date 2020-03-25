@@ -1,4 +1,4 @@
-{ targetEnv, small, small-cpr, medium, medium-cpr, medium-cpr-reserved }:
+{ targetEnv, smaller, small, small-cpr, medium, medium-cpr, medium-cpr-reserved }:
 let
   mkNodes = import ../nix/mk-nodes.nix { inherit targetEnv; };
   mkMacs = import ../nix/mk-macs.nix;
@@ -6,7 +6,7 @@ let
   lib = pkgs.lib;
   globals = import ../globals.nix;
 
-  ipxeScriptUrl = "http://907e8786.packethost.net/result/x86/netboot.ipxe";
+  ipxeScriptUrl = "http://139.178.89.161/current/907e8786.packethost.net/result/x86/netboot.ipxe";
   facility = "ams1";
   reservationId = "next-available";
 
@@ -20,6 +20,20 @@ let
     deployment.packet = { inherit ipxeScriptUrl facility reservationId; };
     node.isBuildkite = true;
     node.isHydraSlave = true;
+    services.buildkite-containers.hostIdSuffix = hostIdSuffix;
+  };
+
+  mkBenchmarkBuildkite = hostIdSuffix: {
+    imports = [
+      smaller
+      ../roles/buildkite-benchmark-agent-container.nix
+    ];
+    deployment.packet = {
+      inherit ipxeScriptUrl;
+      facility = "sjc1";
+    };
+    node.isBuildkite = true;
+    node.isHydraSlave = false;
     services.buildkite-containers.hostIdSuffix = hostIdSuffix;
   };
 
@@ -44,6 +58,7 @@ let
     packet-ipxe-1 = mkHydraSlaveBuildkite "1";
     packet-ipxe-2 = mkHydraSlaveBuildkite "2";
     packet-ipxe-3 = mkHydraSlaveBuildkite "3";
+    packet-ipxe-4 = mkBenchmarkBuildkite "4";
   };
 
   macs = mkMacs {

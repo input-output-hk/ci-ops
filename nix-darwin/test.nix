@@ -13,7 +13,7 @@ let
 
   # this ensures that nix-darwin can find everything it needs, but wont see things it doesnt need
   # that prevents the guest from being rebooted when things it doesnt read get modified
-  guestConfDir = pkgs.runCommand "guest-config-dir" {
+  guestConfDir = pkgs.runCommand "guest-config-dir-${hostname}" {
     inherit host port hostname;
     nixDarwinUrl = nix-darwin.url;
   } ''

@@ -5,6 +5,12 @@ let
 in {
   options = {
     services.auto-gc = {
+      nixAutoGcEnable = mkOption {
+        type = types.bool;
+        default = true;
+        description = "Whether to perform an auto GC.  Default true.";
+      };
+
       nixAutoMaxFreedGB = mkOption {
         type = types.int;
         default = 110;
@@ -15,6 +21,12 @@ in {
         type = types.int;
         default = 30;
         description = "The minimum amount to trigger an auto GC at";
+      };
+
+      nixHourlyGcEnable = mkOption {
+        type = types.bool;
+        default = true;
+        description = "Whether to perform an hourly GC.  Default true.";
       };
 
       nixHourlyMaxFreedGB = mkOption {
@@ -43,7 +55,7 @@ in {
     };
   };
   config = {
-    nix = {
+    nix = mkIf cfg.nixAutoGcEnable {
       # This GC is run automatically by nix-build
       extraOptions = ''
         # Try to ensure between ${toString cfg.nixAutoMinFreeGB}G and ${toString cfg.nixAutoMaxFreedGB}G of free space by
@@ -54,7 +66,7 @@ in {
       '';
     };
 
-    systemd.services.gc-hourly = {
+    systemd.services.gc-hourly = mkIf cfg.nixHourlyGcEnable {
       script = ''
         free=$(${pkgs.coreutils}/bin/df --block-size=M --output=avail /nix/store | tail -n1 | sed s/M//)
         echo "Automatic GC: ''${free}M available"
@@ -65,7 +77,7 @@ in {
       '';
     };
 
-    systemd.timers.gc-hourly = {
+    systemd.timers.gc-hourly = mkIf cfg.nixHourlyGcEnable {
       timerConfig = {
         Unit = "gc-hourly.service";
         OnCalendar = "*-*-* *:15:00";

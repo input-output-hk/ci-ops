@@ -36,6 +36,7 @@
 , walletPrsJSON ? ./simple-pr-dummy.json
 , shellPrsJSON ? ./simple-pr-dummy.json
 , cardanoNodePrsJSON ? ./simple-pr-dummy.json
+, cardanoBenchmarkingPrsJSON ? ./simple-pr-dummy.json
 , cardanoBasePrsJSON ? ./simple-pr-dummy.json
 , cardanoRestPrsJSON ? ./simple-pr-dummy.json
 , cardanoDbSyncPrsJSON ? ./simple-pr-dummy.json
@@ -215,6 +216,13 @@ let
       description = "Cardano Node";
       url = "https://github.com/input-output-hk/cardano-node.git";
       prs = cardanoNodePrsJSON;
+      bors = true;
+    };
+
+    cardano-benchmarking = {
+      description = "Cardano benchmarks";
+      url = "https://github.com/input-output-hk/cardano-benchmarking.git";
+      prs = cardanoBenchmarkingPrsJSON;
       bors = true;
     };
 

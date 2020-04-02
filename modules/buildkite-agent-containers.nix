@@ -179,7 +179,7 @@ in with lib;
     # To go on the host -- and get shared to the container(s)
     deployment.keys = {
       aws-creds = {
-        keyFile = ./. + "/../secrets/buildkite-hook";
+        keyFile = ../secrets/buildkite-hook;
         destDir = "/var/lib/buildkite-agent/hooks";
         user    = "buildkite-agent";
         permissions = "0770";
@@ -187,7 +187,7 @@ in with lib;
 
       # Project-specific credentials to install on Buildkite agents.
       buildkite-extra-creds = {
-        keyFile = ./. + "/../secrets/buildkite-hook-extra-creds.sh";
+        keyFile = ../secrets/buildkite-hook-extra-creds.sh;
         destDir = "/var/lib/buildkite-agent/hooks";
         user    = "buildkite-agent";
         permissions = "0770";
@@ -195,42 +195,49 @@ in with lib;
 
       # SSH keypair for buildkite-agent user
       buildkite-ssh-private = {
-        keyFile = ./. + "/../secrets/buildkite-ssh";
+        keyFile = ../secrets/buildkite-ssh;
         user    = "buildkite-agent";
       };
       buildkite-ssh-public = {
-        keyFile = ./. + "/../secrets/buildkite-ssh.pub";
+        keyFile = ../secrets/buildkite-ssh.pub;
         user    = "buildkite-agent";
       };
 
       # GitHub deploy key for input-output-hk/hackage.nix
       buildkite-hackage-ssh-private = {
-        keyFile = ./. + "/../secrets/buildkite-hackage-ssh";
+        keyFile = ../secrets/buildkite-hackage-ssh;
         user    = "buildkite-agent";
       };
 
       # GitHub deploy key for input-output-hk/stackage.nix
       buildkite-stackage-ssh-private = {
-        keyFile = ./. + "/../secrets/buildkite-stackage-ssh";
+        keyFile = ../secrets/buildkite-stackage-ssh;
         user    = "buildkite-agent";
       };
 
       # GitHub deploy key for input-output-hk/haskell.nix
       # (used to update gh-pages documentation)
       buildkite-haskell-dot-nix-ssh-private = {
-        keyFile = ./. + "/../secrets/buildkite-haskell-dot-nix-ssh";
+        keyFile = ../secrets/buildkite-haskell-dot-nix-ssh;
+        user    = "buildkite-agent";
+      };
+
+      # GitHub deploy key for input-output-hk/cardano-wallet
+      # created with: ssh-keygen -t ed25519 -C "buildkite cardano-wallet" -f secrets/buildkite-cardano-wallet-ssh
+      buildkite-cardano-wallet-ssh-private = {
+        keyFile = ../secrets/buildkite-cardano-wallet-ssh;
         user    = "buildkite-agent";
       };
 
       # API Token for BuildKite
       buildkite-token = {
-        keyFile = ./. + "/../secrets/buildkite_token";
+        keyFile = ../secrets/buildkite_token;
         user    = "buildkite-agent";
       };
 
       # DockerHub password/token (base64-encoded in json)
       dockerhub-auth = {
-        keyFile = ./. + "/../secrets/dockerhub-auth-config.json";
+        keyFile = ../secrets/dockerhub-auth-config.json;
         user    = "buildkite-agent";
       };
     };

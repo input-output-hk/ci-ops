@@ -251,6 +251,7 @@ let
     cardano-explorer-app = {
       description = "Cardano Explorer App";
       url = "https://github.com/input-output-hk/cardano-explorer-app.git";
+      branch = "develop";
       prs = cardanoExplorerAppPrsJSON;
       bors = true;
     };

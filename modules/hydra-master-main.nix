@@ -28,7 +28,7 @@ let
     systems = [ "x86_64-linux" "i686-linux" ];
     maxJobs = 16;
   };
-  mkGithubStatus = { jobset, inputs }: ''
+  mkGithubStatus = { jobset, inputs ? jobset }: ''
     <githubstatus>
       jobs = Cardano:${jobset}.*:required
       inputs = ${inputs}
@@ -96,29 +96,32 @@ in {
       </github_authorization>
 
       ${mkStatusBlocks [
+        # the shorter names must be later in the list, or the regex will be greedy and never check the longer names
+        { jobset = "cardano-base"; }
+        { jobset = "cardano-benchmarking"; }
+        { jobset = "cardano-byron-proxy"; }
+        { jobset = "cardano-db-sync"; }
+        { jobset = "cardano-explorer-app"; }
+        { jobset = "cardano-explorer"; }
+        { jobset = "cardano-graphql"; }
+        { jobset = "cardano-ledger-specs"; }
+        { jobset = "cardano-ledger"; }
+        { jobset = "cardano-node"; }
+        { jobset = "cardano-prelude"; }
+        { jobset = "cardano-rest"; }
+        { jobset = "cardano-shell"; }
+        { jobset = "cardano-wallet"; }
+        { jobset = "cardano"; }
+        { jobset = "decentralized-software-updates"; }
+        { jobset = "haskell-nix"; }
+        { jobset = "iohk-monitoring"; }
+        { jobset = "iohk-nix"; }
         { jobset = "iohk-ops"; inputs = "jobsets"; }
-        { jobset = "cardano-base"; inputs = "cardano-base"; }
-        { jobset = "cardano-byron-proxy"; inputs = "cardano-byron-proxy"; }
-        { jobset = "cardano-prelude"; inputs = "cardano-prelude"; }
-        { jobset = "decentralized-software-updates"; inputs = "decentralized-software-updates"; }
-        { jobset = "cardano-ledger-specs"; inputs = "cardano-ledger-specs"; }
-        { jobset = "cardano-ledger"; inputs = "cardano-ledger"; }
-        { jobset = "cardano-wallet"; inputs = "cardano-wallet"; }
-        { jobset = "cardano-shell"; inputs = "cardano-shell"; }
-        { jobset = "cardano-node"; inputs = "cardano-node"; }
-        { jobset = "cardano-benchmarking"; inputs = "cardano-benchmarking"; }
-        { jobset = "cardano-explorer"; inputs = "cardano-explorer"; }
-        { jobset = "cardano-rest"; inputs = "cardano-rest"; }
-        { jobset = "cardano-db-sync"; inputs = "cardano-db-sync"; }
-        { jobset = "jormungandr"; inputs = "jormungandr"; }
-        { jobset = "cardano"; inputs = "cardano"; }
-        { jobset = "plutus"; inputs = "plutus"; }
-        { jobset = "log-classifier"; inputs = "log-classifier"; }
-        { jobset = "ouroboros-network"; inputs = "ouroboros-network"; }
-        { jobset = "iohk-monitoring"; inputs = "iohk-monitoring"; }
-        { jobset = "haskell-nix"; inputs = "haskell-nix"; }
-        { jobset = "tools"; inputs = "tools"; }
-        { jobset = "iohk-nix"; inputs = "iohk-nix"; }
+        { jobset = "jormungandr"; }
+        { jobset = "log-classifier"; }
+        { jobset = "ouroboros-network"; }
+        { jobset = "plutus"; }
+        { jobset = "tools"; }
       ]}
 
       # DEVOPS-1208 This CI status for cardano-sl is needed while the

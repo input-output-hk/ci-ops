@@ -26,7 +26,7 @@ let
     hostName = "localhost";
     mandatoryFeatures = [ "local" ];
     systems = [ "x86_64-linux" "i686-linux" ];
-    maxJobs = 16;
+    maxJobs = 8;
   };
   mkGithubStatus = { jobset, inputs ? jobset }: ''
     <githubstatus>
@@ -83,7 +83,7 @@ in {
       evaluator_max_heap_size = ${toString (5 * 1024 * 1024 * 1024)}
       max_db_connections = 50
 
-      max_concurrent_evals = 14
+      max_concurrent_evals = 4
 
       store_uri = s3://iohk-nix-cache?secret-key=/etc/nix/hydra.iohk.io-1/secret&log-compression=br&region=eu-central-1
       server_store_uri = https://iohk-nix-cache.s3-eu-central-1.amazonaws.com/

@@ -112,6 +112,7 @@ in {
         { jobset = "cardano-shell"; }
         { jobset = "cardano-wallet"; }
         { jobset = "cardano"; }
+        { jobset = "ci-ops"; }
         { jobset = "decentralized-software-updates"; }
         { jobset = "haskell-nix"; }
         { jobset = "iohk-monitoring"; }

@@ -35,6 +35,7 @@
          ,"cardanoRestPrsJSON": { "type": "githubpulls", "value": "input-output-hk cardano-rest", "emailresponsible": false }
          ,"cardanoDbSyncPrsJSON": { "type": "githubpulls", "value": "input-output-hk cardano-db-sync", "emailresponsible": false }
          ,"cardanoExplorerAppPrsJSON": { "type": "githubpulls", "value": "input-output-hk cardano-explorer-app", "emailresponsible": false }
+         ,"cardanoGraphQLPrsJSON": { "type": "githubpulls", "value": "input-output-hk cardano-graphql", "emailresponsible": false }
          ,"toolsPrsJSON": { "type": "githubpulls", "value": "input-output-hk tools", "emailresponsible": false }
          ,"explorerPrsJSON": { "type": "githubpulls", "value": "input-output-hk cardano-explorer", "emailresponsible": false }
          ,"jormungandrPrsJSON": { "type": "githubpulls", "value": "input-output-hk jormungandr-nix", "emailresponsible": false }

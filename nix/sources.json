@@ -24,15 +24,15 @@
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "hercules-ci-agent-darwin": {
-        "branch": "v0.6.5",
+        "branch": "v0.6.5-mod",
         "description": "https://hercules-ci.com build agent",
         "homepage": "",
-        "owner": "hercules-ci",
+        "owner": "johnalotoski",
         "repo": "hercules-ci-agent",
-        "rev": "73dcac6593c0aad714e50648a2ea28dffa655139",
-        "sha256": "07ik7azky899yahm4i12b0bh64q54g0k1nqh87rz31dmqvkxdwn3",
+        "rev": "d82d060cdd88fde1936626b4ea6ce4d46fcebaee",
+        "sha256": "12xrliak2xjh6f72ndzpzgdxdfah9jiv1yq3849p0m5rriwwp6a2",
         "type": "tarball",
-        "url": "https://github.com/hercules-ci/hercules-ci-agent/archive/73dcac6593c0aad714e50648a2ea28dffa655139.tar.gz",
+        "url": "https://github.com/johnalotoski/hercules-ci-agent/archive/d82d060cdd88fde1936626b4ea6ce4d46fcebaee.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "hydra": {
@@ -91,6 +91,7 @@
         "rev": "2ae46266db221ee6e49db6df34a051521b0b6627",
         "sha256": "1slipvxaj4jb4i7336prh1b3ad1g9rlbg16swxa9scba2zxwywws",
         "type": "tarball",
+        "builtin": false,
         "url": "https://github.com/hercules-ci/nix-darwin/archive/2ae46266db221ee6e49db6df34a051521b0b6627.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },

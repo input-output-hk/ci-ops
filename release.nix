@@ -9,10 +9,8 @@ in pkgs.lib.fix (self: {
   required = pkgs.releaseTools.aggregate {
     name = "required";
     constituents = with self; [
-      # Re-add once upstream impure hercules fetcher is fixed:
-      # error: access to URI 'https://github.com/hercules-ci/gitignore/archive/f9e996052b5af4032fe6150bba4a6fe4f7b9d698.tar.gz' is forbidden in restricted mode
-      #ci
-      #hydra-slave
+      ci
+      hydra-slave
       buildkite-agent
       signing
     ];

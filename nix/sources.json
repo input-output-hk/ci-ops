@@ -71,7 +71,7 @@
         "url": "https://github.com/NixOS/nixpkgs/archive/0ee9ceff38f1abd0fcb672841a40e75f6cbc2620.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
-    "hydra-nixpkgs-migrate-step-1": {
+    "hydra-migrate-nixpkgs-step-1": {
         "branch": "release-19.09",
         "description": "Nix Packages collection",
         "homepage": null,

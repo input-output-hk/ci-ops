@@ -41,6 +41,7 @@
 , cardanoRestPrsJSON ? ./simple-pr-dummy.json
 , cardanoDbSyncPrsJSON ? ./simple-pr-dummy.json
 , cardanoExplorerAppPrsJSON ? ./simple-pr-dummy.json
+, cardanoGraphQLPrsJSON ? ./simple-pr-dummy.json
 , iohkNixPrsJSON ? ./simple-pr-dummy.json
 , ciOpsPrsJSON ? ./simple-pr-dummy.json
 , haskellNixPrsJSON ? ./simple-pr-dummy.json
@@ -255,6 +256,15 @@ let
       prs = cardanoExplorerAppPrsJSON;
       bors = true;
     };
+
+    cardano-graphql = {
+      description = "Cardano GraphQL";
+      url = "https://github.com/input-output-hk/cardano-graphql.git";
+      branch = "master";
+      prs = cardanoGraphQLPrsJSON;
+      bors = true;
+    };
+
 
     tools = {
       description = "Loony Tools";

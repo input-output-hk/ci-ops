@@ -106,6 +106,7 @@ in {
         { jobset = "cardano-wallet"; inputs = "cardano-wallet"; }
         { jobset = "cardano-shell"; inputs = "cardano-shell"; }
         { jobset = "cardano-node"; inputs = "cardano-node"; }
+        { jobset = "cardano-benchmarking"; inputs = "cardano-benchmarking"; }
         { jobset = "cardano-explorer"; inputs = "cardano-explorer"; }
         { jobset = "cardano-rest"; inputs = "cardano-rest"; }
         { jobset = "cardano-db-sync"; inputs = "cardano-db-sync"; }

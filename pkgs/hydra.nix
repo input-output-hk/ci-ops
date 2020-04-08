@@ -23,7 +23,7 @@ let
   #hydraNixpkgs = import sources.hydra-migrate-nixpkgs-step-1 { };
   #hydraPatches = [ ];
 
-  # Step 2 -- Final commit; move to upstream master + IOHK customization
+  # Step 2 -- Final commit; move to upstream master + IOHK customization cherry picks
   #
   #hydraSrc = sources.hydra;
   #hydraNixpkgs = import sources.hydra-nixpkgs { };

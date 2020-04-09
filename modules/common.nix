@@ -64,7 +64,7 @@ in {
     useSandbox = true;
 
     # make sure we have enough build users
-    nrBuildUsers = 32;
+    nrBuildUsers = 64;
 
     # if our hydra is down, don't wait forever
     extraOptions = ''

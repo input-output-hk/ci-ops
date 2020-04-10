@@ -42,6 +42,7 @@
 , cardanoDbSyncPrsJSON ? ./simple-pr-dummy.json
 , cardanoExplorerAppPrsJSON ? ./simple-pr-dummy.json
 , cardanoGraphQLPrsJSON ? ./simple-pr-dummy.json
+, cardanoFaucetPrsJSON ? ./simple-pr-dummy.json
 , iohkNixPrsJSON ? ./simple-pr-dummy.json
 , ciOpsPrsJSON ? ./simple-pr-dummy.json
 , haskellNixPrsJSON ? ./simple-pr-dummy.json
@@ -265,6 +266,12 @@ let
       bors = true;
     };
 
+    cardano-faucet = {
+      description = "Cardano Faucet";
+      url = "https://github.com/input-output-hk/cardano-faucet.git";
+      prs = cardanoFaucetPrsJSON;
+      bors = true;
+    };
 
     tools = {
       description = "Loony Tools";

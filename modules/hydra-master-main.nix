@@ -103,6 +103,7 @@ in {
         { jobset = "cardano-db-sync"; }
         { jobset = "cardano-explorer-app"; }
         { jobset = "cardano-explorer"; }
+        { jobset = "cardano-faucet"; }
         { jobset = "cardano-graphql"; }
         { jobset = "cardano-ledger-specs"; }
         { jobset = "cardano-ledger"; }

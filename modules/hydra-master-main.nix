@@ -103,6 +103,7 @@ in {
         { jobset = "cardano-db-sync"; }
         { jobset = "cardano-explorer-app"; }
         { jobset = "cardano-explorer"; }
+        { jobset = "cardano-faucet"; }
         { jobset = "cardano-graphql"; }
         { jobset = "cardano-ledger-specs"; }
         { jobset = "cardano-ledger"; }
@@ -112,6 +113,7 @@ in {
         { jobset = "cardano-shell"; }
         { jobset = "cardano-wallet"; }
         { jobset = "cardano"; }
+        { jobset = "ci-ops"; }
         { jobset = "decentralized-software-updates"; }
         { jobset = "haskell-nix"; }
         { jobset = "iohk-monitoring"; }

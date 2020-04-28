@@ -41,22 +41,10 @@
         "homepage": "http://nixos.org/hydra",
         "owner": "input-output-hk",
         "repo": "hydra",
-        "rev": "118ea10dd1c4a19435f624f813b8475d4182cb0d",
-        "sha256": "10ahyfz87hhbdfcrmd7la1rzjw8xn4k73mp042db46b83rafxrgk",
+        "rev": "ce348bcec60f19ff4b881e7b335e42702f14d96b",
+        "sha256": "0panfm8y8y5pscdwxdyig0v79xkb62q28cgf3fkblkvh46s15sqa",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/hydra/archive/118ea10dd1c4a19435f624f813b8475d4182cb0d.tar.gz",
-        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
-    },
-    "hydra-legacy": {
-        "branch": "iohk-19.03",
-        "description": "Hydra, the Nix-based continuous build system",
-        "homepage": "http://nixos.org/hydra",
-        "owner": "input-output-hk",
-        "repo": "hydra",
-        "rev": "0768891e3cd3ef067d28742098f1dea8462fca75",
-        "sha256": "1aw3p7jm2gsakdqqx4pzhkfx12hh1nxk3wkabcvml5ci814f6jic",
-        "type": "tarball",
-        "url": "https://github.com/input-output-hk/hydra/archive/0768891e3cd3ef067d28742098f1dea8462fca75.tar.gz",
+        "url": "https://github.com/input-output-hk/hydra/archive/ce348bcec60f19ff4b881e7b335e42702f14d96b.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "hydra-nixpkgs": {
@@ -69,30 +57,6 @@
         "sha256": "12cwvb8wm3grl39ir0w75n7b5zm59f1lv6xl3k9cjc2zvq5dsd8d",
         "type": "tarball",
         "url": "https://github.com/NixOS/nixpkgs/archive/0ee9ceff38f1abd0fcb672841a40e75f6cbc2620.tar.gz",
-        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
-    },
-    "hydra-migrate-nixpkgs-step-1": {
-        "branch": "release-19.09",
-        "description": "Nix Packages collection",
-        "homepage": null,
-        "owner": "NixOS",
-        "repo": "nixpkgs",
-        "rev": "3b5d08f5b8a2ec5b5eb0e1502892134dcf886f5e",
-        "sha256": "14qa87ilkvg86w7q1mniq2ykl65hwcg6yx7x1j1adnmffxa54j65",
-        "type": "tarball",
-        "url": "https://github.com/NixOS/nixpkgs/archive/3b5d08f5b8a2ec5b5eb0e1502892134dcf886f5e.tar.gz",
-        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
-    },
-    "hydra-migrate-step-1": {
-        "branch": "master",
-        "description": "Hydra, the Nix-based continuous build system",
-        "homepage": "http://nixos.org/hydra",
-        "owner": "NixOS",
-        "repo": "hydra",
-        "rev": "add4f610ce6f206fb44702b5a894d877b3a30e3a",
-        "sha256": "1d8hdgjx2ys0zmixi2ydmimdq7ml20h1ji4amwawcyw59kssh6l3",
-        "type": "tarball",
-        "url": "https://github.com/NixOS/hydra/archive/add4f610ce6f206fb44702b5a894d877b3a30e3a.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "iohk-nix": {
@@ -188,18 +152,6 @@
         "sha256": "15ba2rrgr948h9mawirzs898w7kn2wzny4075ylgv3000hihqvyk",
         "type": "tarball",
         "url": "https://github.com/NixOS/nixpkgs/archive/f79f998f3163481a4d4ae90e8ea516df3980fe9f.tar.gz",
-        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
-    },
-    "nixpkgs-old": {
-        "branch": "nixos-19.09",
-        "description": "A read-only mirror of NixOS/nixpkgs tracking the released channels. Send issues and PRs to",
-        "homepage": "https://github.com/NixOS/nixpkgs",
-        "owner": "NixOS",
-        "repo": "nixpkgs-channels",
-        "rev": "8e1fdad7c69a055b431580db717d6d9270e18175",
-        "sha256": "1m3glylq7vxca3h8r99s3ga5arvblkz6ipc2vvzs83zzr9gdn1p5",
-        "type": "tarball",
-        "url": "https://github.com/NixOS/nixpkgs-channels/archive/8e1fdad7c69a055b431580db717d6d9270e18175.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "ops-lib": {

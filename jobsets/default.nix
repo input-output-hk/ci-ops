@@ -320,6 +320,10 @@ let
     schedulingshares = 420;
   };
 
+  keepNone = jobset: jobset // {
+    keepnr = 0;
+  };
+
   # Removes PRs which have any of the labels in ./pr-excluded-labels.nix
   exclusionFilter = let
     excludedLabels = import ./pr-excluded-labels.nix;
@@ -376,7 +380,7 @@ let
     in addInputs extraInputs js;
   in [
     (nameValuePair "${name}-bors-staging" (highPrio (jobset "staging")))
-    (nameValuePair "${name}-bors-trying" (jobset "trying"))
+    (nameValuePair "${name}-bors-trying" (keepNone (jobset "trying")))
   ];
 
   # Make all the jobsets for a project repo, according to the "repos" spec above.

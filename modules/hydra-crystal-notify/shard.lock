@@ -1,0 +1,14 @@
+version: 1.0
+shards:
+  db:
+    github: crystal-lang/crystal-db
+    version: 0.9.0
+
+  deep-merge:
+    github: johnalotoski/deep-merge.cr
+    commit: b6f69578bbee369edfc5fa6bc785122a157618db
+
+  pg:
+    github: will/crystal-pg
+    version: 0.21.0
+

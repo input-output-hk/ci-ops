@@ -1,0 +1,50 @@
+{
+    "gitignore": {
+        "branch": "master",
+        "description": "Nix function for filtering local git sources",
+        "homepage": "",
+        "owner": "hercules-ci",
+        "repo": "gitignore",
+        "rev": "31860d428b0d6cc03fb7ca9eca8b99dc3750ee5e",
+        "sha256": "1km1nryf41f0xc7n632vqc8p7wgx5lz7nmz3qm5zj1dr6260jk3m",
+        "type": "tarball",
+        "url": "https://github.com/hercules-ci/gitignore/archive/31860d428b0d6cc03fb7ca9eca8b99dc3750ee5e.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "niv": {
+        "branch": "master",
+        "description": "Easy dependency management for Nix projects",
+        "homepage": "https://github.com/nmattia/niv",
+        "owner": "nmattia",
+        "repo": "niv",
+        "rev": "c57098815e542b3a345d6f3fa821ea87c75b751d",
+        "sha256": "0q4xjg2nkzcvh62m92d1d2xzxf6xhfr512yndaklqp6qy8vz29jx",
+        "type": "tarball",
+        "url": "https://github.com/nmattia/niv/archive/c57098815e542b3a345d6f3fa821ea87c75b751d.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "nixpkgs": {
+        "branch": "nixpkgs-unstable",
+        "description": "A read-only mirror of NixOS/nixpkgs tracking the released channels. Send issues and PRs to",
+        "homepage": "https://github.com/NixOS/nixpkgs",
+        "owner": "NixOS",
+        "repo": "nixpkgs-channels",
+        "rev": "e19054ab3cd5b7cc9a01d0efc71c8fe310541065",
+        "sha256": "0b92yhkj3pq58svyrx7jp0njhaykwr29079izqn6qs638v8zvhl2",
+        "type": "tarball",
+        "url": "https://github.com/NixOS/nixpkgs-channels/archive/e19054ab3cd5b7cc9a01d0efc71c8fe310541065.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "nixpkgs-crystal": {
+        "branch": "crystal-0.33.0",
+        "description": "Nix Packages collection",
+        "homepage": null,
+        "owner": "filalex77",
+        "repo": "nixpkgs",
+        "rev": "e11bfc8a456db044fcf660ab4d07a0bf1d791a3a",
+        "sha256": "06jkbyqby9kj2226arz5ji28cxjfvl7gd4irgaifx29g9axf14x7",
+        "type": "tarball",
+        "url": "https://github.com/filalex77/nixpkgs/archive/e11bfc8a456db044fcf660ab4d07a0bf1d791a3a.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    }
+}

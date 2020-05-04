@@ -1,0 +1,15 @@
+# Official language image
+image: "crystallang/crystal:latest"
+
+# Cache shards in between builds
+cache:
+  paths:
+    - lib
+
+before_script:
+  - crystal -v # Print out Crystal version for debugging
+  - shards
+
+spec:
+  script:
+  - crystal spec

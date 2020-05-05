@@ -14,6 +14,9 @@ dependencies:
     github: will/crystal-pg
   deep-merge:
     github: johnalotoski/deep-merge.cr
+  crest:
+    github: mamantoha/crest
+    version: 0.24.1
 
 crystal: 0.33.0
 

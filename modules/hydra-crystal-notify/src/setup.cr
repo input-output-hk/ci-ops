@@ -1,6 +1,7 @@
 LOG_LEVEL = ENV.fetch("LOG_LEVEL", "INFO")
 LOG_FILE  = ENV.fetch("LOG_FILE", "/var/lib/hydra/notification-debug.log")
 CFG_FILE  = ENV.fetch("CFG_FILE", "/var/lib/hydra/github-notify.conf")
+BASE_URI  = ENV.fetch("BASE_URI", "https://hydra.iohk.io")
 
 LOG_LEVELS = {"FATAL"   => Logger::FATAL,
               "ERROR"   => Logger::ERROR,

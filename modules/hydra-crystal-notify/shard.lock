@@ -1,5 +1,9 @@
 version: 1.0
 shards:
+  crest:
+    github: mamantoha/crest
+    version: 0.24.1
+
   db:
     github: crystal-lang/crystal-db
     version: 0.9.0
@@ -7,6 +11,10 @@ shards:
   deep-merge:
     github: johnalotoski/deep-merge.cr
     commit: b6f69578bbee369edfc5fa6bc785122a157618db
+
+  http-client-digest_auth:
+    github: mamantoha/http-client-digest_auth
+    version: 0.3.0
 
   pg:
     github: will/crystal-pg

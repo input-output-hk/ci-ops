@@ -60,14 +60,13 @@ in {
 
   nix = {
     distributedBuilds = true;
-    # TODO add localhost
-    buildMachines = [ # TODO
+    # localMachine removed to prevent GC roots accumulation on hydra
+    buildMachines = [
       (mkLinux "packet-ipxe-1.ci.iohkdev.io")
       (mkLinux "packet-ipxe-2.ci.iohkdev.io")
       (mkLinux "packet-ipxe-3.ci.iohkdev.io")
       ((mkMac "mac-mini-1") // { speedFactor = 2; })
       ((mkMac "mac-mini-2") // { speedFactor = 2; })
-      localMachine
     ];
     binaryCaches = mkForce [ "https://cache.nixos.org" "https://hydra.iohk.io" ];
   };

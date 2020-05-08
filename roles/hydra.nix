@@ -14,7 +14,7 @@
       nixAutoGcEnable = false;
       nixHourlyGcEnable = false;
       nixWeeklyGcFull = true;
-      nixWeeklyGcOnCalendar = "Sat *-*-* 00:00:00";
+      nixWeeklyGcOnCalendar = "Sat *-*-* 20:00:00";
     };
     hydra-monitor = {
       enable = true;

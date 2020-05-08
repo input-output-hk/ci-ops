@@ -61,7 +61,7 @@ class HydraNotifier
   end
 
   def queryEvals(buildId)
-    evals = [] of QUERY_EVALS
+    evals = [] of QUERY_EVALS_TYPE
     begin
       @db.query(<<-SQL, buildId) do |rs|
         SELECT id,
@@ -78,7 +78,7 @@ class HydraNotifier
         FROM jobsetevals WHERE id in (SELECT eval FROM jobsetevalmembers WHERE build = $1)
       SQL
         rs.each do
-          evals << rs.read(QUERY_EVALS)
+          evals << rs.read(**QUERY_EVALS)
         end
       end
     rescue ex : DB::NoResultsError

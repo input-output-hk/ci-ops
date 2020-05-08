@@ -75,7 +75,7 @@ class HydraNotifier
     end
 
     # Obtain the build table row for each build notification
-    builds = [] of QUERY_BUILD
+    builds = [] of QUERY_BUILD_TYPE
     p.each do |b|
       if build = queryBuild(b)
         builds << build

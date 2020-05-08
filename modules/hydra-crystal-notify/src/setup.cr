@@ -37,7 +37,8 @@ alias QUERY_BUILD_TYPE = {id: Int32,
                           size: Int64 | Nil,
                           closuresize: Int64 | Nil,
                           keep: Int32,
-                          notificationpendingsince: Int32 | Nil}
+                          notificationpendingsince: Int32 | Nil,
+                          jobset_id: Int32}
 
 QUERY_BUILD = {id: Int32,
                finished: Int32,
@@ -56,7 +57,8 @@ QUERY_BUILD = {id: Int32,
                size: Int64 | Nil,
                closuresize: Int64 | Nil,
                keep: Int32,
-               notificationpendingsince: Int32 | Nil}
+               notificationpendingsince: Int32 | Nil,
+               jobset_id: Int32}
 
 alias QUERY_EVALS_TYPE = {id: Int32,
                           project: String,
@@ -103,6 +105,21 @@ QUERY_EVAL_INPUTS = {eval: Int32,
                      dependency: Int32 | Nil,
                      path: String | Nil,
                      sha256hash: String | Nil}
+
+
+alias QUERY_AGGREGATE_STATUS_TYPE = {total: Int64,
+                                     queued: Int64,
+                                     finished: Int64,
+                                     success: Int64,
+                                     error: Int64,
+                                     failed: Int64}
+
+QUERY_AGGREGATE_STATUS = {total: Int64,
+                          queued: Int64,
+                          finished: Int64,
+                          success: Int64,
+                          error: Int64,
+                          failed: Int64}
 
 STDOUT.sync = true
 LOG = Logger.new(STDOUT)

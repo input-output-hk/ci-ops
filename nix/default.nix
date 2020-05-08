@@ -2,6 +2,7 @@
 with {
   overlay = self: super: {
     inherit (import sources.niv { }) niv;
+    inherit (import sources.nixpkgs-crystal {}) crystal_0_33 crystal2nix jq shards pkg-config openssl;
     packages = self.callPackages ./packages.nix { };
     globals = import ../globals.nix;
 

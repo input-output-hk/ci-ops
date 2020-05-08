@@ -154,6 +154,18 @@
         "url": "https://github.com/NixOS/nixpkgs/archive/f79f998f3163481a4d4ae90e8ea516df3980fe9f.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
+    "nixpkgs-crystal": {
+        "branch": "nixpkgs-unstable",
+        "description": "A read-only mirror of NixOS/nixpkgs tracking the released channels. Send issues and PRs to",
+        "homepage": "https://github.com/NixOS/nixpkgs",
+        "owner": "NixOS",
+        "repo": "nixpkgs-channels",
+        "rev": "5f14d99efed32721172a819b6e78a5520bab4bc6",
+        "sha256": "1nxqbcsc8bfmwy450pv6s12nbvzqxai5mr6v41y478pya26lb108",
+        "type": "tarball",
+        "url": "https://github.com/NixOS/nixpkgs-channels/archive/5f14d99efed32721172a819b6e78a5520bab4bc6.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
     "ops-lib": {
         "branch": "master",
         "description": "NixOps deployment configuration library for IOHK devops ",

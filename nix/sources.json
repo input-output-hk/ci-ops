@@ -11,18 +11,6 @@
         "url": "https://github.com/cleverca22/cachecache/archive/37959a2dcce5c93bf424da899d3d5eaf2b3f1768.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
-    "gitignore": {
-        "branch": "master",
-        "description": "Nix function for filtering local git sources",
-        "homepage": "",
-        "owner": "hercules-ci",
-        "repo": "gitignore",
-        "rev": "31860d428b0d6cc03fb7ca9eca8b99dc3750ee5e",
-        "sha256": "1km1nryf41f0xc7n632vqc8p7wgx5lz7nmz3qm5zj1dr6260jk3m",
-        "type": "tarball",
-        "url": "https://github.com/hercules-ci/gitignore/archive/31860d428b0d6cc03fb7ca9eca8b99dc3750ee5e.tar.gz",
-        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
-    },
     "hercules-ci-agent": {
         "branch": "v0.6.5",
         "description": "https://hercules-ci.com build agent",

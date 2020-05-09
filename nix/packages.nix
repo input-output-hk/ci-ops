@@ -1,7 +1,6 @@
 { callPackage }:
 let
   inherit (builtins) typeOf trace attrNames toString;
-  inherit (import sources.gitignore { }) gitignoreSource;
   sources = import ./sources.nix;
 in {
   cachecache = callPackage (sources.cachecache) {};

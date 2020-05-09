@@ -18,16 +18,16 @@ let
     hasSuffix ".nix" baseName
   );
 in {
-  hydra-crystal-notifier = crystal.buildCrystalPackage {
-    pname = "hydra-crystal-notifier";
+  hydra-crystal-notify = crystal.buildCrystalPackage {
+    pname = "hydra-crystal-notify";
     version = "0.1.0";
     src = cleanSourceWith {
       inherit filter;
       src = ./.;
-      name = "hydra-crystal-notifier";
+      name = "hydra-crystal-notify";
     };
     format = "shards";
-    crystalBinaries.hydra-crystal-notifier.src = "src/hydra-crystal-notifier.cr";
+    crystalBinaries.hydra-crystal-notify.src = "src/hydra-crystal-notify.cr";
     shardsFile = ./shards.nix;
     buildInputs = [ openssl pkg-config ];
     doCheck = true;

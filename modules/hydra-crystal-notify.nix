@@ -1,27 +1,27 @@
 { pkgs, lib, config, ... }:
 
 let
-  cfg = config.services.hydra-crystal-notifier;
+  cfg = config.services.hydra-crystal-notify;
 
   inherit (lib)
     mkIf mkOption types mkEnableOption concatStringsSep optionals optionalAttrs;
 in {
   options = {
-    services.hydra-crystal-notifier = {
-      enable = mkEnableOption "hydra crystal notifier";
+    services.hydra-crystal-notify = {
+      enable = mkEnableOption "hydra crystal notify";
 
       package = mkOption {
         type = types.package;
-        default = (import ../. {}).packages.hydra-crystal-notifier;
-        defaultText = "hydra-crystal-notifier";
-        description = " The hydra crystal notifier package to be used";
+        default = (import ../nix {}).packages.crystalPkgs.hydra-crystal-notify;
+        defaultText = "hydra-crystal-notify";
+        description = " The hydra crystal notify package to be used";
       };
 
       logLevel = mkOption {
         type = types.enum [ "UNKNOWN" "DEBUG" "INFO" "WARN" "ERROR" "FATAL" ];
         default = "INFO";
         description = ''
-          The log level for the hydra crystal notifier service. Valid levels are:
+          The log level for the hydra crystal notify service. Valid levels are:
           UNKNOWN DEBUG INFO WARN ERROR FATAL.
         '';
       };
@@ -34,15 +34,21 @@ in {
       #};
 
       mockMode = mkOption {
-        type = types.enum [ "TRUE" "FALSE" ];
-        default = "FALSE";
-        description = "If set to TRUE, any API calls won't only be logged, but not actually made";
+        type = types.bool;
+        default = false;
+        description = "If set to true, any API calls won't only be logged, but not actually made";
+      };
+
+      currentMode = mkOption {
+        type = types.bool;
+        default = true;
+        description = "If set to true, only build notifications with an evaluation marked as `iscurrent` will be processed";
       };
 
       configFile = mkOption {
         type = types.str;
         default = "/var/lib/hydra/github-notify.conf";
-        description = "The default path to the hydra crystal notifier config file";
+        description = "The default path to the hydra crystal notify config file";
       };
 
       baseUri = mkOption {
@@ -78,7 +84,7 @@ in {
         default = "DEFAULT";
         description = ''
           The default notify URL to use host to connect to hydra postgres with.
-          If "DEFAULT" is used, the hydra crystal notifier will use its default url.
+          If "DEFAULT" is used, hydra crystal notify will use its default url.
           If any string other than "DEFAULT" is provided, that will be directly used
           as the url.  Note that crystal string interpolation `#{...}` can be provided.
 
@@ -140,13 +146,13 @@ in {
   };
 
   config = mkIf cfg.enable {
-    systemd.services.hydra-crystal-notifier = {
+    systemd.services.hydra-crystal-notify = {
       wantedBy = [ "multi-user.target" ];
       after = [ "postgresql.service" ];
       startLimitIntervalSec = 0;
 
       script = ''
-        ${cfg.package}/bin/hydra-crystal-notifier
+        ${cfg.package}/bin/hydra-crystal-notify
       '';
 
       serviceConfig = {
@@ -159,7 +165,8 @@ in {
       environment = {
         LOG_LEVEL = cfg.logLevel;
         LOG_FILE = "/var/lib/hydra/notification-debug.log";
-        MOCK_MODE = cfg.mockMode;
+        MOCK_MODE = if cfg.mockMode then "TRUE" else "FALSE";
+        CURRENT_MODE = if cfg.currentMode then "TRUE" else "FALSE";
         CFG_FILE = cfg.configFile;
         BASE_URI = cfg.baseUri;
         DB_USER = cfg.dbUser;

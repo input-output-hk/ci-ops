@@ -10,11 +10,11 @@ require "deep-merge"
 require "crest"
 require "./setup"
 require "./config-parser"
-require "./hydra-notifier-class"
-require "./hydra-notifier-class-db"
+require "./hydra-notify-class"
+require "./hydra-notify-class-db"
 
-def maintenance(notifier)
-  h = notifier.notified
+def maintenance(notify)
+  h = notify.notified
   size = h.size
 
   # Expire hashes older than NOTIFIED_TTL and provide a maintenance update
@@ -25,11 +25,11 @@ def maintenance(notifier)
   LOG.info("MAINTENANCE: { memKeySize, nowPurged, nextPurge }: { #{size}, #{size - h.size}, #{nextPurge} }")
 end
 
-notifier = HydraNotifier.new
+notify = HydraNotifier.new
 loop do
-  if Time.utc.to_unix - notifier.maintTimestamp > MAINT_CHECKS
-    maintenance(notifier)
-    notifier.maintTimestamp = Time.utc.to_unix
+  if Time.utc.to_unix - notify.maintTimestamp > MAINT_CHECKS
+    maintenance(notify)
+    notify.maintTimestamp = Time.utc.to_unix
   end
   sleep 1
 end

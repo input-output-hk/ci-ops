@@ -4,7 +4,7 @@ let
   sources = import ./sources.nix;
 in {
   cachecache = callPackage (sources.cachecache) {};
-  hydra-crystal-notifier = callPackage ../pkgs/hydra-crystal-notifier {};
+  crystalPkgs = callPackage ../pkgs/hydra-crystal-notify {};
   pp = v:
     let type = typeOf v;
     in if type == "list" then

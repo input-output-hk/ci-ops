@@ -1,4 +1,4 @@
-name: hydra-crystal-notifier
+name: hydra-crystal-notify
 version: 0.1.0
 
 authors:
@@ -6,8 +6,8 @@ authors:
   - Michael Fellinger <michael.fellinger@iohk.io>
 
 targets:
-  hydra-crystal-notifier:
-    main: src/hydra-crystal-notifier.cr
+  hydra-crystal-notify:
+    main: src/hydra-crystal-notify.cr
 
 dependencies:
   pg:

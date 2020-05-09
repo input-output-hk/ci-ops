@@ -89,7 +89,7 @@ class HydraNotifier
 
     builds.each do |build|
       # Only consider builds which are current
-      unless build[:iscurrent] == 1
+      if CURRENT_MODE == "TRUE" && !build[:iscurrent] == 1
         LOG.debug("#{n.channel} : #{n.payload} -- BUILD #{build[:id]} IS NOT CURRENT")
         next
       end

@@ -5,6 +5,7 @@
 LOG_LEVEL         = ENV.fetch("LOG_LEVEL", "INFO")
 LOG_FILE          = ENV.fetch("LOG_FILE", "/var/lib/hydra/notification-debug.log")
 CFG_FILE          = ENV.fetch("CFG_FILE", "/var/lib/hydra/github-notify.conf")
+MOCK_MODE         = ENV.fetch("MOCK_MODE", "FALSE")
 BASE_URI          = ENV.fetch("BASE_URI", "https://hydra.iohk.io")
 DB_USER           = ENV.fetch("DB_USER", "")
 DB_DATABASE       = ENV.fetch("DB_DATABASE", "hydra")

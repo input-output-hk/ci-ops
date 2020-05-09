@@ -7,6 +7,7 @@
     ../modules/nix_nsswitch.nix
     ../modules/hydra-master-wireguard.nix
     ../modules/hydra-monitor.nix
+    ../modules/hydra-crystal-notifier.nix
   ];
 
   services = {
@@ -22,6 +23,10 @@
       bindingPort = 8000;
       scrapeTarget = "https://hydra.ci.iohkdev.io/queue-runner-status";
       openFirewallPort = true;
+    };
+    hydra-crystal-notifier = {
+      enable = true;
+      mockMode = true;
     };
   };
 

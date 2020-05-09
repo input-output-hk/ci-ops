@@ -6,7 +6,7 @@ authors:
   - Michael Fellinger <michael.fellinger@iohk.io>
 
 targets:
-  crystal-hydra-notifier:
+  hydra-crystal-notifier:
     main: src/hydra-crystal-notifier.cr
 
 dependencies:

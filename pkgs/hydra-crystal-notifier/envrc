@@ -1,0 +1,3 @@
+use nix
+
+export NIX_PATH="nixpkgs=$(nix eval '(import ../../nix {}).path')"

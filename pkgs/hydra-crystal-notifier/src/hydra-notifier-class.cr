@@ -21,6 +21,7 @@ class HydraNotifier
     @notified = Hash(String, Hash(String, String | Int64 | QUERY_AGGREGATE_STATUS_TYPE)).new
 
     @maintTimestamp = Time.utc.to_unix
+    @mockMode = MOCK_MODE == "TRUE" ? true : false
 
     # Listen to and process notification payloads
     PG.connect_listen("postgres://#{DB_USER}/#{DB_DATABASE}?host=#{DB_HOST}", LISTEN_CHANNELS.keys) do |n|
@@ -307,7 +308,7 @@ class HydraNotifier
                    "target_url"  => "#{target_url}",
                    "description" => "#{description}",
                    "context"     => "#{context}",
-                 }.to_json, mock: false, rateLimit: flags[:rateLimit])
+                 }.to_json, mock: @mockMode, rateLimit: flags[:rateLimit])
               # State keys are only needed for aggregate targets
               if !flags[:rateLimit] && flags[:buildTargetAggregate]
                 @notified.deep_merge!({key => {"at" => Time.utc.to_unix,

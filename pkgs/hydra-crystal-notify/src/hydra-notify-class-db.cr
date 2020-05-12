@@ -167,3 +167,12 @@ class HydraNotifier
     end
   end
 end
+
+# Included to allow raising exceptions on notify listener failure
+# Systemd will then restart the servce
+# https://github.com/will/crystal-pg/issues/195
+class PG::Connection
+  protected def listen
+    @connection.read_async_frame_loop
+  end
+end

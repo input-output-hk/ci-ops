@@ -11,12 +11,15 @@ BASE_URI          = ENV.fetch("BASE_URI", "https://hydra.iohk.io")
 DB_USER           = ENV.fetch("DB_USER", "")
 DB_DATABASE       = ENV.fetch("DB_DATABASE", "hydra")
 DB_HOST           = ENV.fetch("DB_HOST", "/run/postgresql")
+DB_RETRY_DELAY    = ENV.fetch("DB_RETRY_DELAY", "2").to_i
+DB_RETRY_ATTEMPTS = ENV.fetch("DB_RETRY_ATTEMPTS", "15").to_i
 NOTIFY_URL        = ENV.fetch("NOTIFY_URL", "DEFAULT")
 API_PERIOD        = ENV.fetch("API_PERIOD", "3600").to_i
 NOTIFIED_TTL      = ENV.fetch("NOTIFIED_TTL", "#{8 * 3600}").to_i
 MAINT_CHECKS      = ENV.fetch("MAINT_CHECKS", "300").to_i
 COMMIT_RATE_LIMIT = ENV.fetch("COMMIT_RATE_LIMIT", "10").to_i
 
+DB_CONN_STR       = "postgres://#{DB_USER}/#{DB_DATABASE}?host=#{DB_HOST}&retry_attempts=#{DB_RETRY_ATTEMPTS}&retry_delay=#{DB_RETRY_DELAY}"
 URI_VAL           = %r([:/](?<owner>[^/]+)/(?<repo>[^/]+?)(?:.git)?$)
 DAMPING_ASYMPTOTE = 1.1
 DAMPING_CONSTANT  = API_PERIOD * Math.log(2) / Math.log(11)

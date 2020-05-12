@@ -15,7 +15,7 @@ class HydraNotifier
   def initialize
     # Obtain git auth, notify job specs and open db
     @auth, @notifyJobs = parseConfig(CFG_FILE)
-    @db = DB.open("postgres://#{DB_USER}/#{DB_DATABASE}?host=#{DB_HOST}")
+    @db = DB.open(DB_CONN_STR)
 
     # Utilize a hash to address a hydra notify race condition
     @notified = Hash(String, Hash(String, String | Int64 | QUERY_AGGREGATE_STATUS_TYPE)).new
@@ -24,7 +24,7 @@ class HydraNotifier
     @mockMode = MOCK_MODE == "TRUE" ? true : false
 
     # Listen to and process notification payloads
-    PG.connect_listen("postgres://#{DB_USER}/#{DB_DATABASE}?host=#{DB_HOST}", LISTEN_CHANNELS.keys) do |n|
+    PG.connect_listen(DB_CONN_STR, LISTEN_CHANNELS.keys) do |n|
       case n.channel
       # Handle evals
       when /^eval/
@@ -268,6 +268,9 @@ class HydraNotifier
             # Determine rate limiting; start by ensuring the flag is false
             flags[:rateLimit] = false
 
+            # Add a log event header for easier viewing
+            LOG.info("------------------------------------------")
+
             # Only consider a limit if the build target is an aggregate
             if flags[:buildTargetAggregate]
               # Only consider a limit if state already pre-exists
@@ -341,16 +344,16 @@ class HydraNotifier
         limitReset = r.headers["X-RateLimit-Reset"].to_s.to_i
         diff = limitReset - Time.utc.to_unix
         delay = (limitRemaining > 0 ? diff / limitRemaining : diff) * damping(diff)
-        LOG.info("NOTIFIED: #{channel} #{buildId} #{evalId} #{url} #{limitRemaining} #{diff} #{delay.format(decimal_places: 1)}\n#{body}\n")
+        LOG.info("NOTIFIED: #{channel} #{buildId} #{evalId} #{url} #{limitRemaining} #{diff} #{delay.format(decimal_places: 1)}\n#{body}")
         sleep delay
       rescue ex : Crest::RequestFailed
         LOG.error("statusNotify(#{buildId},#{evalId}) #{channel}\nURL: #{url}\nEXCEPTION: \"#{ex}\"\nRESPONSE: #{ex.response}\nBODY: #{body}")
         return nil
       end
     elsif rateLimit
-      LOG.info("RATE_LIMITED: #{channel} #{buildId} #{evalId} #{url}\n#{body}\n")
+      LOG.info("RATE_LIMITED: #{channel} #{buildId} #{evalId} #{url}\n#{body}")
     else
-      LOG.info("MOCK NOTIFIED: #{channel} #{buildId} #{evalId} #{url}\n#{body}\n")
+      LOG.info("MOCK NOTIFIED: #{channel} #{buildId} #{evalId} #{url}\n#{body}")
     end
     return true
   end

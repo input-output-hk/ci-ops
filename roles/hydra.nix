@@ -14,7 +14,7 @@
     auto-gc = {
       nixAutoGcEnable = false;
       nixHourlyGcEnable = false;
-      nixWeeklyGcFull = true;
+      nixWeeklyGcFull = false;
       nixWeeklyGcOnCalendar = "Sat *-*-* 20:00:00";
     };
     hydra-monitor = {
@@ -26,7 +26,12 @@
     };
     hydra-crystal-notify = {
       enable = true;
-      mockMode = true;
+      mockMode = false;
+    };
+    postgresql = {
+      extraConfig = ''
+        max_connections 200
+      '';
     };
   };
 

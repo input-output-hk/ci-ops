@@ -59,6 +59,18 @@
         "url": "https://github.com/NixOS/nixpkgs/archive/0ee9ceff38f1abd0fcb672841a40e75f6cbc2620.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
+    "hydra-notify-patched": {
+        "branch": "iohk-master-notify-patch",
+        "description": "Hydra, the Nix-based continuous build system",
+        "homepage": "http://nixos.org/hydra",
+        "owner": "input-output-hk",
+        "repo": "hydra",
+        "rev": "57bb68f149b6544978f60d959000083cd7b84272",
+        "sha256": "1lkylhkkx8cz7ai7flbdff4i6342l58rqda03qsmzbh8rrpgyfxm",
+        "type": "tarball",
+        "url": "https://github.com/input-output-hk/hydra/archive/57bb68f149b6544978f60d959000083cd7b84272.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
     "iohk-nix": {
         "branch": "master",
         "description": "nix scripts shared across projects",

@@ -79,6 +79,18 @@ in {
         description = "The default host to connect to hydra postgres with";
       };
 
+      dbRetryDelay = mkOption {
+        type = types.int;
+        default = 2;
+        description = "The default database retry delay in seconds for re-connection attempts";
+      };
+
+      dbRetryAttempts = mkOption {
+        type = types.int;
+        default = 15;
+        description = "The default database re-connection attempt number prior to exception";
+      };
+
       notifyUrl = mkOption {
         type = types.str;
         default = "DEFAULT";
@@ -172,6 +184,8 @@ in {
         DB_USER = cfg.dbUser;
         DB_DATABASE = cfg.dbDatabase;
         DB_HOST = cfg.dbHost;
+        DB_RETRY_DELAY = toString cfg.dbRetryDelay;
+        DB_RETRY_ATTEMPTS = toString cfg.dbRetryAttempts;
         NOTIFY_URL = cfg.notifyUrl;
         API_PERIOD = toString cfg.apiPeriod;
         NOTIFIED_TTL = toString cfg.notifiedTtl;

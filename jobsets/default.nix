@@ -81,15 +81,6 @@ let
       bors = true;
     };
 
-    cardano-explorer = {
-      description = "cardano explorer";
-      url = "https://github.com/input-output-hk/cardano-explorer.git";
-      input = "cardano-explorer";
-      branch = "master";
-      prs = explorerPrsJSON;
-      bors = true;
-    };
-
     jormungandr = {
       description = "jormungandr";
       url = "https://github.com/input-output-hk/jormungandr-nix.git";
@@ -446,13 +437,6 @@ let
     iohk-ops = mkNixops "master" defaultNixpkgsRev;
     iohk-ops-bors-staging = highPrio (mkNixops "bors-staging" defaultNixpkgsRev);
     iohk-ops-bors-trying = mkNixops "bors-trying" defaultNixpkgsRev;
-    rust-cardano = (mkJobset {
-      name = "rust-cardano";
-      input = "rust-cardano";
-      description = "Cardano Rust Library";
-      url = "https://github.com/input-output-hk/rust-cardano.git";
-      branch = "master";
-    }).value;
   } // nixopsPrJobsets);
 
   ##########################################################################

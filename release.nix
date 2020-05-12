@@ -14,7 +14,7 @@ in pkgs.lib.fix (self: {
       #ci
       hydra-slave
       buildkite-agent
-      signing
+      #signing
     ];
   };
 })

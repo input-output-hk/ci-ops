@@ -14,15 +14,25 @@ require "./hydra-notify-class"
 require "./hydra-notify-class-db"
 
 def maintenance(notify)
-  h = notify.notified
-  size = h.size
+  evalHash = notify.evalNotified
+  evalSize = evalHash.size
+  buildHash = notify.buildNotified
+  buildSize = buildHash.size
 
   # Expire hashes older than NOTIFIED_TTL and provide a maintenance update
   ts = Time.utc.to_unix
-  h.delete_if { |k, v| (ts - v["at"].as(Int64)) > NOTIFIED_TTL }
-  oldest = h.size > 0 ? h.min_of { |k, v| v["at"].as(Int64) } : ts
-  nextPurge = NOTIFIED_TTL - (ts - oldest)
-  LOG.info("MAINTENANCE: { memKeySize, nowPurged, nextPurge }: { #{size}, #{size - h.size}, #{nextPurge} }")
+
+  evalHash.delete_if { |k, v| (ts - v["at"].as(Int64)) > NOTIFIED_TTL }
+  evalOldest = evalHash.size > 0 ? evalHash.min_of { |k, v| v["at"].as(Int64) } : ts
+  evalNextPurge = NOTIFIED_TTL - (ts - evalOldest)
+
+  buildHash.delete_if { |k, v| (ts - v["at"].as(Int64)) > NOTIFIED_TTL }
+  buildOldest = buildHash.size > 0 ? buildHash.min_of { |k, v| v["at"].as(Int64) } : ts
+  buildNextPurge = NOTIFIED_TTL - (ts - buildOldest)
+
+  LOG.info("MAINTENANCE: { memKeySize, nowPurged, nextPurge }: " \
+           "evalHash { #{evalSize}, #{evalSize - evalHash.size}, #{evalNextPurge} }; " \
+           "buildHash { #{buildSize}, #{buildSize - buildHash.size}, #{buildNextPurge} }")
 end
 
 notify = HydraNotifier.new

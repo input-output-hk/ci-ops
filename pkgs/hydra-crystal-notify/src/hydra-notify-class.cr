@@ -3,13 +3,13 @@
 #
 
 class HydraNotifier
-  getter notified, maintTimestamp
-  setter notified, maintTimestamp
+  getter evalNotified, buildNotified, maintTimestamp
+  setter evalNotified, buildNotified, maintTimestamp
 
   @auth : Hash(Symbol, String)
   @notifyJobs : Array(Hash(String, String))
   @db : DB::Database
-  @notified : Hash(String, Hash(String, String | Int64 | QUERY_AGGREGATE_STATUS_TYPE))
+  @buildNotified : Hash(String, Hash(String, String | Int64 | QUERY_AGGREGATE_STATUS_TYPE))
   @maintTimestamp : Int64
 
   def initialize
@@ -17,8 +17,11 @@ class HydraNotifier
     @auth, @notifyJobs = parseConfig(CFG_FILE)
     @db = DB.open(DB_CONN_STR)
 
+    # Utilize a hash to track state of eval not recorded in postgres
+    @evalNotified = Hash(String, Hash(String, String | Int64)).new
+
     # Utilize a hash to address a hydra notify race condition
-    @notified = Hash(String, Hash(String, String | Int64 | QUERY_AGGREGATE_STATUS_TYPE)).new
+    @buildNotified = Hash(String, Hash(String, String | Int64 | QUERY_AGGREGATE_STATUS_TYPE)).new
 
     @maintTimestamp = Time.utc.to_unix
     @mockMode = MOCK_MODE == "TRUE" ? true : false
@@ -27,11 +30,19 @@ class HydraNotifier
     PG.connect_listen(DB_CONN_STR, LISTEN_CHANNELS.keys) do |n|
       case n.channel
       # Handle evals
-      when /^eval/
+      when /^eval_pending/
         notifyEval(n)
+      when /^eval_added/
+        notifyEval(n)
+      when /^eval_failed/
+        notifyEval(n)
+      when /^eval_started/
+        debugNotification(n)
+      when /^eval_cached/
+        debugNotification(n)
         # Handle steps
       when /^step/
-        notifyStep(n)
+        debugNotification(n)
         # Handle started builds
       when /^build_started/
         notifyBuild(n)
@@ -44,12 +55,302 @@ class HydraNotifier
     end
   end
 
-  def notifyEval(n)
-    LOG.debug("#{n.channel} : #{n.payload}}")
+  def debugNotification(n)
+    LOG.debug("#{n.channel} : #{n.payload}")
   end
 
-  def notifyStep(n)
+  def notifyEval(n)
+    flags = {:evalPending => false,
+             :evalAdded   => false,
+             :evalFailed  => false,
+             :evalHashed  => false,
+             :evalHistory => false}
+
+    id = project = jobset = type = uri = rev = evalId = owner = repo = queryMsg = nil
+    context = "ci/hydra-eval"
+    timeEpochNow = Time.utc.to_unix
+    timeRfc2822Now = Time.utc.to_rfc2822
+
+    # Flag the build type
+    case n.channel
+    when /^eval_pending$/
+      flags[:evalPending] = true
+    when /^eval_added$/
+      flags[:evalAdded] = true
+    when /^eval_failed/
+      flags[:evalFailed] = true
+    end
+
     LOG.debug("#{n.channel} : #{n.payload}")
+    p = n.payload.split(LISTEN_CHANNELS[n.channel])
+
+    # Validate the raw eval notification
+    if flags[:evalPending]
+      if p.size != 6
+        LOG.error("#{n.channel}: #{n.payload}, Size: #{p.size} -- EVAL_PENDING DOES NOT HAVE 6 FIELDS")
+        return nil
+      else
+        id      = p[0]
+        project = p[1]
+        jobset  = p[2]
+        type    = p[3]
+        uri     = p[4]
+        rev     = p[5]
+        if (id !~ /^\d+\.\d+\.\d+$/ || type != "git" || uri == "NO_URI" || rev  == "NO_REV")
+          LOG.error("#{n.channel}: #{n.payload}, Size: #{p.size} -- EVAL_PENDING FIELD VALIDATION ERROR")
+          return nil
+        else
+          jobSet = "#{project}:#{jobset}"
+          key = "#{uri}|#{rev}"
+        end
+      end
+    elsif flags[:evalAdded]
+      if p.size != 2
+        LOG.error("#{n.channel}: #{n.payload}, Size: #{p.size} -- EVAL_ADDED DOES NOT HAVE 2 FIELDS")
+        return nil
+      else
+        id = p[0]
+        evalId  = p[1]
+        LOG.debug("EVAL_ADDED: id: #{id}, evalId: #{evalId}")
+        if (id !~ /^\d+\.\d+\.\d+$/ || evalId !~ /^\d+$/)
+          LOG.error("#{n.channel}: #{n.payload}, Size: #{p.size} -- EVAL_ADDED FIELD VALIDATION ERROR")
+          return nil
+        end
+      end
+    elsif flags[:evalFailed]
+      if p.size != 1
+        LOG.error("#{n.channel}: #{n.payload}, Size: #{p.size} -- EVAL_FAILED DOES NOT HAVE 1 FIELD")
+        return nil
+      else
+        id = p[0]
+        if id !~ /^\d+\.\d+\.\d+$/
+          LOG.error("#{n.channel}: #{n.payload}, Size: #{p.size} -- EVAL_FAILED FIELD VALIDATION ERROR")
+          return nil
+        end
+      end
+    end
+
+    # Determine relevant evalNotified hash status and extract relevant info
+    if flags[:evalPending]
+      if @evalNotified.dig?(key.to_s)
+        flags[:evalHashed] = true
+      end
+    elsif flags[:evalAdded]
+      if key = @evalNotified.select { |k, v| v.has_value?(id) }.first_key?
+        uri = key.split('|')[0]
+        rev = key.split('|')[1]
+        jobSet = @evalNotified[key]["jobSet"]
+        project = jobSet.to_s.split(':')[0]
+        jobset = jobSet.to_s.split(':')[1]
+        flags[:evalHashed] = true
+      end
+      # eval_failed will return if hash status is not found
+    elsif flags[:evalFailed]
+      if key = @evalNotified.select { |k, v| v.has_value?(id) }.first_key?
+        uri = key.split('|')[0]
+        rev = key.split('|')[1]
+        jobSet = @evalNotified[key]["jobSet"]
+        project = jobSet.to_s.split(':')[0]
+        jobset = jobSet.to_s.split(':')[1]
+        flags[:evalHashed] = true
+      else
+        return nil
+      end
+    end
+
+    # Set corresponding owner and repo info if available
+    if (flags[:evalPending] ||
+       (flags[:evalAdded] && flags[:evalHashed]) ||
+       (flags[:evalFailed] && flags[:evalHashed]))
+      unless m = URI_VAL.match(uri.to_s)
+        LOG.error("#{n.channel}: #{n.payload}, Size: #{p.size} -- EVAL URI VALIDATION FAILED")
+        return nil
+      else
+        owner = m["owner"]
+        repo = m["repo"]
+      end
+    end
+
+    evalSeen = Hash(String, Hash(String, Bool)).new
+
+    # Determine relevant API and DB state history
+    if !flags[:evalHashed]
+      if flags[:evalPending] && jobset != ".jobsets"
+        apiUrl = "https://api.github.com/repos/#{owner}/#{repo}/statuses/#{rev}"
+        historyState, queryMsg = existingState(context, apiUrl)
+        if historyState
+          flags[:evalHistory] = true
+        end
+      elsif flags[:evalAdded]
+        LOG.debug("EVAL_ADDED: DB STATE QUERY")
+        # Obtain eval_added jobSet info
+        unless i = queryEval(evalId)
+          LOG.debug("#{n.channel} : #{n.payload} -- MISSING EVAL FOR #{evalId}")
+          return nil
+        else
+          jobSet = "#{i["project"]}:#{i["jobset"]}"
+          LOG.debug("EVAL_ADDED: DB QUERY OBTAINED -- jobSet: #{jobSet}")
+          # Obtain eval_added key info
+          jobsetInput = i["jobset"].gsub(/-(pr-\d+|bors-(staging|trying))/, "")
+          unless j = queryEvalInputs(evalId, jobsetInput)
+            LOG.debug("#{n.channel} : #{n.payload} -- MISSING EVAL INPUT FOR #{evalId}, #{jobsetInput}")
+            return nil
+          else
+            uri = j["uri"]
+            rev = j["revision"]
+            key = "#{uri}|#{rev}"
+            LOG.debug("EVAL_ADDED: DB QUERY OBTAINED -- uri: #{uri}, rev: #{rev}")
+            unless m = URI_VAL.match(uri.to_s)
+              LOG.error("#{n.channel}: #{n.payload}, Size: #{p.size} -- EVAL URI VALIDATION FAILED")
+              return nil
+            else
+              owner = m["owner"]
+              repo = m["repo"]
+              LOG.debug("EVAL_ADDED: DB QUERY OBTAINED -- owner: #{owner}, repo: #{repo}")
+            end
+          end
+        end
+      end
+    end
+
+    @notifyJobs.each do |conf|
+
+      # confName defined as project:jobset:job
+      confName = conf["jobs"]
+
+      # confJob defined as job from confName
+      confJob = confName.gsub(/^[^:]+:[^:]+:/, "")
+
+      # confJobSet defined as project:jobset from confName
+      confJobSet = confName.gsub(/:[^:]+$/, "")
+
+      inputs = conf["inputs"].split
+      inputs.each do |input|
+
+        # Skip unmatched jobSets to jobSet notify configs
+        unless jobSet =~ /^#{confJobSet}$/
+          LOG.debug("evalJobset: #{jobSet} doesn't match confJobSet: #{confJobSet} -- SKIPPING")
+          next
+        else
+          LOG.debug("evalJobset: #{jobSet} matches confJobSet: #{confJobSet}")
+        end
+
+        # Skip if the current jobSet and key has already been processed
+        next if evalSeen.dig?(jobSet.to_s, key.to_s)
+        evalSeen.deep_merge!({jobSet.to_s => {key.to_s => true}})
+
+        # Determine notify state and description
+        if flags[:evalPending]
+          # Pending eval cannot update again if a state already exists
+          if flags[:evalHashed] || flags[:evalHistory]
+            LOG.debug("#{n.channel} : #{n.payload} -- DISCARDING DUE TO HASHED OR HISTORY")
+            existingState = @evalNotified.has_key?(key) ? @evalNotified[key]["state"] : historyState
+            @evalNotified.deep_merge!({key.to_s => {"at" => timeEpochNow,
+                                                    "state" => "#{existingState}",
+                                                    "id" => "#{id}",
+                                                    "jobSet" => "#{jobSet}"
+            }})
+            return nil
+          else
+            state = "pending"
+            target_url = "#{BASE_URI}/jobset/#{project}/#{jobset}#tabs-evaluations"
+          end
+        elsif flags[:evalAdded]
+          # Success eval can update only if not already success
+          if ((flags[:evalHashed] && @evalNotified[key] && @evalNotified[key]["state"] == "success") ||
+              (flags[:evalHistory] && historyState == "success"))
+            @evalNotified.deep_merge!({key.to_s => {"at" => timeEpochNow,
+                                                    "state" => "success",
+                                                    "id" => "#{id}",
+                                                    "jobSet" => "#{jobSet}"
+            }})
+            return nil
+          else
+            state = "success"
+            target_url = "#{BASE_URI}/eval/#{evalId}"
+          end
+        elsif flags[:evalFailed]
+          # Failed eval can update only if not already error
+          if flags[:evalHashed] && @evalNotified[key] && @evalNotified[key]["state"] == "error"
+            @evalNotified.deep_merge!({key.to_s => {"at" => timeEpochNow,
+                                                    "state" => "error",
+                                                    "id" => "#{id}",
+                                                    "jobSet" => "#{jobSet}"
+            }})
+            return nil
+          else
+            state = "error"
+            target_url = "#{BASE_URI}/jobset/#{project}/#{jobset}#tabs-errors"
+          end
+        else
+          # Failure eval can update only if not already failure
+          if ((flags[:evalHashed] && @evalNotified[key] && @evalNotified[key]["state"] == "failure") ||
+              (flags[:evalHistory] && historyState == "failure"))
+            @evalNotified.deep_merge!({key.to_s => {"at" => timeEpochNow,
+                                                    "state" => "failure",
+                                                    "id" => "#{id}",
+                                                    "jobSet" => "#{jobSet}"
+            }})
+            return nil
+          else
+            state = "failure"
+            target_url = "#{BASE_URI}/jobset/#{project}/#{jobset}#failure-unknown"
+            LOG.error("#{n.channel}: #{n.payload} -- EVAL NOTIFY UNKONWN STATE")
+          end
+        end
+
+        # Configure the description
+        description = "#{state} since #{timeRfc2822Now}"
+        if description.size > 140
+          LOG.warn("#{n.channel} : #{id} #{jobSet} -- SLICING DESCRIPTION AT 140 CHARS")
+          description = description[0, 140]
+        end
+
+        # TODO: check gsub parameterization to avoid non-laziness raise
+        # Deploy parameterized URL
+        if NOTIFY_URL == "DEFAULT"
+          url = "https://api.github.com/repos/#{owner}/#{repo}/statuses/#{rev}"
+        else
+          url = NOTIFY_URL
+        end
+
+        LOG.info("------------------------------------------")
+        LOG.info("evalJobSet: #{jobSet}")
+        LOG.info(queryMsg) if queryMsg
+        LOG.info("#{flags}")
+        LOG.debug("config: #{conf}")
+        LOG.debug("input: #{input}")
+        LOG.debug("evalSeen: #{evalSeen}")
+
+        # Finalize
+        body = {"state"       => "#{state}",
+                "target_url"  => "#{target_url}",
+                "description" => "#{description}",
+                "context"     => "#{context}",
+               }.to_json
+
+        successMsgPrefix = "NOTIFIED: #{n.channel} #{id} #{url}"
+        exceptMsgPrefix = "statusNotify: #{n.channel} #{id}\nURL: #{url}"
+        rateMsg = "RATE_LIMITED: #{n.channel} #{id} #{url}\n#{body}"
+        mockMsg = "MOCK NOTIFIED: #{n.channel} #{id} #{url}\n#{body}"
+
+        # Submit the notification, with mock and rateLimit info
+        statusNotify(successMsgPrefix,
+                        exceptMsgPrefix,
+                        rateMsg,
+                        mockMsg,
+                        url,
+                        body,
+                        #mock: @mockMode,
+                        mock: true,
+                        rateLimit: false)
+        @evalNotified.deep_merge!({key.to_s => {"at" => timeEpochNow,
+                                                "state" => "#{state}",
+                                                "id" => "#{id}",
+                                                "jobSet" => "#{jobSet}"
+        }})
+      end
+    end
   end
 
   def notifyBuild(n)
@@ -120,10 +421,10 @@ class HydraNotifier
 
         # Skip unmatched jobSets to jobSet notify configs
         unless jobSet =~ /^#{confJobSet}$/
-          LOG.debug("Jobset: #{jobSet} doesn't match confJobSet: #{confJobSet} -- SKIPPING")
+          LOG.debug("buildJobset: #{jobSet} doesn't match confJobSet: #{confJobSet} -- SKIPPING")
           next
         else
-          LOG.debug("Jobset: #{jobSet} matches confJobSet: #{confJobSet}")
+          LOG.debug("buildJobset: #{jobSet} matches confJobSet: #{confJobSet}")
         end
 
         # Determine if this build is a conf target
@@ -134,12 +435,12 @@ class HydraNotifier
         end
 
         inputs = conf["inputs"].split
-        seen = Hash(String, Hash(String, Bool)).new
+        buildSeen = Hash(String, Hash(String, Bool)).new
 
         evals.each do |eval|
           inputs.each do |input|
             # Verify the hashmap when multiple evals per build are found
-            LOG.info("Hash map #{n.channel} #{build[:id]} #{eval[:id]} #{input}: #{seen}") if seen.size > 0
+            LOG.debug("buildHash map #{n.channel} #{build[:id]} #{eval[:id]} #{input}: #{buildSeen}") if buildSeen.size > 0
 
             # Skip notifying on evals which have missing inputs
             unless i = queryEvalInputs(eval[:id], input)
@@ -150,8 +451,8 @@ class HydraNotifier
             uri = i["uri"]
             rev = i["revision"]
             key = "#{uri}-#{rev}"
-            next if seen.dig?(input, key)
-            seen.deep_merge!({input => {key => true}})
+            next if buildSeen.dig?(input, key)
+            buildSeen.deep_merge!({input => {key => true}})
 
             # Skip notifying on builds with invalid reporting URIs
             unless m = URI_VAL.match(uri.to_s)
@@ -211,11 +512,11 @@ class HydraNotifier
                 end
               else
                 # A constituent started/finished build can't update the aggregate state
-                if @notified.has_key?(key)
-                  state = @notified[key]["state"]
+                if @buildNotified.has_key?(key)
+                  state = @buildNotified[key]["state"]
                 else
                   # When no hash state exists, check the aggregate state to ensure we didn't start during a race condition
-                  LOG.info("#{n.channel} : #{build[:id]} #{eval[:id]} -- CONSTITUENT TO AGGREGATE STATE DB LOOKUP PERFORMED")
+                  LOG.debug("#{n.channel} : #{build[:id]} #{eval[:id]} -- CONSTITUENT TO AGGREGATE STATE DB LOOKUP PERFORMED")
                   state = queryState(aggregateTarget)
                 end
               end
@@ -249,15 +550,6 @@ class HydraNotifier
               url = NOTIFY_URL
             end
 
-            # Live github status submission url
-            # url = "https://api.github.com/repos/#{m["owner"]}/#{m["repo"]}/statuses/#{rev}"
-
-            # Test submissions on a non-github test server
-            # url = "http://<HOST>:<PORT>/api.github.com/repos/#{m["owner"]}/#{m["repo"]}/statuses/#{rev}"
-
-            # Test submissions on github on a throw-away branch with a test commit
-            # url = "https://api.github.com/repos/<OWNER>/<REPO>/statuses/<COMMIT>"
-
             # Make final notify context mods
             if flags[:buildTargetAggregate]
               context = "ci/hydra-build:#{confJob}"
@@ -274,16 +566,16 @@ class HydraNotifier
             # Only consider a limit if the build target is an aggregate
             if flags[:buildTargetAggregate]
               # Only consider a limit if state already pre-exists
-              if @notified.has_key?(key)
+              if @buildNotified.has_key?(key)
                 # Apply a limit if previous state notification is the same
-                if @notified[key]["state"] == state && @notified[key]["aggregateMetrics"].to_s == aggregateDescription
+                if @buildNotified[key]["state"] == state && @buildNotified[key]["aggregateMetrics"].to_s == aggregateDescription
                   LOG.info("ENABLING SAME PUSH RATE LIMIT")
                   flags[:rateLimit] = true
                 else
                   # Only consider a time based limit for constituents since they can be large in number
                   # TODO: Address edge case where flags[:buildConstituent] is unexpectedly true
                   if !flags[:buildTarget]
-                    sinceLastNotified = Time.utc.to_unix - @notified[key]["at"].as(Int64)
+                    sinceLastNotified = Time.utc.to_unix - @buildNotified[key]["at"].as(Int64)
                     if sinceLastNotified < COMMIT_RATE_LIMIT
                       # Only consider a limit if queued > 0 or queued == 0 and total > finished
                       if aggregateMetrics && aggregateMetrics[:queued] > 0
@@ -299,24 +591,34 @@ class HydraNotifier
               end
             end
 
-            LOG.info("jobName: #{jobName}")
+            LOG.info("buildJobName: #{jobName}")
             LOG.info("#{flags}")
+
+            body = {"state"       => "#{state}",
+                    "target_url"  => "#{target_url}",
+                    "description" => "#{description}",
+                    "context"     => "#{context}",
+                   }.to_json
+
+            successMsgPrefix = "NOTIFIED: #{n.channel} #{build[:id]} #{eval[:id]} #{url}"
+            exceptMsgPrefix = "statusNotify: #{n.channel} #{build[:id]} #{eval[:id]}\nURL: #{url}"
+            rateMsg = "RATE_LIMITED: #{n.channel} #{build[:id]} #{eval[:id]} #{url}\n#{body}"
+            mockMsg = "MOCK NOTIFIED: #{n.channel} #{build[:id]} #{eval[:id]} #{url}\n#{body}"
+
             # Submit the notification, with mock and rateLimit info
-            if statusNotify(n.channel,
-                 build[:id],
-                 eval[:id],
-                 url,
-                 {
-                   "state"       => "#{state}",
-                   "target_url"  => "#{target_url}",
-                   "description" => "#{description}",
-                   "context"     => "#{context}",
-                 }.to_json, mock: @mockMode, rateLimit: flags[:rateLimit])
+            if statusNotify(successMsgPrefix,
+                            exceptMsgPrefix,
+                            rateMsg,
+                            mockMsg,
+                            url,
+                            body,
+                            mock: @mockMode,
+                            rateLimit: flags[:rateLimit])
               # State keys are only needed for aggregate targets
               if !flags[:rateLimit] && flags[:buildTargetAggregate]
-                @notified.deep_merge!({key => {"at" => Time.utc.to_unix,
+                @buildNotified.deep_merge!({key => {"at" => Time.utc.to_unix,
                                                "state" => "#{state}",
-                                               "aggregateMetrics" => aggregateMetrics ? aggregateMetrics : "{ METRICS ERROR }",
+                                               "aggregateMetrics" => aggregateMetrics ? aggregateMetrics : "{ METRICS ERROR }"
                 }})
               end
             end
@@ -326,7 +628,59 @@ class HydraNotifier
     end
   end
 
-  def statusNotify(channel, buildId, evalId, url, body, mock : Bool = false, rateLimit : Bool = false)
+  def existingState(context, url)
+    begin
+      r = Crest.get(
+        url,
+        headers: {
+          "Content-Type"  => "application/json",
+          "Accept"        => "application/vnd.github.v3+json",
+          "Authorization" => "#{@auth[:type]} #{@auth[:secret]}"
+        }
+      )
+      LOG.debug("existingState:\n#{r.http_client_res.pretty_inspect}")
+
+      existing = Array(ExistingState).from_json(r.body)
+      existing.reject! { |a| a.context != context || !a.updatedAt || !a.state }
+      existing.sort! { |a, b| b.updatedAt.as(Time) <=> a.updatedAt.as(Time) }
+      existingState = existing.size > 0 ? existing.first.state : nil
+
+      limit = r.headers["X-RateLimit-Limit"].to_s.to_i
+      limitRemaining = r.headers["X-RateLimit-Remaining"].to_s.to_i
+      limitReset = r.headers["X-RateLimit-Reset"].to_s.to_i
+      diff = limitReset - Time.utc.to_unix
+      delay = (limitRemaining > 0 ? diff / limitRemaining : diff) * damping(diff)
+
+      msg = "QUERY API STATE: #{existingState ? existingState : "nil"} #{url} #{limitRemaining} #{diff} #{delay.format(decimal_places: 1)}"
+      sleep delay
+    rescue ex : Crest::RequestFailed
+      msg = "EXCEPTION: \"#{ex}\"\nRESPONSE: #{ex.response}"
+      existingState = nil
+      LOG.error(msg)
+    rescue ex
+      msg = "EXCEPTION: \"#{ex}\""
+      existingState = nil
+      LOG.error("EXCEPTION: \"#{ex}\"")
+    end
+    return existingState, msg
+  end
+
+  class ExistingState
+    JSON.mapping(
+      context:   {type: String?, key: "context"},
+      updatedAt: {type: Time?, key: "updated_at"},
+      state:     {type: String?, key: "state"}
+    )
+  end
+
+  def statusNotify(successMsgPrefix,
+                   exceptMsgPrefix,
+                   rateMsg,
+                   mockMsg,
+                   url,
+                   body,
+                   mock : Bool = false,
+                   rateLimit : Bool = false)
     if !mock && !rateLimit
       begin
         r = Crest.post(
@@ -334,7 +688,7 @@ class HydraNotifier
           headers: {
             "Content-Type"  => "application/json",
             "Accept"        => "application/vnd.github.v3+json",
-            "Authorization" => "#{@auth[:type]} #{@auth[:secret]}",
+            "Authorization" => "#{@auth[:type]} #{@auth[:secret]}"
           },
           form: body
         )
@@ -344,16 +698,19 @@ class HydraNotifier
         limitReset = r.headers["X-RateLimit-Reset"].to_s.to_i
         diff = limitReset - Time.utc.to_unix
         delay = (limitRemaining > 0 ? diff / limitRemaining : diff) * damping(diff)
-        LOG.info("NOTIFIED: #{channel} #{buildId} #{evalId} #{url} #{limitRemaining} #{diff} #{delay.format(decimal_places: 1)}\n#{body}")
+        LOG.info("#{successMsgPrefix} #{limitRemaining} #{diff} #{delay.format(decimal_places: 1)}\n#{body}")
         sleep delay
       rescue ex : Crest::RequestFailed
-        LOG.error("statusNotify(#{buildId},#{evalId}) #{channel}\nURL: #{url}\nEXCEPTION: \"#{ex}\"\nRESPONSE: #{ex.response}\nBODY: #{body}")
+        LOG.error("#{exceptMsgPrefix}\nEXCEPTION: \"#{ex}\"\nRESPONSE: #{ex.response}\nBODY: #{body}")
+        return nil
+      rescue ex
+        LOG.error("#{exceptMsgPrefix}\nEXCEPTION: \"#{ex}\"")
         return nil
       end
     elsif rateLimit
-      LOG.info("RATE_LIMITED: #{channel} #{buildId} #{evalId} #{url}\n#{body}")
+      LOG.info("#{rateMsg}")
     else
-      LOG.info("MOCK NOTIFIED: #{channel} #{buildId} #{evalId} #{url}\n#{body}")
+      LOG.info("#{mockMsg}")
     end
     return true
   end

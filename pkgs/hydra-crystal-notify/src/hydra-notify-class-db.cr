@@ -60,6 +60,31 @@ class HydraNotifier
     end
   end
 
+  def queryEval(evalId)
+    begin
+      @db.query_one(<<-SQL, evalId, as: QUERY_EVALS)
+        SELECT id,
+               project,
+               jobset,
+               timestamp,
+               checkouttime,
+               evaltime,
+               hasnewbuilds,
+               hash,
+               nrbuilds,
+               nrsucceeded,
+               flake
+        FROM jobsetevals WHERE id = $1 LIMIT 1
+      SQL
+    rescue ex : DB::NoResultsError
+      LOG.error("queryEval(#{evalId}) -- EXCEPTION: \"#{ex.message}\"")
+      return nil
+    rescue ex
+      LOG.error("queryEval(#{evalId}) -- EXCEPTION: \"#{ex}\"\n#{ex.inspect_with_backtrace}")
+      return nil
+    end
+  end
+
   def queryEvals(buildId)
     evals = [] of QUERY_EVALS_TYPE
     begin

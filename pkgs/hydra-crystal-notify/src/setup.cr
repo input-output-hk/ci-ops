@@ -13,11 +13,20 @@ DB_DATABASE       = ENV.fetch("DB_DATABASE", "hydra")
 DB_HOST           = ENV.fetch("DB_HOST", "/run/postgresql")
 DB_RETRY_DELAY    = ENV.fetch("DB_RETRY_DELAY", "2").to_i
 DB_RETRY_ATTEMPTS = ENV.fetch("DB_RETRY_ATTEMPTS", "15").to_i
-NOTIFY_URL        = ENV.fetch("NOTIFY_URL", "DEFAULT")
 API_PERIOD        = ENV.fetch("API_PERIOD", "3600").to_i
 NOTIFIED_TTL      = ENV.fetch("NOTIFIED_TTL", "#{8 * 3600}").to_i
 MAINT_CHECKS      = ENV.fetch("MAINT_CHECKS", "300").to_i
 COMMIT_RATE_LIMIT = ENV.fetch("COMMIT_RATE_LIMIT", "10").to_i
+NOTIFY_URL        = ENV.fetch("NOTIFY_URL", "DEFAULT")
+# ^^^ Example NOTIFY_URL formats:
+# Live github status submission url (DEFAULT)
+# https://api.github.com/repos/#{m["owner"]}/#{m["repo"]}/statuses/#{rev}
+
+# Test submissions on a non-github test server
+# http://<HOST>:<PORT>/api.github.com/repos/#{m["owner"]}/#{m["repo"]}/statuses/#{rev}
+
+# Test submissions on github on a throw-away branch with a test commit
+# https://api.github.com/repos/<OWNER>/<REPO>/statuses/<COMMIT>
 
 DB_CONN_STR       = "postgres://#{DB_USER}/#{DB_DATABASE}?host=#{DB_HOST}&retry_attempts=#{DB_RETRY_ATTEMPTS}&retry_delay=#{DB_RETRY_DELAY}"
 URI_VAL           = %r([:/](?<owner>[^/]+)/(?<repo>[^/]+?)(?:.git)?$)
@@ -37,6 +46,7 @@ LISTEN_CHANNELS = {"step_started"   => '\t',
                    "build_started"  => '\t',
                    "build_finished" => '\t',
                    "eval_started"   => '\t',
+                   "eval_pending"   => '\t',
                    "eval_failed"    => '\t',
                    "eval_cached"    => '\t',
                    "eval_added"     => '\t'}

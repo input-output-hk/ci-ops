@@ -341,8 +341,7 @@ class HydraNotifier
                         mockMsg,
                         url,
                         body,
-                        #mock: @mockMode,
-                        mock: true,
+                        mock: @mockMode,
                         rateLimit: false)
         @evalNotified.deep_merge!({key.to_s => {"at" => timeEpochNow,
                                                 "state" => "#{state}",

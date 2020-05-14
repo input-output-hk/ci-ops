@@ -3,11 +3,12 @@
 #
 
 class HydraNotifier
-  getter evalNotified, buildNotified, maintTimestamp
+  getter evalNotified, buildNotified, maintTimestamp, dbListener
   setter evalNotified, buildNotified, maintTimestamp
 
   @auth : Hash(Symbol, String)
   @notifyJobs : Array(Hash(String, String))
+  @dbListener : Fiber
   @db : DB::Database
   @buildNotified : Hash(String, Hash(String, String | Int64 | QUERY_AGGREGATE_STATUS_TYPE))
   @maintTimestamp : Int64
@@ -27,30 +28,32 @@ class HydraNotifier
     @mockMode = MOCK_MODE == "TRUE" ? true : false
 
     # Listen to and process notification payloads
-    PG.connect_listen(DB_CONN_STR, LISTEN_CHANNELS.keys) do |n|
-      case n.channel
-      # Handle evals
-      when /^eval_pending/
-        notifyEval(n)
-      when /^eval_added/
-        notifyEval(n)
-      when /^eval_failed/
-        notifyEval(n)
-      when /^eval_started/
-        debugNotification(n)
-      when /^eval_cached/
-        debugNotification(n)
-        # Handle steps
-      when /^step/
-        debugNotification(n)
-        # Handle started builds
-      when /^build_started/
-        notifyBuild(n)
-        # Handle finished builds
-      when /^build_finished/
-        notifyBuild(n)
-      else
-        LOG.warn("#{n.channel} : #{n.payload} -- UNKNOWN LISTEN CHANNEL")
+    @dbListener = spawn(name: "dbListener") do
+      PG.connect_listen(DB_CONN_STR, LISTEN_CHANNELS.keys) do |n|
+        case n.channel
+        # Handle evals
+        when /^eval_pending/
+          notifyEval(n)
+        when /^eval_added/
+          notifyEval(n)
+        when /^eval_failed/
+          notifyEval(n)
+        when /^eval_started/
+          debugNotification(n)
+        when /^eval_cached/
+          debugNotification(n)
+          # Handle steps
+        when /^step/
+          debugNotification(n)
+          # Handle started builds
+        when /^build_started/
+          notifyBuild(n)
+          # Handle finished builds
+        when /^build_finished/
+          notifyBuild(n)
+        else
+          LOG.warn("#{n.channel} : #{n.payload} -- UNKNOWN LISTEN CHANNEL")
+        end
       end
     end
   end

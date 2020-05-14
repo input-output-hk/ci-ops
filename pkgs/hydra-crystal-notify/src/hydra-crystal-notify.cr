@@ -37,6 +37,7 @@ end
 
 notify = HydraNotifier.new
 loop do
+  raise "DB_LISTENER EXCEPTION" if notify.dbListener.dead?
   if Time.utc.to_unix - notify.maintTimestamp > MAINT_CHECKS
     maintenance(notify)
     notify.maintTimestamp = Time.utc.to_unix

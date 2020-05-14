@@ -14,12 +14,12 @@ dependencies:
     github: will/crystal-pg
     version: 0.21.0
   deep-merge:
-    github: johnalotoski/deep-merge.cr
-    commit: b6f69578bbee369edfc5fa6bc785122a157618db
+    github: peterhoeg/deep-merge.cr
+    commit: 5832aa704c85f8ba562a702a38df490be12f08fb
   crest:
     github: mamantoha/crest
-    version: 0.24.1
+    version: 0.25.0
 
-crystal: 0.33.0
+crystal: 0.34.0
 
 license: MIT

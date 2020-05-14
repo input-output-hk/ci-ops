@@ -2,7 +2,7 @@
 # Entry Point
 #
 
-require "logger"
+require "log"
 require "db"
 require "pg"
 require "json"
@@ -30,9 +30,9 @@ def maintenance(notify)
   buildOldest = buildHash.size > 0 ? buildHash.min_of { |k, v| v["at"].as(Int64) } : ts
   buildNextPurge = NOTIFIED_TTL - (ts - buildOldest)
 
-  LOG.info("MAINTENANCE: { memKeySize, nowPurged, nextPurge }: " \
-           "evalHash { #{evalSize}, #{evalSize - evalHash.size}, #{evalNextPurge} }; " \
-           "buildHash { #{buildSize}, #{buildSize - buildHash.size}, #{buildNextPurge} }")
+  Log.info { "MAINTENANCE: { memKeySize, nowPurged, nextPurge }: " \
+             "evalHash { #{evalSize}, #{evalSize - evalHash.size}, #{evalNextPurge} }; " \
+             "buildHash { #{buildSize}, #{buildSize - buildHash.size}, #{buildNextPurge} }" }
 end
 
 notify = HydraNotifier.new

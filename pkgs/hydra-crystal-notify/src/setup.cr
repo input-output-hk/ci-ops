@@ -2,7 +2,6 @@
 # Setup Config
 #
 
-LOG_LEVEL         = ENV.fetch("LOG_LEVEL", "INFO")
 LOG_FILE          = ENV.fetch("LOG_FILE", "/var/lib/hydra/notification-debug.log")
 CFG_FILE          = ENV.fetch("CFG_FILE", "/var/lib/hydra/github-notify.conf")
 MOCK_MODE         = ENV.fetch("MOCK_MODE", "FALSE")
@@ -32,13 +31,6 @@ DB_CONN_STR       = "postgres://#{DB_USER}/#{DB_DATABASE}?host=#{DB_HOST}&retry_
 URI_VAL           = %r([:/](?<owner>[^/]+)/(?<repo>[^/]+?)(?:.git)?$)
 DAMPING_ASYMPTOTE = 1.1
 DAMPING_CONSTANT  = API_PERIOD * Math.log(2) / Math.log(11)
-
-LOG_LEVELS = {"FATAL"   => Logger::FATAL,
-              "ERROR"   => Logger::ERROR,
-              "WARN"    => Logger::WARN,
-              "INFO"    => Logger::INFO,
-              "DEBUG"   => Logger::DEBUG,
-              "UNKNOWN" => Logger::UNKNOWN}
 
 LISTEN_CHANNELS = {"step_started"   => '\t',
                    "step_started"   => '\t',
@@ -110,11 +102,4 @@ QUERY_AGGREGATE_STATUS = {total:    Int64,
                           failed:   Int64}
 
 STDOUT.sync = true
-LOG = Logger.new(STDOUT)
-# LOG = Logger.new(File.open(LOG_FILE, "a"))
-
-if LOG_LEVELS.has_key? LOG_LEVEL
-  LOG.level = LOG_LEVELS[LOG_LEVEL]
-else
-  raise "Unknown log level: #{LOG_LEVEL}"
-end
+Log.setup_from_env

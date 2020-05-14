@@ -60,7 +60,7 @@ def parseConfig(cfgFile)
     if m["stag"] != m["etag"]
       tagStats[:mismatched] += 1
       msg = "Found an unmatched config tag in file #{CFG_FILE} of:\n#{md}"
-      LOG.error(msg)
+      Log.error { msg }
     end
 
     case m["stag"]
@@ -69,12 +69,12 @@ def parseConfig(cfgFile)
       # Test if the auth passes validation
       if !(m["body"] =~ authVal)
         tagStats[:authSkipped] += 1
-        LOG.warn("SKIPPING_AUTH: auth validation failed in file #{CFG_FILE} of:\n#{md}\n#{{"authVal", authVal}}")
+        Log.warn { "SKIPPING_AUTH: auth validation failed in file #{CFG_FILE} of:\n#{md}\n#{{"authVal", authVal}}" }
 
         # Test if more than one auth has been found
       elsif auth.has_key?(:secret)
         tagStats[:authSkipped] += 1
-        LOG.warn("Only the first authorization found in file #{CFG_FILE} will be used")
+        Log.warn { "Only the first authorization found in file #{CFG_FILE} will be used" }
 
         # Add a successfully parsed auth
       else
@@ -82,7 +82,7 @@ def parseConfig(cfgFile)
         auth[:name] = m["body"].split('=')[0].strip
         auth[:type] = m["body"].split('=')[1].strip.split[0]
         auth[:secret] = m["body"].split('=')[1].strip.split[1]
-        LOG.debug("Authorization token found in file #{CFG_FILE} of: \n#{auth}")
+        Log.debug { "Authorization token found in file #{CFG_FILE} of: \n#{auth}" }
       end
       # Process status config blocks
     when "githubstatus"
@@ -101,17 +101,17 @@ def parseConfig(cfgFile)
       # Test that the number of expected keys are present
       if keys.uniq.size != notifyVal.size
         tagStats[:jobSkipped] += 1
-        LOG.warn("SKIPPING_NOTIFY_JOB: expected #{notifyVal.size} unique keys, but found #{keys.uniq.size} in file #{CFG_FILE} of:\n#{md}")
+        Log.warn { "SKIPPING_NOTIFY_JOB: expected #{notifyVal.size} unique keys, but found #{keys.uniq.size} in file #{CFG_FILE} of:\n#{md}" }
 
         # Test that the expected key names are present
       elsif keys.reduce(false) { |acc, i| acc || !notifyVal.has_key?(i) }
         tagStats[:jobSkipped] += 1
-        LOG.warn("SKIPPING_NOTIFY_JOB: expected keys of #{notifyVal.keys} were not all found in file #{CFG_FILE} of:\n#{md}")
+        Log.warn { "SKIPPING_NOTIFY_JOB: expected keys of #{notifyVal.keys} were not all found in file #{CFG_FILE} of:\n#{md}" }
 
         # Test validation regex for each key value
       elsif Hash.zip(keys, values).reduce(false) { |acc, (k, v)| acc || !(v =~ notifyVal[k]) }
         tagStats[:jobSkipped] += 1
-        LOG.warn("SKIPPING_NOTIFY_JOB: at least one value validation failed in file #{CFG_FILE} of:\n#{md}\n#{notifyVal}")
+        Log.warn { "SKIPPING_NOTIFY_JOB: at least one value validation failed in file #{CFG_FILE} of:\n#{md}\n#{notifyVal}" }
 
         # Add a successfully parsed notify job
       else
@@ -120,19 +120,19 @@ def parseConfig(cfgFile)
       end
     else
       tagStats[:unknown] += 1
-      LOG.info("Unknown config tag in file #{CFG_FILE} of:\n#{md}")
+      Log.info { "Unknown config tag in file #{CFG_FILE} of:\n#{md}" }
     end
   end
 
   # Raise if no authorization was found
   unless auth.has_key?(:secret)
     msg = "No authorization was found in file #{CFG_FILE}"
-    LOG.error(msg)
+    Log.error { msg }
     raise msg
   end
 
   # Summarize the parsed config
-  LOG.info("Config parse of #{CFG_FILE} successful:\n#{tagStats}")
+  Log.info { "Config parse of #{CFG_FILE} successful:\n#{tagStats}" }
 
   # Return vals
   return auth, notifyJobs

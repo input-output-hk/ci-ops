@@ -7,7 +7,7 @@ class HydraNotifier
     if b = queryBuild(buildId)
       return toGithubState(b)
     else
-      LOG.error("queryState(#{buildId}) -- EXCEPTION: BUILD #{buildId} DOES NOT EXIST")
+      Log.error { "queryState(#{buildId}) -- EXCEPTION: BUILD #{buildId} DOES NOT EXIST" }
       return "error"
     end
   end
@@ -52,10 +52,10 @@ class HydraNotifier
         FROM builds WHERE id = $1 LIMIT 1
       SQL
     rescue ex : DB::NoResultsError
-      LOG.error("queryBuild(#{buildId}) -- EXCEPTION: \"#{ex.message}\"")
+      Log.error { "queryBuild(#{buildId}) -- EXCEPTION: \"#{ex.message}\"" }
       return nil
     rescue ex
-      LOG.error("queryBuild(#{buildId}) -- EXCEPTION: \"#{ex}\"\n#{ex.inspect_with_backtrace}")
+      Log.error { "queryBuild(#{buildId}) -- EXCEPTION: \"#{ex}\"\n#{ex.inspect_with_backtrace}" }
       return nil
     end
   end
@@ -77,10 +77,10 @@ class HydraNotifier
         FROM jobsetevals WHERE id = $1 LIMIT 1
       SQL
     rescue ex : DB::NoResultsError
-      LOG.error("queryEval(#{evalId}) -- EXCEPTION: \"#{ex.message}\"")
+      Log.error { "queryEval(#{evalId}) -- EXCEPTION: \"#{ex.message}\"" }
       return nil
     rescue ex
-      LOG.error("queryEval(#{evalId}) -- EXCEPTION: \"#{ex}\"\n#{ex.inspect_with_backtrace}")
+      Log.error { "queryEval(#{evalId}) -- EXCEPTION: \"#{ex}\"\n#{ex.inspect_with_backtrace}" }
       return nil
     end
   end
@@ -107,10 +107,10 @@ class HydraNotifier
         end
       end
     rescue ex : DB::NoResultsError
-      LOG.error("queryEvals(#{buildId}) -- EXCEPTION: \"#{ex.message}\"")
+      Log.error { "queryEvals(#{buildId}) -- EXCEPTION: \"#{ex.message}\"" }
       return nil
     rescue ex
-      LOG.error("queryEvals(#{buildId}) -- EXCEPTION: \"#{ex}\"\n#{ex.inspect_with_backtrace}")
+      Log.error { "queryEvals(#{buildId}) -- EXCEPTION: \"#{ex}\"\n#{ex.inspect_with_backtrace}" }
       return nil
     end
     return evals
@@ -132,10 +132,10 @@ class HydraNotifier
         FROM jobsetevalinputs WHERE eval = $1 AND name = $2 AND altnr = '0' LIMIT 1
       SQL
     rescue ex : DB::NoResultsError
-      LOG.debug("queryEvalInputs(#{evalId},#{input}) -- EXCEPTION: \"#{ex.message}\"")
+      Log.debug { "queryEvalInputs(#{evalId},#{input}) -- EXCEPTION: \"#{ex.message}\"" }
       return nil
     rescue ex
-      LOG.error("queryEvalInputs(#{evalId},#{input}) -- EXCEPTION: \"#{ex}\"\n#{ex.inspect_with_backtrace}")
+      Log.error { "queryEvalInputs(#{evalId},#{input}) -- EXCEPTION: \"#{ex}\"\n#{ex.inspect_with_backtrace}" }
       return nil
     end
   end
@@ -149,10 +149,10 @@ class HydraNotifier
         SELECT DISTINCT build FROM aggregateJob
       SQL
     rescue ex : DB::NoResultsError
-      LOG.debug("aggregateBuild(#{evalId},#{job}) -- EXCEPTION: \"#{ex.message}\"")
+      Log.debug { "aggregateBuild(#{evalId},#{job}) -- EXCEPTION: \"#{ex.message}\"" }
       return nil
     rescue ex
-      LOG.error("aggregateBuild(#{evalId},#{job}) -- EXCEPTION: \"#{ex}\"\n#{ex.inspect_with_backtrace}")
+      Log.error { "aggregateBuild(#{evalId},#{job}) -- EXCEPTION: \"#{ex}\"\n#{ex.inspect_with_backtrace}" }
       return nil
     end
   end
@@ -163,10 +163,10 @@ class HydraNotifier
         SELECT constituent FROM aggregateconstituents where constituent = $1 AND aggregate = $2
       SQL
     rescue ex : DB::NoResultsError
-      LOG.debug("constituentBuild(#{buildId},#{aggregateBuild}) -- EXCEPTION: \"#{ex.message}\"")
+      Log.debug { "constituentBuild(#{buildId},#{aggregateBuild}) -- EXCEPTION: \"#{ex.message}\"" }
       return nil
     rescue ex
-      LOG.error("constituentBuild(#{buildId},#{aggregateBuild}) -- EXCEPTION: \"#{ex}\"\n#{ex.inspect_with_backtrace}")
+      Log.error { "constituentBuild(#{buildId},#{aggregateBuild}) -- EXCEPTION: \"#{ex}\"\n#{ex.inspect_with_backtrace}" }
       return nil
     end
   end
@@ -184,10 +184,10 @@ class HydraNotifier
         (SELECT count(*) FROM r WHERE buildstatus NOT IN (0, 3, 4, 8, 10, 11)) AS failed
       SQL
     rescue ex : DB::NoResultsError
-      LOG.debug("aggregateStatus(#{aggregateBuild}) -- EXCEPTION: \"#{ex.message}\"")
+      Log.debug { "aggregateStatus(#{aggregateBuild}) -- EXCEPTION: \"#{ex.message}\"" }
       return nil
     rescue ex
-      LOG.error("aggregateStatus(#{aggregateBuild}) -- EXCEPTION: \"#{ex}\"\n#{ex.inspect_with_backtrace}")
+      Log.error { "aggregateStatus(#{aggregateBuild}) -- EXCEPTION: \"#{ex}\"\n#{ex.inspect_with_backtrace}" }
       return nil
     end
   end

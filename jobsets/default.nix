@@ -21,34 +21,35 @@
 
 # Paths to JSON files containing PR info fetched from github.
 # An example file is ./simple-pr-dummy.json.
-, nixopsPrsJSON ? ./simple-pr-dummy.json
-, cardanoPrsJSON ? ./simple-pr-dummy.json
-, daedalusPrsJSON ? ./simple-pr-dummy.json
-, plutusPrsJSON ? ./simple-pr-dummy.json
-, logClassifierPrsJSON ? ./simple-pr-dummy.json
-, ouroborosNetworkPrsJSON ? ./simple-pr-dummy.json
-, cardanoByronProxyPrsJSON ? ./simple-pr-dummy.json
-, cardanoPreludePrsJSON ? ./simple-pr-dummy.json
-, decentralizedSoftwareUpdatesPrsJSON ? ./simple-pr-dummy.json
-, iohkMonitoringPrsJSON ? ./simple-pr-dummy.json
-, ledgerPrsJSON ? ./simple-pr-dummy.json
-, cardanoLedgerSpecsPrsJSON ? ./simple-pr-dummy.json
-, walletPrsJSON ? ./simple-pr-dummy.json
-, shellPrsJSON ? ./simple-pr-dummy.json
-, cardanoNodePrsJSON ? ./simple-pr-dummy.json
-, cardanoBenchmarkingPrsJSON ? ./simple-pr-dummy.json
 , cardanoBasePrsJSON ? ./simple-pr-dummy.json
-, cardanoRestPrsJSON ? ./simple-pr-dummy.json
+, cardanoBenchmarkingPrsJSON ? ./simple-pr-dummy.json
+, cardanoByronProxyPrsJSON ? ./simple-pr-dummy.json
 , cardanoDbSyncPrsJSON ? ./simple-pr-dummy.json
 , cardanoExplorerAppPrsJSON ? ./simple-pr-dummy.json
-, cardanoGraphQLPrsJSON ? ./simple-pr-dummy.json
 , cardanoFaucetPrsJSON ? ./simple-pr-dummy.json
-, iohkNixPrsJSON ? ./simple-pr-dummy.json
+, cardanoGraphQLPrsJSON ? ./simple-pr-dummy.json
+, cardanoLedgerSpecsPrsJSON ? ./simple-pr-dummy.json
+, cardanoNodePrsJSON ? ./simple-pr-dummy.json
+, cardanoPreludePrsJSON ? ./simple-pr-dummy.json
+, cardanoPrsJSON ? ./simple-pr-dummy.json
+, cardanoRestPrsJSON ? ./simple-pr-dummy.json
 , ciOpsPrsJSON ? ./simple-pr-dummy.json
-, haskellNixPrsJSON ? ./simple-pr-dummy.json
-, toolsPrsJSON ? ./simple-pr-dummy.json
+, daedalusPrsJSON ? ./simple-pr-dummy.json
+, decentralizedSoftwareUpdatesPrsJSON ? ./simple-pr-dummy.json
 , explorerPrsJSON ? ./simple-pr-dummy.json
+, haskellNixPrsJSON ? ./simple-pr-dummy.json
+, iohkMonitoringPrsJSON ? ./simple-pr-dummy.json
+, iohkNixPrsJSON ? ./simple-pr-dummy.json
 , jormungandrPrsJSON ? ./simple-pr-dummy.json
+, kesPrsJSON ? ./simple-pr-dummy.json
+, ledgerPrsJSON ? ./simple-pr-dummy.json
+, logClassifierPrsJSON ? ./simple-pr-dummy.json
+, nixopsPrsJSON ? ./simple-pr-dummy.json
+, ouroborosNetworkPrsJSON ? ./simple-pr-dummy.json
+, plutusPrsJSON ? ./simple-pr-dummy.json
+, shellPrsJSON ? ./simple-pr-dummy.json
+, toolsPrsJSON ? ./simple-pr-dummy.json
+, walletPrsJSON ? ./simple-pr-dummy.json
 }:
 
 let pkgs = import nixpkgs {}; in
@@ -270,6 +271,13 @@ let
       description = "Cardano Faucet";
       url = "https://github.com/input-output-hk/cardano-faucet.git";
       prs = cardanoFaucetPrsJSON;
+      bors = true;
+    };
+
+    kes-mmm-sumed25519 = {
+      description = "key evolving signature";
+      url = "https://github.com/input-output-hk/kes-mmm-sumed25519.git";
+      prs = kesPrsJSON;
       bors = true;
     };
 

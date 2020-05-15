@@ -37,6 +37,58 @@ let
     </githubstatus>
   '';
   mkStatusBlocks = concatMapStringsSep "" mkGithubStatus;
+  mkGithubStatusConfig = ''
+    <github_authorization>
+      input-output-hk = ${builtins.readFile ../secrets/github_token}
+    </github_authorization>
+
+    ${mkStatusBlocks [
+      # the shorter names must be later in the list, or the regex will be greedy and never check the longer names
+      { jobset = "cardano-base"; }
+      { jobset = "cardano-benchmarking"; }
+      { jobset = "cardano-byron-proxy"; }
+      { jobset = "cardano-db-sync"; }
+      { jobset = "cardano-explorer-app"; }
+      { jobset = "cardano-faucet"; }
+      { jobset = "cardano-graphql"; }
+      { jobset = "cardano-ledger-specs"; }
+      { jobset = "cardano-ledger"; }
+      { jobset = "cardano-node"; }
+      { jobset = "cardano-prelude"; }
+      { jobset = "cardano-rest"; }
+      { jobset = "cardano-shell"; }
+      { jobset = "cardano-wallet"; }
+      { jobset = "cardano"; }
+      { jobset = "ci-ops"; }
+      { jobset = "decentralized-software-updates"; }
+      { jobset = "kes-mmm-sumed25519"; }
+      { jobset = "haskell-nix"; }
+      { jobset = "iohk-monitoring"; }
+      { jobset = "iohk-nix"; }
+      { jobset = "iohk-ops"; inputs = "jobsets"; }
+      { jobset = "jormungandr"; }
+      { jobset = "log-classifier"; }
+      { jobset = "ouroboros-network"; }
+      { jobset = "plutus"; }
+      { jobset = "tools"; }
+    ]}
+
+    # DEVOPS-1208 This CI status for cardano-sl is needed while the
+    # Daedalus Windows installer is built on AppVeyor or Buildkite
+    <githubstatus>
+      jobs = Cardano:cardano-sl.*:daedalus-mingw32-pkg
+      inputs = cardano
+      excludeBuildFromContext = 1
+      useShortContext = 1
+    </githubstatus>
+    <githubstatus>
+      jobs = Cardano:daedalus.*:tests\..*
+      inputs = daedalus
+      excludeBuildFromContext = 1
+      useShortContext = 1
+    </githubstatus>
+  '';
+  githubStatusConfig = pkgs.writeText "github-notify.conf"  mkGithubStatusConfig;
 
 in {
   environment.etc = lib.singleton {
@@ -90,55 +142,7 @@ in {
       log_prefix = https://iohk-nix-cache.s3-eu-central-1.amazonaws.com/
       upload_logs_to_binary_cache = true
 
-      <github_authorization>
-        input-output-hk = ${builtins.readFile ../secrets/github_token}
-      </github_authorization>
-
-      ${mkStatusBlocks [
-        # the shorter names must be later in the list, or the regex will be greedy and never check the longer names
-        { jobset = "cardano-base"; }
-        { jobset = "cardano-benchmarking"; }
-        { jobset = "cardano-byron-proxy"; }
-        { jobset = "cardano-db-sync"; }
-        { jobset = "cardano-explorer-app"; }
-        { jobset = "cardano-faucet"; }
-        { jobset = "cardano-graphql"; }
-        { jobset = "cardano-ledger-specs"; }
-        { jobset = "cardano-ledger"; }
-        { jobset = "cardano-node"; }
-        { jobset = "cardano-prelude"; }
-        { jobset = "cardano-rest"; }
-        { jobset = "cardano-shell"; }
-        { jobset = "cardano-wallet"; }
-        { jobset = "cardano"; }
-        { jobset = "ci-ops"; }
-        { jobset = "decentralized-software-updates"; }
-        { jobset = "kes-mmm-sumed25519"; }
-        { jobset = "haskell-nix"; }
-        { jobset = "iohk-monitoring"; }
-        { jobset = "iohk-nix"; }
-        { jobset = "iohk-ops"; inputs = "jobsets"; }
-        { jobset = "jormungandr"; }
-        { jobset = "log-classifier"; }
-        { jobset = "ouroboros-network"; }
-        { jobset = "plutus"; }
-        { jobset = "tools"; }
-      ]}
-
-      # DEVOPS-1208 This CI status for cardano-sl is needed while the
-      # Daedalus Windows installer is built on AppVeyor or Buildkite
-      <githubstatus>
-        jobs = Cardano:cardano-sl.*:daedalus-mingw32-pkg
-        inputs = cardano
-        excludeBuildFromContext = 1
-        useShortContext = 1
-      </githubstatus>
-      <githubstatus>
-        jobs = Cardano:daedalus.*:tests\..*
-        inputs = daedalus
-        excludeBuildFromContext = 1
-        useShortContext = 1
-      </githubstatus>
+      ${mkGithubStatusConfig}
     '';
   };
   services.grafana = {
@@ -152,6 +156,7 @@ in {
       AUTH_GOOGLE_CLIENT_SECRET = builtins.readFile ../secrets/google_oauth_hydra_grafana.secret;
     };
   };
+  services.hydra-crystal-notify.configFile = toString githubStatusConfig;
 
   networking.firewall.allowedTCPPorts = [ 80 443 ];
   environment.systemPackages = with pkgs; [ goaccess ];

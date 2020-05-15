@@ -3,8 +3,7 @@
 let
   sources = import ../nix/sources.nix;
 
-  hydraSrc = sources.hydra-notify-patched;
-  #hydraSrc = sources.hydra;
+  hydraSrc = sources.hydra;
   hydraNixpkgs = import sources.hydra-nixpkgs { };
   hydraPatches = [ ];
 in

@@ -41,10 +41,10 @@
         "homepage": "http://nixos.org/hydra",
         "owner": "input-output-hk",
         "repo": "hydra",
-        "rev": "ce348bcec60f19ff4b881e7b335e42702f14d96b",
-        "sha256": "0panfm8y8y5pscdwxdyig0v79xkb62q28cgf3fkblkvh46s15sqa",
+        "rev": "fdd58de35009629e30e84ede68cde9558ce7fac2",
+        "sha256": "1ngc9nqwi5h021r1dmc6kl7bickm541cqdsccyw3211lvyy1bz7v",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/hydra/archive/ce348bcec60f19ff4b881e7b335e42702f14d96b.tar.gz",
+        "url": "https://github.com/input-output-hk/hydra/archive/fdd58de35009629e30e84ede68cde9558ce7fac2.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "hydra-nixpkgs": {
@@ -57,18 +57,6 @@
         "sha256": "12cwvb8wm3grl39ir0w75n7b5zm59f1lv6xl3k9cjc2zvq5dsd8d",
         "type": "tarball",
         "url": "https://github.com/NixOS/nixpkgs/archive/0ee9ceff38f1abd0fcb672841a40e75f6cbc2620.tar.gz",
-        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
-    },
-    "hydra-notify-patched": {
-        "branch": "iohk-master-notify-patch",
-        "description": "Hydra, the Nix-based continuous build system",
-        "homepage": "http://nixos.org/hydra",
-        "owner": "input-output-hk",
-        "repo": "hydra",
-        "rev": "9c609ecb3675ea8484a43fca7703ed9a7778ee0a",
-        "sha256": "1ngc9nqwi5h021r1dmc6kl7bickm541cqdsccyw3211lvyy1bz7v",
-        "type": "tarball",
-        "url": "https://github.com/input-output-hk/hydra/archive/9c609ecb3675ea8484a43fca7703ed9a7778ee0a.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "iohk-nix": {

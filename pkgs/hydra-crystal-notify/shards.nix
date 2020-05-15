@@ -2,8 +2,8 @@
   crest = {
     owner = "mamantoha";
     repo = "crest";
-    rev = "v0.24.1";
-    sha256 = "12158lfyyavgrfawjhbldhrcs4k1vhagx6vg8nc5d5xdq3hidy0f";
+    rev = "v0.25.0";
+    sha256 = "0myshkfznz0z8ga2226s7jbq5abaq3fa9gwlkz8ywslrsns3s1xq";
   };
   db = {
     owner = "crystal-lang";
@@ -12,10 +12,10 @@
     sha256 = "0am5njx9g0m7lqmzs4qpgrnqq2pl9yb9h6jfrwgarx15c4jdrrzd";
   };
   deep-merge = {
-    owner = "johnalotoski";
+    owner = "peterhoeg";
     repo = "deep-merge.cr";
-    rev = "b6f69578bbee369edfc5fa6bc785122a157618db";
-    sha256 = "1v5k5hm3xxm8d16arskrdw0kngy0r85rk55hsvpzwl7ihf6y3cka";
+    rev = "5832aa704c85f8ba562a702a38df490be12f08fb";
+    sha256 = "13f3gq8bavj7qfp2f8df5qsdijzxhpg9pi91g4aha04s81cql9js";
   };
   http-client-digest_auth = {
     owner = "mamantoha";

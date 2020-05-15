@@ -18,11 +18,11 @@ in {
       };
 
       logLevel = mkOption {
-        type = types.enum [ "UNKNOWN" "DEBUG" "INFO" "WARN" "ERROR" "FATAL" ];
+        type = types.enum [ "DEBUG" "VERBOSE" "INFO" "WARNING" "ERROR" "FATAL" "NONE" ];
         default = "INFO";
         description = ''
           The log level for the hydra crystal notify service. Valid levels are:
-          UNKNOWN DEBUG INFO WARN ERROR FATAL.
+          DEBUG VERBOSE INFO WARNING ERROR FATAL NONE
         '';
       };
 
@@ -175,7 +175,8 @@ in {
       };
 
       environment = {
-        LOG_LEVEL = cfg.logLevel;
+        CRYSTAL_LOG_LEVEL = cfg.logLevel;
+        CRYSTAL_LOG_SOURCES = "*";
         LOG_FILE = "/var/lib/hydra/notification-debug.log";
         MOCK_MODE = if cfg.mockMode then "TRUE" else "FALSE";
         CURRENT_MODE = if cfg.currentMode then "TRUE" else "FALSE";

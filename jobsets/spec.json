@@ -40,5 +40,6 @@
          ,"toolsPrsJSON": { "type": "githubpulls", "value": "input-output-hk tools", "emailresponsible": false }
          ,"explorerPrsJSON": { "type": "githubpulls", "value": "input-output-hk cardano-explorer", "emailresponsible": false }
          ,"jormungandrPrsJSON": { "type": "githubpulls", "value": "input-output-hk jormungandr-nix", "emailresponsible": false }
+         ,"kesPrsJSON": { "type": "githubpulls", "value": "input-output-hk kes-mmm-sumed25519", "emailresponsible": false }
     }
 }

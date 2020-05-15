@@ -115,6 +115,7 @@ in {
         { jobset = "cardano"; }
         { jobset = "ci-ops"; }
         { jobset = "decentralized-software-updates"; }
+        { jobset = "kes-mmm-sumed25519"; }
         { jobset = "haskell-nix"; }
         { jobset = "iohk-monitoring"; }
         { jobset = "iohk-nix"; }

@@ -14,7 +14,7 @@
     auto-gc = {
       nixAutoGcEnable = false;
       nixHourlyGcEnable = false;
-      nixWeeklyGcFull = false;
+      nixWeeklyGcFull = true;
       nixWeeklyGcOnCalendar = "Sat *-*-* 20:00:00";
     };
     hydra-monitor = {

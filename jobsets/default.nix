@@ -173,9 +173,29 @@ let
       modifier.schedulingshares = 10;
     };
 
-    cardano-wallet = {
-      description = "Cardano Wallet Backend";
+    cardano-wallet-linux = {
+      description = "Cardano Wallet Backend - Linux";
       url = "https://github.com/input-output-hk/cardano-wallet.git";
+      input = "cardano-wallet";
+      modifier.inputs.platform = mkStringInput "linux";
+      branch = "master";
+      prs = walletPrsJSON;
+      bors = true;
+    };
+    cardano-wallet-macos = {
+      description = "Cardano Wallet Backend - macOS";
+      url = "https://github.com/input-output-hk/cardano-wallet.git";
+      input = "cardano-wallet";
+      modifier.inputs.platform = mkStringInput "macos";
+      branch = "master";
+      prs = walletPrsJSON;
+      bors = true;
+    };
+    cardano-wallet-windows = {
+      description = "Cardano Wallet Backend - Windows";
+      url = "https://github.com/input-output-hk/cardano-wallet.git";
+      input = "cardano-wallet";
+      modifier.inputs.platform = mkStringInput "windows";
       branch = "master";
       prs = walletPrsJSON;
       bors = true;

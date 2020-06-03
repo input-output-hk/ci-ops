@@ -50,6 +50,7 @@
 , shellPrsJSON ? ./simple-pr-dummy.json
 , toolsPrsJSON ? ./simple-pr-dummy.json
 , walletPrsJSON ? ./simple-pr-dummy.json
+, rustLibsPrsJSON ? ./simple-pr-dummy.json
 }:
 
 let pkgs = import nixpkgs {}; in
@@ -197,6 +198,14 @@ let
       url = "https://github.com/input-output-hk/cardano-wallet.git";
       branch = "master";
       prs = walletPrsJSON;
+      bors = true;
+    };
+
+    rust-libs = {
+      description = "Rust Libs";
+      url = "https://github.com/input-output-hk/rust-libs.nix.git";
+      branch = "master";
+      prs = rustLibsPrsJSON;
       bors = true;
     };
 

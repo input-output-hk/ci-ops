@@ -58,6 +58,7 @@ let
       { jobset = "cardano-rest"; }
       { jobset = "cardano-shell"; }
       { jobset = "cardano-wallet"; }
+      { jobset = "rust-libs"; }
       { jobset = "cardano"; }
       { jobset = "ci-ops"; }
       { jobset = "decentralized-software-updates"; }

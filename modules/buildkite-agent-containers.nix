@@ -53,7 +53,7 @@ in with lib;
 
       weeklyCachePurgeOnCalendar = mkOption {
         type = types.str;
-        default = "Sat *-*-* 00:00:00";
+        default = "Sat *-*-* 20:00:00";
         description = "The default weekly day and time to perform a weekly /cache dir and swap purge, if enabled.  Uses systemd onCalendar format.";
       };
     };
@@ -267,7 +267,8 @@ in with lib;
 
     systemd.services.weekly-cache-purge = mkIf cfg.weeklyCachePurge {
       script = ''
-        rm -rf /cache/* || true
+        # Temporarily clear the cache manually during no buildkite builds
+        #rm -rf /cache/* || true
         ${pkgs.utillinux}/bin/swapoff -a
         ${pkgs.utillinux}/bin/swapon -a
       '';

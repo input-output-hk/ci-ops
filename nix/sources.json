@@ -41,10 +41,10 @@
         "homepage": "http://nixos.org/hydra",
         "owner": "input-output-hk",
         "repo": "hydra",
-        "rev": "ce348bcec60f19ff4b881e7b335e42702f14d96b",
-        "sha256": "0panfm8y8y5pscdwxdyig0v79xkb62q28cgf3fkblkvh46s15sqa",
+        "rev": "fdd58de35009629e30e84ede68cde9558ce7fac2",
+        "sha256": "1ngc9nqwi5h021r1dmc6kl7bickm541cqdsccyw3211lvyy1bz7v",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/hydra/archive/ce348bcec60f19ff4b881e7b335e42702f14d96b.tar.gz",
+        "url": "https://github.com/input-output-hk/hydra/archive/fdd58de35009629e30e84ede68cde9558ce7fac2.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "hydra-nixpkgs": {
@@ -154,16 +154,28 @@
         "url": "https://github.com/NixOS/nixpkgs/archive/f79f998f3163481a4d4ae90e8ea516df3980fe9f.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
+    "nixpkgs-crystal": {
+        "branch": "nixpkgs-unstable",
+        "description": "A read-only mirror of NixOS/nixpkgs tracking the released channels. Send issues and PRs to",
+        "homepage": "https://github.com/NixOS/nixpkgs",
+        "owner": "NixOS",
+        "repo": "nixpkgs-channels",
+        "rev": "39b92f6e45534658b49e79c78154df6333af8472",
+        "sha256": "1g95hqvc8hpjijwc2nrxvgnvasfjn2hrjd8g4x9cklphcz2mz0v8",
+        "type": "tarball",
+        "url": "https://github.com/NixOS/nixpkgs-channels/archive/39b92f6e45534658b49e79c78154df6333af8472.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
     "ops-lib": {
         "branch": "master",
         "description": "NixOps deployment configuration library for IOHK devops ",
         "homepage": null,
         "owner": "input-output-hk",
         "repo": "ops-lib",
-        "rev": "cf640dd2d47af0666af5a5f5bf41d3c3f7d3102e",
-        "sha256": "1gs8cqsaqdn9yl6x9x03awr140r8xmqjgvvx1mk2460891xz4lyd",
+        "rev": "3574986bdab872c6c0d23a7b16f075405328ecf9",
+        "sha256": "0d2cj0b20ngrfcslnajr8ns78maxrq50bbknj0acl6vjp3k5dkkk",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/ops-lib/archive/cf640dd2d47af0666af5a5f5bf41d3c3f7d3102e.tar.gz",
+        "url": "https://github.com/input-output-hk/ops-lib/archive/3574986bdab872c6c0d23a7b16f075405328ecf9.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     }
 }

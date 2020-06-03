@@ -49,7 +49,7 @@ in {
 
       nixWeeklyGcOnCalendar = mkOption {
         type = types.str;
-        default = "Sat *-*-* 00:00:00";
+        default = "Sat *-*-* 20:00:00";
         description = "The default weekly day and time to perform a full GC, if enabled.  Uses systemd onCalendar format.";
       };
     };

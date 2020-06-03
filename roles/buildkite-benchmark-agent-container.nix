@@ -9,7 +9,7 @@ in {
     nixHourlyMaxFreedGB = 900;
     nixHourlyMinFreeGB = 100;
     nixWeeklyGcFull = true;
-    nixWeeklyGcOnCalendar = "Sat *-*-* 00:00:00";
+    nixWeeklyGcOnCalendar = "Sat *-*-* 20:00:00";
   };
 
   services.buildkite-containers.containerList = [

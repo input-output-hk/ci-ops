@@ -7,6 +7,7 @@
     ../modules/nix_nsswitch.nix
     ../modules/hydra-master-wireguard.nix
     ../modules/hydra-monitor.nix
+    ../modules/hydra-crystal-notify.nix
   ];
 
   services = {
@@ -14,7 +15,7 @@
       nixAutoGcEnable = false;
       nixHourlyGcEnable = false;
       nixWeeklyGcFull = true;
-      nixWeeklyGcOnCalendar = "Sat *-*-* 00:00:00";
+      nixWeeklyGcOnCalendar = "Sat *-*-* 20:00:00";
     };
     hydra-monitor = {
       enable = true;
@@ -22,6 +23,15 @@
       bindingPort = 8000;
       scrapeTarget = "https://hydra.ci.iohkdev.io/queue-runner-status";
       openFirewallPort = true;
+    };
+    hydra-crystal-notify = {
+      enable = true;
+      mockMode = false;
+    };
+    postgresql = {
+      extraConfig = ''
+        max_connections 200
+      '';
     };
   };
 

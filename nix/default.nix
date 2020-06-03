@@ -1,7 +1,11 @@
 { sources ? import ./sources.nix, system ? __currentSystem }:
-with {
+let
+  crystalPkgs = import sources.nixpkgs-crystal {};
+in with {
   overlay = self: super: {
     inherit (import sources.niv { }) niv;
+    inherit (crystalPkgs) crystal2nix jq shards openssl pkg-config;
+    crystal = crystalPkgs.crystal_0_34;
     packages = self.callPackages ./packages.nix { };
     globals = import ../globals.nix;
 

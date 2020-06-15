@@ -20,7 +20,7 @@ let
     maxJobs = 8;
     systems = [ "x86_64-darwin" ];
     sshUser = "builder";
-    supportedFeatures = [];
+    supportedFeatures = [ "big-parallel" ];
   };
   localMachine = {
     hostName = "localhost";

@@ -1,5 +1,4 @@
-{ name, config, ... }:
-{
+{ lib, name, config, ... }: {
   # Generic mac wireguard and buildkite key config
   deployment = {
     keys = {
@@ -30,6 +29,13 @@
       "binary-caches.json" = {
         destDir = "/var/lib/macos-vm-persistent-config-ci/hercules";
         keyFile = ../secrets/cachix-binary-caches.json;
+      };
+      "netrc" = {
+        destDir = "/var/lib/macos-vm-persistent-config-ci/nix";
+        text = ''
+          machine github.com
+            password ${lib.fileContents ../secrets/github_token}
+        '';
       };
     };
   };

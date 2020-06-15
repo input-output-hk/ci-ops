@@ -39,7 +39,7 @@ let
   mkStatusBlocks = concatMapStringsSep "" mkGithubStatus;
   mkGithubStatusConfig = ''
     <github_authorization>
-      input-output-hk = ${builtins.readFile ../secrets/github_token}
+      input-output-hk = token ${builtins.readFile ../secrets/github_token}
     </github_authorization>
 
     ${mkStatusBlocks [

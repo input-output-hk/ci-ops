@@ -22,6 +22,22 @@
         destDir = "/var/lib/macos-vm-persistent-config-signing/buildkite";
         keyFile = ../secrets/buildkite-hook;
       };
+      "buildkite-ssh-iohk-devops-private-ci" = {
+        destDir = "/var/lib/macos-vm-persistent-config-ci/buildkite";
+        keyFile = ../secrets/buildkite-iohk-devops-ssh;
+      };
+      "buildkite-ssh-iohk-devops-public-ci" = {
+        destDir = "/var/lib/macos-vm-persistent-config-ci/buildkite";
+        keyFile = ../secrets/buildkite-iohk-devops-ssh.pub;
+      };
+      "buildkite-ssh-iohk-devops-private-signing" = {
+        destDir = "/var/lib/macos-vm-persistent-config-signing/buildkite";
+        keyFile = ../secrets/buildkite-iohk-devops-ssh;
+      };
+      "buildkite-ssh-iohk-devops-public-signing" = {
+        destDir = "/var/lib/macos-vm-persistent-config-signing/buildkite";
+        keyFile = ../secrets/buildkite-iohk-devops-ssh.pub;
+      };
       "cluster-join-token.key" = {
         destDir = "/var/lib/macos-vm-persistent-config-ci/hercules";
         keyFile = ../secrets/hercules-ci-token.key;

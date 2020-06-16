@@ -103,8 +103,8 @@ in with lib;
           services.buildkite-agent = {
             enable = true;
             name   = name + "-" + containerName;
-            openssh.privateKeyPath = "/run/keys/buildkite-ssh-private";
-            openssh.publicKeyPath  = "/run/keys/buildkite-ssh-public";
+            openssh.privateKeyPath = "/run/keys/buildkite-ssh-iohk-devops-private";
+            openssh.publicKeyPath  = "/run/keys/buildkite-ssh-iohk-devops";
             tokenPath              = "/run/keys/buildkite-token";
             meta-data              = metadata;
             runtimePackages        = with pkgs; [
@@ -200,6 +200,16 @@ in with lib;
       };
       buildkite-ssh-public = {
         keyFile = ../secrets/buildkite-ssh.pub;
+        user    = "buildkite-agent";
+      };
+
+      # SSH keypair for buildkite-agent user (iohk-devops on Github)
+      buildkite-ssh-iohk-devops-private = {
+        keyFile = ../secrets/buildkite-iohk-devops-ssh;
+        user    = "buildkite-agent";
+      };
+      buildkite-ssh-iohk-devops = {
+        keyFile = ../secrets/buildkite-iohk-devops-ssh.pub;
         user    = "buildkite-agent";
       };
 

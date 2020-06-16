@@ -130,6 +130,7 @@ EOF
     chown -R nixos ~nixos/.nixpkgs
     sudo -i -H -u nixos -- darwin-rebuild build
     rm -f /etc/nix/nix.conf
+    test -f /Volumes/CONFIG/nix/netrc && cp /Volumes/CONFIG/nix/netrc /etc/nix
     sudo -i -H -u nixos -- darwin-rebuild switch
 )
 (

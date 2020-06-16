@@ -4,9 +4,10 @@ let
 in with {
   overlay = self: super: {
     inherit (import sources.niv { }) niv;
-    inherit (crystalPkgs) crystal2nix jq shards openssl pkg-config;
+    inherit (crystalPkgs) crystal2nix jq shards openssl pkg-config lib;
     crystal = crystalPkgs.crystal_0_34;
     packages = self.callPackages ./packages.nix { };
+    systemd-exporter = crystalPkgs.callPackage ../pkgs/systemd_exporter {};
     globals = import ../globals.nix;
 
     nixops = (import (sources.nixops-core + "/release.nix") {

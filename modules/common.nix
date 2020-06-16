@@ -4,6 +4,7 @@ let
 in {
   imports = [
     ./cloud.nix
+    ./systemd-exporter.nix
     ./monitoring-exporters.nix
     ./ssh-keys.nix
   ];

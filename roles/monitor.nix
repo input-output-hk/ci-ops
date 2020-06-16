@@ -9,6 +9,7 @@ let
     in {
       hasHydraPrometheus = cfg.isHydra;
       hasNginx = cfg.isMonitoring;
+      hasSystemdPrometheus = node.config.services.systemd-exporter.enable or false;
       labels = { alias = nodeName; };
     };
 

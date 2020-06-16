@@ -106,6 +106,10 @@ EOF
     if [ -d /Volumes/CONFIG/buildkite ]
     then
       cp -a /Volumes/CONFIG/buildkite /Users/nixos/buildkite
+      pushd /Users/nixos/buildkite
+      mv buildkite-ssh-iohk-devops-public-* buildkite-ssh-iohk-devops-public
+      mv buildkite-ssh-iohk-devops-private-* buildkite-ssh-iohk-devops-private
+      popd
     fi
 )
 (

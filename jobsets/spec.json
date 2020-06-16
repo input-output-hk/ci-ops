@@ -30,6 +30,7 @@
          ,"walletPrsJSON": { "type": "githubpulls", "value": "input-output-hk cardano-wallet", "emailresponsible": false }
          ,"rustLibsPrsJSON": { "type": "githubpulls", "value": "input-output-hk rust-libs.nix", "emailresponsible": false }
          ,"shellPrsJSON": { "type": "githubpulls", "value": "input-output-hk cardano-shell", "emailresponsible": false }
+         ,"cardanoAddressesPrsJSON": { "type": "githubpulls", "value": "input-output-hk cardano-addresses", "emailresponsible": false }
          ,"cardanoNodePrsJSON": { "type": "githubpulls", "value": "input-output-hk cardano-node", "emailresponsible": false }
          ,"cardanoBenchmarkingPrsJSON": { "type": "githubpulls", "value": "input-output-hk cardano-benchmarking", "emailresponsible": false }
          ,"cardanoBasePrsJSON": { "type": "githubpulls", "value": "input-output-hk cardano-base", "emailresponsible": false }

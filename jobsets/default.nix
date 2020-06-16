@@ -21,6 +21,7 @@
 
 # Paths to JSON files containing PR info fetched from github.
 # An example file is ./simple-pr-dummy.json.
+, cardanoAddressesPrsJSON ? ./simple-pr-dummy.json
 , cardanoBasePrsJSON ? ./simple-pr-dummy.json
 , cardanoBenchmarkingPrsJSON ? ./simple-pr-dummy.json
 , cardanoByronProxyPrsJSON ? ./simple-pr-dummy.json
@@ -109,6 +110,14 @@ let
       description = "Log Classifier";
       url = "https://github.com/input-output-hk/log-classifier.git";
       prs = logClassifierPrsJSON;
+      bors = true;
+    };
+
+    cardano-addresses = {
+      description = "Cardano Addresses";
+      url = "https://github.com/input-output-hk/cardano-addresses.git";
+      branch = "master";
+      prs = cardanoAddressesPrsJSON;
       bors = true;
     };
 

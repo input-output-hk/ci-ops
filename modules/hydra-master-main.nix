@@ -44,6 +44,7 @@ let
 
     ${mkStatusBlocks [
       # the shorter names must be later in the list, or the regex will be greedy and never check the longer names
+      { jobset = "cardano-addresses"; }
       { jobset = "cardano-base"; }
       { jobset = "cardano-benchmarking"; }
       { jobset = "cardano-byron-proxy"; }

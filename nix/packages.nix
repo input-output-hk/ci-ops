@@ -3,7 +3,7 @@ let
   inherit (builtins) typeOf trace attrNames toString;
   sources = import ./sources.nix;
 in {
-  cachecache = callPackage (sources.cachecache) {};
+  cachecache = callPackage (sources.cachecache) { pkgs = import sources.hydra-nixpkgs {}; };
   crystalPkgs = callPackage ../pkgs/hydra-crystal-notify {};
   pp = v:
     let type = typeOf v;

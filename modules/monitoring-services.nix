@@ -43,6 +43,11 @@ let
         default = false;
         description = "if a Jormungandr Prometheus exporter should be scraped";
       };
+      hasSystemdPrometheus = mkOption {
+        type = types.bool;
+        default = false;
+        description = "if a systemd Prometheus exporter should be scraped";
+      };
     };
     config = { name = mkDefault name; };
   };
@@ -904,7 +909,8 @@ in {
                     ++ (optional value.hasNativePrometheus "${hostIp key}:12760")
                     ++ (optional value.hasSecondNativePrometheus "${hostIp key}:12761")
                     ++ (optional value.hasHydraPrometheus "${hostIp key}:8000")
-                    ++ (optional value.hasJormungandrPrometheus "${hostIp key}:8000");
+                    ++ (optional value.hasJormungandrPrometheus "${hostIp key}:8000")
+                    ++ (optional value.hasSystemdPrometheus "${hostIp key}:9558");
                   labels = { alias = key; } // value.labels;
                 };
               in mapAttrsToList makeNodeConfig cfg.monitoredNodes;

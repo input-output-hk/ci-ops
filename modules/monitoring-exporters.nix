@@ -98,6 +98,11 @@ in {
 
     (mkIf cfg.metrics {
       services = {
+        systemd-exporter = {
+          enable = true;
+          host = bindingIp;
+          unitWhitelist = [ ".*\\.service$"];
+        };
         prometheus.exporters.node = {
           enable = true;
           listenAddress = bindingIp;
@@ -126,7 +131,10 @@ in {
         };
       };
       # Node exporter default port
-      networking.firewall.allowedTCPPorts = [ 9100 ];
+      networking.firewall.allowedTCPPorts = [
+        9100
+        config.services.systemd-exporter.port
+      ];
     })
 
     (mkIf cfg.logging {

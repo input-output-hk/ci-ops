@@ -170,6 +170,14 @@ let
       bors = true;
     };
 
+    explorer-app-extended = {
+      description = "explorer-app-extended";
+      url = "https://github.com/input-output-hk/explorer-app-extended";
+      branch = "develop";
+      prs = explorerAppExtendedPrsJSON;
+      bors = true;
+    };
+
     iohk-monitoring = {
       description = "IOHK Monitoring Framework";
       url = "https://github.com/input-output-hk/iohk-monitoring-framework.git";

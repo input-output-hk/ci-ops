@@ -38,7 +38,6 @@
 , daedalusPrsJSON ? ./simple-pr-dummy.json
 , decentralizedSoftwareUpdatesPrsJSON ? ./simple-pr-dummy.json
 , explorerPrsJSON ? ./simple-pr-dummy.json
-, explorerAppExtendedPrsJSON ? ./simple-pr-dummy.json
 , haskellNixPrsJSON ? ./simple-pr-dummy.json
 , iohkMonitoringPrsJSON ? ./simple-pr-dummy.json
 , iohkNixPrsJSON ? ./simple-pr-dummy.json
@@ -167,14 +166,6 @@ let
       url = "https://github.com/input-output-hk/decentralized-software-updates";
       branch = "master";
       prs = decentralizedSoftwareUpdatesPrsJSON;
-      bors = true;
-    };
-
-    explorer-app-extended = {
-      description = "explorer-app-extended";
-      url = "https://github.com/input-output-hk/explorer-app-extended";
-      branch = "develop";
-      prs = explorerAppExtendedPrsJSON;
       bors = true;
     };
 

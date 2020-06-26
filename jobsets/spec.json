@@ -20,7 +20,6 @@
          ,"cardanoByronProxyPrsJSON": { "type": "githubpulls", "value": "input-output-hk cardano-byron-proxy", "emailresponsible": false }
          ,"cardanoPreludePrsJSON": { "type": "githubpulls", "value": "input-output-hk cardano-prelude", "emailresponsible": false }
          ,"decentralizedSoftwareUpdatesPrsJSON": { "type": "githubpulls", "value": "input-output-hk decentralized-software-updates", "emailresponsible": false }
-         ,"explorerAppExtendedPrsJSON": { "type": "githubpulls", "value": "input-output-hk explorer-app-extended", "emailresponsible": false }
          ,"daedalusPrsJSON": { "type": "githubpulls", "value": "input-output-hk daedalus", "emailresponsible": false }
          ,"plutusPrsJSON": { "type": "githubpulls", "value": "input-output-hk plutus", "emailresponsible": false }
          ,"logClassifierPrsJSON": { "type": "githubpulls", "value": "input-output-hk log-classifier", "emailresponsible": false }

@@ -72,6 +72,7 @@ let
       { jobset = "log-classifier"; }
       { jobset = "ouroboros-network"; }
       { jobset = "plutus"; }
+      { jobset = "smash"; }
       { jobset = "tools"; }
     ]}
 

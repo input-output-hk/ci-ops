@@ -49,6 +49,7 @@
 , ouroborosNetworkPrsJSON ? ./simple-pr-dummy.json
 , plutusPrsJSON ? ./simple-pr-dummy.json
 , shellPrsJSON ? ./simple-pr-dummy.json
+, smashPrsJSON ? ./simple-pr-dummy.json
 , toolsPrsJSON ? ./simple-pr-dummy.json
 , walletPrsJSON ? ./simple-pr-dummy.json
 , rustLibsPrsJSON ? ./simple-pr-dummy.json
@@ -288,6 +289,14 @@ let
       description = "key evolving signature";
       url = "https://github.com/input-output-hk/kes-mmm-sumed25519.git";
       prs = kesPrsJSON;
+      bors = true;
+    };
+
+    smash = {
+      description = "Stakepool Metadata Aggregation Server";
+      url = "https://github.com/input-output-hk/smash.git";
+      branch = "master";
+      prs = smashPrsJSON;
       bors = true;
     };
 

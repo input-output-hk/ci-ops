@@ -6,7 +6,7 @@ let
   lib = pkgs.lib;
   globals = import ../globals.nix;
 
-  ipxeScriptUrl = "http://139.178.89.161/current/907e8786.packethost.net/result/x86/netboot.ipxe";
+  ipxeScriptUrl = "https://netboot.gsc.io/installer-pre/x86/netboot.ipxe";
   facility = "ams1";
   reservationId = "next-available";
 
@@ -15,7 +15,8 @@ let
       medium-cpr
       ../roles/hydra-slave.nix
       ../roles/buildkite-agent-containers.nix
-      ../roles/hercules-agent.nix
+      # Remove hercules due to OOM
+      #../roles/hercules-agent.nix
     ];
     deployment.packet = { inherit ipxeScriptUrl facility reservationId; };
     node.isBuildkite = true;
@@ -59,6 +60,9 @@ let
     packet-ipxe-2 = mkHydraSlaveBuildkite "2";
     packet-ipxe-3 = mkHydraSlaveBuildkite "3";
     packet-ipxe-4 = mkBenchmarkBuildkite "4";
+
+    # Tmp extra builders
+    #packet-ipxe-5 = mkHydraSlaveBuildkite "5";
   };
 
   macs = mkMacs {

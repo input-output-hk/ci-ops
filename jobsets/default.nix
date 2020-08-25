@@ -34,6 +34,7 @@
 , cardanoPreludePrsJSON ? ./simple-pr-dummy.json
 , cardanoPrsJSON ? ./simple-pr-dummy.json
 , cardanoRestPrsJSON ? ./simple-pr-dummy.json
+, cardanoRosettaPrsJSON ? ./simple-pr-dummy.json
 , ciOpsPrsJSON ? ./simple-pr-dummy.json
 , daedalusPrsJSON ? ./simple-pr-dummy.json
 , decentralizedSoftwareUpdatesPrsJSON ? ./simple-pr-dummy.json
@@ -159,6 +160,14 @@ let
       url = "https://github.com/input-output-hk/cardano-prelude.git";
       branch = "master";
       prs = cardanoPreludePrsJSON;
+      bors = true;
+    };
+
+    cardano-rosetta = {
+      description = "Cardano Rosetta API";
+      url = "https://github.com/input-output-hk/cardano-rosetta.git";
+      branch = "master";
+      prs = cardanoRosettaPrsJSON;
       bors = true;
     };
 

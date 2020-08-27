@@ -168,7 +168,6 @@ let
       url = "https://github.com/input-output-hk/cardano-rosetta.git";
       branch = "master";
       prs = cardanoRosettaPrsJSON;
-      bors = true;
     };
 
     decentralized-software-updates = {

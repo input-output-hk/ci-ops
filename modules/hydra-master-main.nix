@@ -58,6 +58,7 @@ let
       { jobset = "cardano-prelude"; }
       { jobset = "cardano-rest"; }
       { jobset = "cardano-rosetta"; }
+      { jobset = "cardano-rt-view"; }
       { jobset = "cardano-shell"; }
       { jobset = "cardano-wallet"; }
       { jobset = "rust-libs"; }

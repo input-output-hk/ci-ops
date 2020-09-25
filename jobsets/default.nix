@@ -35,6 +35,7 @@
 , cardanoPrsJSON ? ./simple-pr-dummy.json
 , cardanoRestPrsJSON ? ./simple-pr-dummy.json
 , cardanoRosettaPrsJSON ? ./simple-pr-dummy.json
+, cardanoRTViewPrsJSON ? ./simple-pr-dummy.json
 , ciOpsPrsJSON ? ./simple-pr-dummy.json
 , daedalusPrsJSON ? ./simple-pr-dummy.json
 , decentralizedSoftwareUpdatesPrsJSON ? ./simple-pr-dummy.json
@@ -168,6 +169,14 @@ let
       url = "https://github.com/input-output-hk/cardano-rosetta.git";
       branch = "master";
       prs = cardanoRosettaPrsJSON;
+    };
+
+    cardano-rt-view = {
+      description = "RTView";
+      url = "https://github.com/input-output-hk/cardano-rt-view.git";
+      branch = "master";
+      prs = cardanoRTViewPrsJSON;
+      bors = true;
     };
 
     decentralized-software-updates = {

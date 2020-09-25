@@ -176,6 +176,7 @@ let
       url = "https://github.com/input-output-hk/cardano-rt-view.git";
       branch = "master";
       prs = cardanoRTViewPrsJSON;
+      bors = true;
     };
 
     decentralized-software-updates = {

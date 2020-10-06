@@ -62,7 +62,10 @@ let
     packet-ipxe-4 = mkBenchmarkBuildkite "4";
 
     # Tmp extra builders
-    #packet-ipxe-5 = mkHydraSlaveBuildkite "5";
+    packet-ipxe-5 = mkHydraSlaveBuildkite "5";
+
+    # Tmp locally for testing -- do not commit
+    #packet-ipxe-6 = mkHydraSlaveBuildkite "6" // { deployment.packet = { inherit ipxeScriptUrl facility; }; };
   };
 
   macs = mkMacs {

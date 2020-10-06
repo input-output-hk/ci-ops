@@ -124,7 +124,7 @@ in {
       (mkLinux "packet-ipxe-3.ci.iohkdev.io")
 
       # Tmp extra builders
-      #(mkLinux "packet-ipxe-5.ci.iohkdev.io")
+      (mkLinux "packet-ipxe-5.ci.iohkdev.io")
 
       ((mkMac "mac-mini-1") // { speedFactor = 2; })
       ((mkMac "mac-mini-2") // { speedFactor = 2; })

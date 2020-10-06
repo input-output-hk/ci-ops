@@ -74,7 +74,7 @@ in {
           publicKey = "MRowDI1eC9B5Hx/zgPk5yyq2eWSq6kYFW5Sjm7w52AY=";
           allowedIPs = [ "192.168.24.1/32" ];
           persistentKeepalive = 30;
-          endpoint = "173.61.28.54:51820";
+          endpoint = "173.61.15.63:51820";
         }
 
         # TODO: Add preshared key; migrate all to port 17777

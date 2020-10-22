@@ -250,6 +250,18 @@ in with lib;
         keyFile = ../secrets/dockerhub-auth-config.json;
         user    = "buildkite-agent";
       };
+
+      # Catalyst keystore
+      "catalyst.keystore" = {
+        keyFile = ../secrets/catalyst.keystore;
+        user    = "buildkite-agent";
+      };
+
+      # Catalyst build spec
+      "catalyst-android-build.json" = {
+        keyFile = ../secrets/catalyst-android-build.json;
+        user    = "buildkite-agent";
+      };
     };
 
     system.activationScripts.cacheDir = {

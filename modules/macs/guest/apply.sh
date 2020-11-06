@@ -153,6 +153,9 @@ EOF
         security set-key-partition-list -S apple-tool:,apple: -s -k "$KEYCHAIN" "ci-signing.keychain"
         security import /Volumes/CONFIG/iohk-codesign.cer -k /Library/Keychains/System.keychain
         security import /Volumes/CONFIG/iohk-codesign.p12 -P "$CODESIGNING" -k /Library/Keychains/System.keychain -T /usr/bin/codesign
+        security import /Volumes/CONFIG/catalyst-ios-dev.p12 -P "$CATALYST" -k /Library/Keychains/System.keychain -T /usr/bin/codesign
+        security import /Volumes/CONFIG/catalyst-ios-dist.p12 -P "$CATALYSTDIST" -k /Library/Keychains/System.keychain -T /usr/bin/codesign
+
 
         cp /private/var/root/Library/Keychains/ci-signing.keychain-db /Users/nixos/Library/Keychains/
         chown nixos:staff /Users/nixos/Library/Keychains/ci-signing.keychain-db
@@ -161,12 +164,22 @@ EOF
         cp /Volumes/CONFIG/signing.sh /var/lib/buildkite-agent/
         cp /Volumes/CONFIG/signing-config.json /var/lib/buildkite-agent/
         cp /Volumes/CONFIG/code-signing-config.json /var/lib/buildkite-agent/
+        cp /Volumes/CONFIG/catalyst-ios-build.json /var/lib/buildkite-agent/
+        cp /Volumes/CONFIG/catalyst-env.sh /var/lib/buildkite-agent/
         chown buildkite-agent:admin /var/lib/buildkite-agent/{ci-signing.keychain-db,signing.sh,signing-config.json,code-signing-config.json}
+        chown buildkite-agent:admin /var/lib/buildkite-agent/{catalyst-ios-build.json,catalyst-env.sh}
         chmod 0400 /var/lib/buildkite-agent/signing.sh
         export KEYCHAIN
         sudo -Eu nixos -- security unlock-keychain -p "$KEYCHAIN" /Users/nixos/Library/Keychains/ci-signing.keychain-db
         sudo -Eu buildkite-agent -- security unlock-keychain -p "$KEYCHAIN" /var/lib/buildkite-agent/ci-signing.keychain-db
         security unlock-keychain -p "$KEYCHAIN"
+
+        mkdir -p "/var/lib/buildkite-agent/Library/MobileDevice/Provisioning Profiles/"
+        UUID=$(strings /Volumes/CONFIG/catalyst-dev.mobileprovision | grep -A1 UUID | tail -n 1 | egrep -io "[-A-F0-9]{36}")
+        cp /Volumes/CONFIG/catalyst-dev.mobileprovision "/var/lib/buildkite-agent/Library/MobileDevice/Provisioning Profiles/$UUID.mobileprovision"
+        UUID=$(strings /Volumes/CONFIG/catalyst-dist.mobileprovision | grep -A1 UUID | tail -n 1 | egrep -io "[-A-F0-9]{36}")
+        cp /Volumes/CONFIG/catalyst-dist.mobileprovision "/var/lib/buildkite-agent/Library/MobileDevice/Provisioning Profiles/$UUID.mobileprovision"
+        chown -R buildkite-agent:admin /var/lib/buildkite-agent/Library
         set -x
     fi
 )

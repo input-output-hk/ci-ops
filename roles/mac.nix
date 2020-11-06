@@ -53,6 +53,10 @@
             password ${lib.fileContents ../secrets/github_token}
         '';
       };
+      "catalyst-env.sh" = {
+        destDir = "/var/lib/macos-vm-persistent-config-signing";
+        keyFile = ../secrets/catalyst-env.sh;
+      };
     };
   };
 }

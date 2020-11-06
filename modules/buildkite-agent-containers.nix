@@ -262,6 +262,12 @@ in with lib;
         keyFile = ../secrets/catalyst-android-build.json;
         user    = "buildkite-agent";
       };
+
+      # Catalyst env vars
+      "catalyst-env.sh" = {
+        keyFile = ../secrets/catalyst-env.sh;
+        user    = "buildkite-agent";
+      };
     };
 
     system.activationScripts.cacheDir = {

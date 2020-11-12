@@ -82,7 +82,7 @@ let
         "3-0-1" = "release/3.0.1";
       };
       prs = cardanoPrsJSON;
-      prJobsetModifier = withFasterBuild;
+      prModifier = fasterBuildJobset;
       bors = true;
     };
 
@@ -217,15 +217,15 @@ let
       branch = "master";
       prs = haskellNixPrsJSON;
       bors = true;
-      genericModifier = { schedulingshares = 10; };
+      modifier.schedulingshares = 10;
     };
 
     cardano-wallet = {
       description = "Cardano Wallet Backend";
       url = "https://github.com/input-output-hk/cardano-wallet.git";
       branch = "master";
-      prs = walletPrsJSON;
-      bors = true;
+      # TODO: after https://github.com/input-output-hk/cardano-wallet/pull/2301
+      # modifier.inputs.platform = mkStringInput "all";
     };
 
     rust-libs = {
@@ -334,6 +334,12 @@ let
     emailresponsible = false;
   };
 
+  mkStringInput = value: {
+    inherit value;
+    type = "string";
+    emailresponsible = false;
+  };
+
   defaultSettings = {
     enabled = 1;
     hidden = false;
@@ -349,22 +355,18 @@ let
     emailoverride = "";
   };
 
-  # Merges the given attrset of Hydra inputs with a jobset.
-  addInputs = inputs: jobset: jobset // {
-    inputs = (jobset.inputs or { }) // inputs;
-  };
-
   # Adds an arg which disables optimization for cardano-sl builds
-  withFasterBuild = addInputs {
-    fasterBuild = { type = "boolean"; emailresponsible = false; value = "true"; };
+  withFasterBuild = jobset: recursiveUpdate jobset fasterBuildJobset;
+  fasterBuildJobset = {
+    inputs.fasterBuild = { type = "boolean"; emailresponsible = false; value = "true"; };
   };
 
   # Use to put Bors jobs at the front of the build queue.
-  highPrio = jobset: jobset // {
+  highPrioJobset = {
     schedulingshares = 420;
   };
 
-  keepNone = jobset: jobset // {
+  keepNoneJobset = {
     keepnr = 0;
   };
 
@@ -378,53 +380,56 @@ let
 
   loadPrsJSON = path: exclusionFilter (builtins.fromJSON (builtins.readFile path));
 
+
   # Make jobset for a project default build
-  mkJobset = { name, description, url, input, branch, genericModifier }: let
-    jobset = defaultSettings // {
+  mkJobset = { name, description, url, input, branch, modifier ? {} }: let
+    jobset = recursiveUpdate (defaultSettings // {
       nixexprpath = "release.nix";
       nixexprinput = input;
       inherit description;
       inputs = {
         "${input}" = mkFetchGithub "${url} ${branch}";
       };
-    } // genericModifier;
+    }) modifier;
   in
     nameValuePair name jobset;
 
   # Make jobsets for extra project branches (e.g. release branches)
-  mkJobsetBranches = { name, description, url, input, genericModifier }:
+  mkJobsetBranches = { name, description, url, input, modifier ? {} }:
     mapAttrsToList (suffix: branch:
-      mkJobset { name = "${name}-${suffix}"; inherit description url input branch genericModifier; });
+      mkJobset { name = "${name}-${suffix}"; inherit description url input branch modifier; });
 
   # Make a jobset for a GitHub PRs
-  mkJobsetPR = { name, input, modifier, genericModifier }: num: info: {
+  mkJobsetPR = { name, input, modifier ? {} }: num: info: {
     name = "${name}-pr-${num}";
-    value = defaultSettings // modifier {
+    value = recursiveUpdate (defaultSettings // {
       description = "PR ${num}: ${info.title}";
       nixexprinput = input;
       nixexprpath = "release.nix";
       inputs = {
         "${input}" = mkFetchGithub "${info.base.repo.clone_url} pull/${num}/head";
-        pr = { type = "string"; value = num; emailresponsible = false; };
+        pr = mkStringInput num;
       };
-    } // genericModifier;
+    }) modifier;
   };
 
   # Load the PRs json and make a jobset for each
-  mkJobsetPRs = { name, input, modifier, prs, genericModifier }:
+  mkJobsetPRs = { name, input, prs, modifier ? {} }:
     mapAttrsToList
-      (mkJobsetPR { inherit name input modifier genericModifier; })
+      (mkJobsetPR { inherit name input modifier; })
       (loadPrsJSON prs);
 
   # Add two extra jobsets for the bors staging and trying branches.
-  mkJobsetBors = { name, genericModifier, ... }@args: let
-    jobset = branch: let
-      js = (mkJobset (args // { branch = "bors/" + branch; })).value;
-      extraInputs = { borsBuild = { type = "string"; value = branch; emailresponsible = false; }; };
-    in addInputs extraInputs js;
+  mkJobsetBors = { name, modifier, ... }@args: let
+    jobset = branch: mod: (mkJobset (args // {
+      branch = "bors/" + branch;
+      modifier = recursiveUpdate (recursiveUpdate mod modifier) {
+        inputs.borsBuild = mkStringInput branch;
+      };
+    })).value;
   in [
-    (nameValuePair "${name}-bors-staging" ((highPrio (jobset "staging")) // genericModifier))
-    (nameValuePair "${name}-bors-trying" ((keepNone (jobset "trying")) // genericModifier))
+    (nameValuePair "${name}-bors-staging" (jobset "staging" highPrioJobset))
+    (nameValuePair "${name}-bors-trying" (jobset "trying" keepNoneJobset))
   ];
 
   # Make all the jobsets for a project repo, according to the "repos" spec above.
@@ -432,14 +437,21 @@ let
     mkRepo = name: info: let
       input = info.input or name;
       branch = info.branch or "master";
-      params = { inherit name input; inherit (info) description url; };
-      prJobsetModifier = info.prJobsetModifier or (s: s);
-      genericModifier = info.genericModifier or {};
-    in
-      [ (mkJobset (params // { inherit branch genericModifier; })) ] ++
-      (mkJobsetBranches (params // { inherit genericModifier; }) (info.branches or {})) ++
-      (mkJobsetPRs { inherit name input genericModifier; inherit (info) prs; modifier = prJobsetModifier; }) ++
-      (optionals (info.bors or false) (mkJobsetBors (params // { inherit genericModifier; })));
+      modifier = info.modifier or {};
+      params = { inherit name input modifier; inherit (info) description url; };
+    in concatLists
+      [ (optional (branch != null)
+          (mkJobset (params // { inherit branch; })))
+        (mkJobsetBranches params (info.branches or {}))
+        (optionals (info ? prs)
+          (mkJobsetPRs {
+            inherit name input;
+            inherit (info) prs;
+            modifier = recursiveUpdate modifier (info.prModifier or {});
+          }))
+        (optionals (info.bors or false)
+          (mkJobsetBors params))
+      ];
   in
     rs: listToAttrs (concatLists (mapAttrsToList mkRepo rs));
 
@@ -479,9 +491,9 @@ let
     # Provides cached build projects for PR builds with -O0
     no-opt-cardano-sl = withFasterBuild mainJobsets.cardano-sl;
 
-    # iohk-ops (this repo)
+    # ci-ops (this repo)
     iohk-ops = mkNixops "master" defaultNixpkgsRev;
-    iohk-ops-bors-staging = highPrio (mkNixops "bors-staging" defaultNixpkgsRev);
+    iohk-ops-bors-staging = recursiveUpdate (mkNixops "bors-staging" defaultNixpkgsRev) highPrioJobset;
     iohk-ops-bors-trying = mkNixops "bors-trying" defaultNixpkgsRev;
   } // nixopsPrJobsets);
 

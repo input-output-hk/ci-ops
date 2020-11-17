@@ -634,7 +634,7 @@ in {
           enable = true;
           listenAddress = "127.0.0.1:9090";
           webExternalUrl = "https://${cfg.webhost}/prometheus/";
-          extraFlags = [ "--storage.tsdb.retention=8760h" ];
+          extraFlags = [ "--storage.tsdb.retention=4380h" ];
 
           alertmanagers = [{
             scheme = "http";

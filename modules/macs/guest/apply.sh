@@ -143,6 +143,8 @@ EOF
         echo Setting up signing...
         # shellcheck disable=SC1091
         source /Volumes/CONFIG/signing.sh
+        # shellcheck disable=SC1091
+        source /Volumes/CONFIG/signing-catalyst.sh
         security create-keychain -p "$KEYCHAIN" ci-signing.keychain
         security default-keychain -s ci-signing.keychain
         security set-keychain-settings ci-signing.keychain
@@ -159,16 +161,20 @@ EOF
 
         cp /private/var/root/Library/Keychains/ci-signing.keychain-db /Users/nixos/Library/Keychains/
         chown nixos:staff /Users/nixos/Library/Keychains/ci-signing.keychain-db
-        mkdir -p /var/lib/buildkite-agent
+        mkdir -p /var/lib/buildkite-agent/.private_keys
         cp /private/var/root/Library/Keychains/ci-signing.keychain-db /var/lib/buildkite-agent/
         cp /Volumes/CONFIG/signing.sh /var/lib/buildkite-agent/
+        cp /Volumes/CONFIG/signing-catalyst.sh /var/lib/buildkite-agent/
         cp /Volumes/CONFIG/signing-config.json /var/lib/buildkite-agent/
         cp /Volumes/CONFIG/code-signing-config.json /var/lib/buildkite-agent/
         cp /Volumes/CONFIG/catalyst-ios-build.json /var/lib/buildkite-agent/
         cp /Volumes/CONFIG/catalyst-env.sh /var/lib/buildkite-agent/
+        cp "/Volumes/CONFIG/AuthKey_${CATALYSTKEY}.p8" "/var/lib/buildkite-agent/.private_keys/AuthKey_${CATALYSTKEY}.p8"
         chown buildkite-agent:admin /var/lib/buildkite-agent/{ci-signing.keychain-db,signing.sh,signing-config.json,code-signing-config.json}
-        chown buildkite-agent:admin /var/lib/buildkite-agent/{catalyst-ios-build.json,catalyst-env.sh}
-        chmod 0400 /var/lib/buildkite-agent/signing.sh
+        chown -R buildkite-agent:admin /var/lib/buildkite-agent/{signing-catalyst.sh,catalyst-ios-build.json,catalyst-env.sh,.private_keys}
+        chmod 0700 /var/lib/buildkite-agent/.private_keys
+        chmod 0400 /var/lib/buildkite-agent/{signing.sh,signing-catalyst.sh} /var/lib/buildkite-agent/.private_keys/*
+
         export KEYCHAIN
         sudo -Eu nixos -- security unlock-keychain -p "$KEYCHAIN" /Users/nixos/Library/Keychains/ci-signing.keychain-db
         sudo -Eu buildkite-agent -- security unlock-keychain -p "$KEYCHAIN" /var/lib/buildkite-agent/ci-signing.keychain-db

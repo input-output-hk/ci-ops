@@ -300,11 +300,13 @@ let
     emailoverride = "";
   };
 
-  # Use to put Bors jobs at the front of the build queue.
+  # Use this modifier to put Bors jobs at the front of the build
+  # queue.
   highPrioJobset = {
     schedulingshares = 420;
   };
 
+  # Modifier to disable keeping of build products for Bors "try" jobs.
   keepNoneJobset = {
     keepnr = 0;
   };
@@ -314,8 +316,11 @@ let
     excludedLabels = import ./pr-excluded-labels.nix;
     justExcluded = filter (label: (elem label.name excludedLabels));
     isEmpty = ls: length ls == 0;
+    notDraft = prInfo: !(prInfo.draft or false);
   in
-    filterAttrs (_: prInfo: isEmpty (justExcluded (prInfo.labels or [])));
+    filterAttrs (_: prInfo:
+      notDraft prInfo &&
+      isEmpty (justExcluded (prInfo.labels or [])));
 
   loadPrsJSON = path: exclusionFilter (builtins.fromJSON (builtins.readFile path));
 

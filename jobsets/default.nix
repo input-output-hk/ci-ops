@@ -24,7 +24,6 @@
 , cardanoAddressesPrsJSON ? ./simple-pr-dummy.json
 , cardanoBasePrsJSON ? ./simple-pr-dummy.json
 , cardanoBenchmarkingPrsJSON ? ./simple-pr-dummy.json
-, cardanoByronProxyPrsJSON ? ./simple-pr-dummy.json
 , cardanoDbSyncPrsJSON ? ./simple-pr-dummy.json
 , cardanoExplorerAppPrsJSON ? ./simple-pr-dummy.json
 , cardanoFaucetPrsJSON ? ./simple-pr-dummy.json
@@ -32,7 +31,6 @@
 , cardanoLedgerSpecsPrsJSON ? ./simple-pr-dummy.json
 , cardanoNodePrsJSON ? ./simple-pr-dummy.json
 , cardanoPreludePrsJSON ? ./simple-pr-dummy.json
-, cardanoPrsJSON ? ./simple-pr-dummy.json
 , cardanoRestPrsJSON ? ./simple-pr-dummy.json
 , cardanoRosettaPrsJSON ? ./simple-pr-dummy.json
 , cardanoRTViewPrsJSON ? ./simple-pr-dummy.json
@@ -43,10 +41,8 @@
 , haskellNixPrsJSON ? ./simple-pr-dummy.json
 , iohkMonitoringPrsJSON ? ./simple-pr-dummy.json
 , iohkNixPrsJSON ? ./simple-pr-dummy.json
-, jormungandrPrsJSON ? ./simple-pr-dummy.json
 , kesPrsJSON ? ./simple-pr-dummy.json
 , ledgerPrsJSON ? ./simple-pr-dummy.json
-, logClassifierPrsJSON ? ./simple-pr-dummy.json
 , nixopsPrsJSON ? ./simple-pr-dummy.json
 , ouroborosNetworkPrsJSON ? ./simple-pr-dummy.json
 , plutusPrsJSON ? ./simple-pr-dummy.json
@@ -54,7 +50,6 @@
 , smashPrsJSON ? ./simple-pr-dummy.json
 , toolsPrsJSON ? ./simple-pr-dummy.json
 , walletPrsJSON ? ./simple-pr-dummy.json
-, rustLibsPrsJSON ? ./simple-pr-dummy.json
 }:
 
 let pkgs = import nixpkgs {}; in
@@ -68,33 +63,6 @@ let
   # These are processed by the mkRepoJobsets function below.
 
   repos = {
-    cardano-sl = {
-      description = "Cardano SL";
-      url = "https://github.com/input-output-hk/cardano-sl.git";
-      input = "cardano";  # corresponds to argument in cardano-sl/release.nix
-      branch = "develop";
-      branches = {
-        master = "master";
-        "1-0" = "release/1.0.x";
-        "1-2" = "release/1.2.0";
-        "1-3" = "release/1.3.1";
-        "2-0" = "release/2.0.0";
-        "3-0-1" = "release/3.0.1";
-      };
-      prs = cardanoPrsJSON;
-      prModifier = fasterBuildJobset;
-      bors = true;
-    };
-
-    jormungandr = {
-      description = "jormungandr";
-      url = "https://github.com/input-output-hk/jormungandr-nix.git";
-      input = "jormungandr";
-      branch = "master";
-      prs = jormungandrPrsJSON;
-      bors = true;
-    };
-
     daedalus = {
       description = "Daedalus Wallet";
       url = "https://github.com/input-output-hk/daedalus.git";
@@ -107,13 +75,6 @@ let
       description = "Plutus Language";
       url = "https://github.com/input-output-hk/plutus.git";
       prs = plutusPrsJSON;
-    };
-
-    log-classifier = {
-      description = "Log Classifier";
-      url = "https://github.com/input-output-hk/log-classifier.git";
-      prs = logClassifierPrsJSON;
-      bors = true;
     };
 
     cardano-addresses = {
@@ -145,14 +106,6 @@ let
       url = "https://github.com/input-output-hk/ouroboros-network.git";
       branch = "master";
       prs = ouroborosNetworkPrsJSON;
-      bors = true;
-    };
-
-    cardano-byron-proxy = {
-      description = "Cardano Byron Proxy";
-      url = "https://github.com/input-output-hk/cardano-byron-proxy.git";
-      branch = "master";
-      prs = cardanoByronProxyPrsJSON;
       bors = true;
     };
 
@@ -226,14 +179,6 @@ let
       branch = "master";
       # TODO: after https://github.com/input-output-hk/cardano-wallet/pull/2301
       # modifier.inputs.platform = mkStringInput "all";
-    };
-
-    rust-libs = {
-      description = "Rust Libs";
-      url = "https://github.com/input-output-hk/rust-libs.nix.git";
-      branch = "master";
-      prs = rustLibsPrsJSON;
-      bors = true;
     };
 
     cardano-shell = {
@@ -353,12 +298,6 @@ let
     };
     enableemail = false;
     emailoverride = "";
-  };
-
-  # Adds an arg which disables optimization for cardano-sl builds
-  withFasterBuild = jobset: recursiveUpdate jobset fasterBuildJobset;
-  fasterBuildJobset = {
-    inputs.fasterBuild = { type = "boolean"; emailresponsible = false; value = "true"; };
   };
 
   # Use to put Bors jobs at the front of the build queue.
@@ -488,9 +427,6 @@ let
   # Jobsets which don't fit into the regular structure
 
   extraJobsets = mapAttrs (name: settings: defaultSettings // settings) ({
-    # Provides cached build projects for PR builds with -O0
-    no-opt-cardano-sl = withFasterBuild mainJobsets.cardano-sl;
-
     # ci-ops (this repo)
     iohk-ops = mkNixops "master" defaultNixpkgsRev;
     iohk-ops-bors-staging = recursiveUpdate (mkNixops "bors-staging" defaultNixpkgsRev) highPrioJobset;

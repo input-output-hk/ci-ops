@@ -157,7 +157,7 @@ let
     };
 
     cardano-prelude = {
-      description = "Cardano Byron Proxy";
+      description = "Cardano Prelude";
       url = "https://github.com/input-output-hk/cardano-prelude.git";
       branch = "master";
       prs = cardanoPreludePrsJSON;

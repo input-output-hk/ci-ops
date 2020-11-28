@@ -103,6 +103,12 @@ in {
           endpoint = "hydra.project42.iohkdev.io:51820";
           persistentKeepalive = 25;
         }
+        { # Mantis Hydra
+          publicKey = "O+Ec7HFu9QuROi88yL178KvzedlFkOEjDjuzLBy++HM=";
+          allowedIPs = [ "192.168.18.2/32" ];
+          endpoint = "hydra.mantis.ist:51820";
+          persistentKeepalive = 25;
+        }
       ];
     };
     monitorama = {

@@ -16,19 +16,15 @@
          ,"iohkNixPrsJSON": { "type": "githubpulls", "value": "input-output-hk iohk-nix", "emailresponsible": false }
          ,"ciOpsPrsJSON": { "type": "githubpulls", "value": "input-output-hk ci-ops", "emailresponsible": false }
          ,"haskellNixPrsJSON": { "type": "githubpulls", "value": "input-output-hk haskell.nix", "emailresponsible": false }
-         ,"cardanoPrsJSON": { "type": "githubpulls", "value": "input-output-hk cardano-sl", "emailresponsible": false }
-         ,"cardanoByronProxyPrsJSON": { "type": "githubpulls", "value": "input-output-hk cardano-byron-proxy", "emailresponsible": false }
          ,"cardanoPreludePrsJSON": { "type": "githubpulls", "value": "input-output-hk cardano-prelude", "emailresponsible": false }
          ,"decentralizedSoftwareUpdatesPrsJSON": { "type": "githubpulls", "value": "input-output-hk decentralized-software-updates", "emailresponsible": false }
          ,"daedalusPrsJSON": { "type": "githubpulls", "value": "input-output-hk daedalus", "emailresponsible": false }
          ,"plutusPrsJSON": { "type": "githubpulls", "value": "input-output-hk plutus", "emailresponsible": false }
-         ,"logClassifierPrsJSON": { "type": "githubpulls", "value": "input-output-hk log-classifier", "emailresponsible": false }
          ,"ouroborosNetworkPrsJSON": { "type": "githubpulls", "value": "input-output-hk ouroboros-network", "emailresponsible": false }
          ,"iohkMonitoringPrsJSON": { "type": "githubpulls", "value": "input-output-hk iohk-monitoring-framework", "emailresponsible": false }
          ,"ledgerPrsJSON": { "type": "githubpulls", "value": "input-output-hk cardano-ledger", "emailresponsible": false }
          ,"cardanoLedgerSpecsPrsJSON": { "type": "githubpulls", "value": "input-output-hk cardano-ledger-specs", "emailresponsible": false }
          ,"walletPrsJSON": { "type": "githubpulls", "value": "input-output-hk cardano-wallet", "emailresponsible": false }
-         ,"rustLibsPrsJSON": { "type": "githubpulls", "value": "input-output-hk rust-libs.nix", "emailresponsible": false }
          ,"shellPrsJSON": { "type": "githubpulls", "value": "input-output-hk cardano-shell", "emailresponsible": false }
          ,"cardanoAddressesPrsJSON": { "type": "githubpulls", "value": "input-output-hk cardano-addresses", "emailresponsible": false }
          ,"cardanoNodePrsJSON": { "type": "githubpulls", "value": "input-output-hk cardano-node", "emailresponsible": false }

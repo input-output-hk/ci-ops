@@ -177,8 +177,8 @@ let
       description = "Cardano Wallet Backend";
       url = "https://github.com/input-output-hk/cardano-wallet.git";
       branch = "master";
-      # TODO: after https://github.com/input-output-hk/cardano-wallet/pull/2301
-      # modifier.inputs.platform = mkStringInput "all";
+      prs = walletPrsJSON;
+      bors = true;
     };
 
     cardano-shell = {

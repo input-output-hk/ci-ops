@@ -38,7 +38,6 @@
 , daedalusPrsJSON ? ./simple-pr-dummy.json
 , decentralizedSoftwareUpdatesPrsJSON ? ./simple-pr-dummy.json
 , explorerPrsJSON ? ./simple-pr-dummy.json
-, haskellNixPrsJSON ? ./simple-pr-dummy.json
 , iohkMonitoringPrsJSON ? ./simple-pr-dummy.json
 , iohkNixPrsJSON ? ./simple-pr-dummy.json
 , kesPrsJSON ? ./simple-pr-dummy.json
@@ -168,7 +167,6 @@ let
       description = "Haskell.nix Build System";
       url = "https://github.com/input-output-hk/haskell.nix.git";
       branch = "master";
-      prs = haskellNixPrsJSON;
       bors = true;
       modifier.schedulingshares = 10;
     };

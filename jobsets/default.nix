@@ -82,7 +82,7 @@ let
       url = "https://github.com/input-output-hk/cardano-addresses.git";
       branch = "master";
       prs = cardanoAddressesPrsJSON;
-      bors = true;
+      bors = false;
     };
 
     cardano-ledger = {
@@ -186,7 +186,7 @@ let
       url = "https://github.com/input-output-hk/cardano-shell.git";
       branch = "master";
       prs = shellPrsJSON;
-      bors = true;
+      bors = false;
     };
 
     cardano-node = {

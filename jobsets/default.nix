@@ -235,7 +235,6 @@ let
       url = "https://github.com/input-output-hk/cardano-graphql.git";
       branch = "master";
       prs = cardanoGraphQLPrsJSON;
-      bors = true;
     };
 
     cardano-faucet = {

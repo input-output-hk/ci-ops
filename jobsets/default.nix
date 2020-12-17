@@ -310,17 +310,17 @@ let
 
   # Removes PRs which have any of the labels in ./pr-excluded-labels.nix
   exclusionFilter = let
-    excludedLabels = import ./pr-excluded-labels.nix;
-    justExcluded = filter (label: (elem label.name excludedLabels));
-    isEmpty = ls: length ls == 0;
+    labels = import ./pr-labels.nix;
+    nonEmpty = ls: length ls != 0;
+    hasLabel = labelList: prInfo:
+      nonEmpty (filter (label: (elem label.name labelList)) (prInfo.labels or []));
     notDraft = prInfo: !(prInfo.draft or false);
   in
     filterAttrs (_: prInfo:
-      notDraft prInfo &&
-      isEmpty (justExcluded (prInfo.labels or [])));
+      (notDraft prInfo || hasLabel labels.included prInfo) &&
+      !(hasLabel labels.excluded prInfo));
 
   loadPrsJSON = path: exclusionFilter (builtins.fromJSON (builtins.readFile path));
-
 
   # Make jobset for a project default build
   mkJobset = { name, description, url, input, branch, modifier ? {} }: let

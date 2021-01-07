@@ -56,6 +56,16 @@ let
       node.isBors = true;
     };
 
+    packet-ipxe-sonarqube-1 = {
+      imports = [
+        medium-cpr
+      ];
+      deployment.packet = {
+        inherit facility;
+        ipxeScriptUrl = "http://images.platformequinix.net/nixos/installer-pre/x86/netboot.ipxe";
+      };
+    };
+
     packet-ipxe-1 = mkHydraSlaveBuildkite "1";
     packet-ipxe-2 = mkHydraSlaveBuildkite "2";
     packet-ipxe-3 = mkHydraSlaveBuildkite "3";

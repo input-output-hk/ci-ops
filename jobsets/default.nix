@@ -38,6 +38,7 @@
 , daedalusPrsJSON ? ./simple-pr-dummy.json
 , decentralizedSoftwareUpdatesPrsJSON ? ./simple-pr-dummy.json
 , explorerPrsJSON ? ./simple-pr-dummy.json
+, haskellNixPrsJSON ? ./simple-pr-dummy.json
 , iohkMonitoringPrsJSON ? ./simple-pr-dummy.json
 , iohkNixPrsJSON ? ./simple-pr-dummy.json
 , kesPrsJSON ? ./simple-pr-dummy.json
@@ -168,6 +169,8 @@ let
       url = "https://github.com/input-output-hk/haskell.nix.git";
       branch = "master";
       bors = true;
+      prs = haskellNixPrsJSON;
+      prFilter = inclusionFilter;
       modifier.schedulingshares = 10;
     };
 
@@ -308,19 +311,17 @@ let
     keepnr = 0;
   };
 
-  # Removes PRs which have any of the labels in ./pr-excluded-labels.nix
-  exclusionFilter = let
-    excludedLabels = import ./pr-excluded-labels.nix;
-    justExcluded = filter (label: (elem label.name excludedLabels));
-    isEmpty = ls: length ls == 0;
-    notDraft = prInfo: !(prInfo.draft or false);
-  in
-    filterAttrs (_: prInfo:
-      notDraft prInfo &&
-      isEmpty (justExcluded (prInfo.labels or [])));
+  prHasLabel = labelList: prInfo:
+    length (filter (label: (elem label.name labelList)) (prInfo.labels or [])) != 0;
+  prNotDraft = prInfo: !(prInfo.draft or false);
 
-  loadPrsJSON = path: exclusionFilter (builtins.fromJSON (builtins.readFile path));
-
+  # Removes PRs which have any of the excluded labels in ./pr-labels.nix
+  exclusionFilter = prInfo: !(prHasLabel (import ./pr-labels.nix).excluded prInfo);
+  # Removes PRs which don't have any of the included labels in ./pr-labels.nix
+  inclusionFilter = prHasLabel (import ./pr-labels.nix).included;
+  
+  loadPrsJSON = prFilter: path: filterAttrs (_: prFilter)
+    (builtins.fromJSON (builtins.readFile path));
 
   # Make jobset for a project default build
   mkJobset = { name, description, url, input, branch, modifier ? {} }: let
@@ -355,10 +356,10 @@ let
   };
 
   # Load the PRs json and make a jobset for each
-  mkJobsetPRs = { name, input, prs, modifier ? {} }:
+  mkJobsetPRs = { name, input, prs, prFilter, modifier ? {} }:
     mapAttrsToList
       (mkJobsetPR { inherit name input modifier; })
-      (loadPrsJSON prs);
+      (loadPrsJSON prFilter prs);
 
   # Add two extra jobsets for the bors staging and trying branches.
   mkJobsetBors = { name, modifier, ... }@args: let
@@ -388,6 +389,7 @@ let
           (mkJobsetPRs {
             inherit name input;
             inherit (info) prs;
+            prFilter = info.prFilter or exclusionFilter;
             modifier = recursiveUpdate modifier (info.prModifier or {});
           }))
         (optionals (info.bors or false)
@@ -423,7 +425,7 @@ let
       };
     };
   };
-  nixopsPrJobsets = listToAttrs (mapAttrsToList makeNixopsPR (loadPrsJSON nixopsPrsJSON));
+  nixopsPrJobsets = listToAttrs (mapAttrsToList makeNixopsPR (loadPrsJSON exclusionFilter nixopsPrsJSON));
 
   ##########################################################################
   # Jobsets which don't fit into the regular structure

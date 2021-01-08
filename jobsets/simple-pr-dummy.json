@@ -58,8 +58,34 @@
         }
       }
     },
-    "title": "Prune old Hydra jobsets",
+    "title": "Example draft PR",
     "draft": true,
     "labels": []
+  },
+  "88": {
+    "base": {
+      "repo": {
+        "clone_url": "https://github.com/user/project.git"
+      }
+    },
+    "head": {
+      "ref": "pr-branch",
+      "repo": {
+        "name": "reponame",
+        "owner": {
+          "login": "githubuser"
+        }
+      }
+    },
+    "labels": [
+      {
+        "color": "00cc00",
+        "default": false,
+        "id": 692360870,
+        "name": "hydra-do-build",
+        "url": "https://api.github.com/repos/input-output-hk/project/labels/hydra-do-build"
+      }
+    ],
+    "title": "Example whitelist PR"
   }
 }

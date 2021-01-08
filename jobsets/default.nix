@@ -317,7 +317,7 @@ let
     notDraft = prInfo: !(prInfo.draft or false);
   in
     filterAttrs (_: prInfo:
-      (notDraft prInfo || hasLabel labels.included prInfo) &&
+      (hasLabel labels.included prInfo) ||
       !(hasLabel labels.excluded prInfo));
 
   loadPrsJSON = path: exclusionFilter (builtins.fromJSON (builtins.readFile path));

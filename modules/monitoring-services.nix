@@ -767,7 +767,7 @@ in {
                     {
                       alert = "node_filesystem_full_90percent";
                       expr = ''
-                        sort(node_filesystem_free_bytes{device!="ramfs"} < node_filesystem_size_bytes{device!="ramfs"} * 0.1) / 1024^3'';
+                        sort(node_filesystem_free_bytes{job!="monitoring-ci",device!="ramfs"} < node_filesystem_size_bytes{job!="monitoring-ci",device!="ramfs"} * 0.1) / 1024^3'';
                       for = "5m";
                       labels = { severity = "page"; };
                       annotations = {

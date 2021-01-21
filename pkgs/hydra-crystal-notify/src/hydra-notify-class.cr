@@ -242,6 +242,8 @@ class HydraNotifier
         next if evalSeen.dig?(jobSet.to_s, key.to_s)
         evalSeen.deep_merge!({jobSet.to_s => {key.to_s => true}})
 
+        state = evalAddedFailMsg = nil
+
         # Determine notify state and description
         if flags[:evalPending]
           # Pending eval cannot update again if a state already exists
@@ -259,18 +261,37 @@ class HydraNotifier
             target_url = "#{BASE_URI}/jobset/#{project}/#{jobset}#tabs-evaluations"
           end
         elsif flags[:evalAdded]
-          # Success eval can update only if not already success
-          if ((flags[:evalHashed] && @evalNotified[key] && @evalNotified[key]["state"] == "success") ||
-             (flags[:evalHistory] && historyState == "success"))
-            @evalNotified.deep_merge!({key.to_s => {"at" => timeEpochNow,
-                                                    "state" => "success",
-                                                    "id" => "#{id}",
-                                                    "jobSet" => "#{jobSet}",
-            }})
-            return nil
+	  # Check that the confJob attribute has been processed successfully by the eval and the aggregate job or at least one confJob build is present.
+	  # This check assumes that any job named "required" is an aggregate, and any other job name (or pattern) is not.
+	  if confJob == "required"
+            unless aggregateTarget = aggregateBuild(evalId, confJob)
+              evalAddedFailMsg = "EVAL_ADDED ERROR: JOB IS AN AGGREGATE, BUT NO AGGREGATE \"required\" BUILD FOUND -- evalId #{evalId}: #{confName}"
+              state = "error"
+              target_url = "#{BASE_URI}/jobset/#{project}/#{jobset}#tabs-errors"
+            end
           else
-            state = "success"
-            target_url = "#{BASE_URI}/eval/#{evalId}"
+            count = evalBuildCount(evalId, confJob)
+            if count.nil? || count == 0
+              evalAddedFailMsg = "EVAL_ADDED ERROR: JOB IS NOT AN AGGREGATE, BUT NO PATTERN MATCHED JOB BUILDS FOUND -- evalId #{evalId}: #{confName}"
+              state = "error"
+              target_url = "#{BASE_URI}/jobset/#{project}/#{jobset}#tabs-errors"
+            end
+          end
+
+          # Success eval can update only if not already success
+          if state != "error"
+            if ((flags[:evalHashed] && @evalNotified[key] && @evalNotified[key]["state"] == "success") ||
+               (flags[:evalHistory] && historyState == "success"))
+              @evalNotified.deep_merge!({key.to_s => {"at" => timeEpochNow,
+                                                      "state" => "success",
+                                                      "id" => "#{id}",
+                                                      "jobSet" => "#{jobSet}",
+              }})
+              return nil
+            else
+              state = "success"
+              target_url = "#{BASE_URI}/eval/#{evalId}"
+            end
           end
         elsif flags[:evalFailed]
           # Failed eval can update only if not already error
@@ -320,6 +341,11 @@ class HydraNotifier
         Log.info { "------------------------------------------" }
         Log.info { "evalJobSet: #{jobSet}" }
         Log.info { queryMsg } if queryMsg
+        if evalAddedFailMsg
+          Log.info { evalAddedFailMsg }
+          flags[:evalAdded] = false
+          flags[:evalFailed] = true
+        end
         Log.info { "#{flags}" }
         Log.debug { "config: #{conf}" }
         Log.debug { "input: #{input}" }

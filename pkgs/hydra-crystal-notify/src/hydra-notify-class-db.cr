@@ -191,6 +191,21 @@ class HydraNotifier
       return nil
     end
   end
+
+  def evalBuildCount(evalId, job)
+    begin
+      @db.scalar(<<-SQL, evalId, "%" + job + "%").as(Int64)
+        WITH evalBuilds (builds) AS (SELECT build FROM jobsetevalmembers WHERE eval = $1)
+        SELECT COUNT(id) FROM builds WHERE id in (SELECT builds FROM evalBuilds) and job similar to $2
+      SQL
+    rescue ex : DB::NoResultsError
+      Log.debug { "evalBuildCount(#{evalId},#{job}) -- EXCEPTION: \"#{ex.message}\"" }
+      return nil
+    rescue ex
+      Log.error { "evalBuildCount(#{evalId},#{job}) -- EXCEPTION: \"#{ex}\"\n#{ex.inspect_with_backtrace}" }
+      return nil
+    end
+  end
 end
 
 # Included to allow raising exceptions on notify listener failure

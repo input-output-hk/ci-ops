@@ -73,7 +73,7 @@ let
       { jobset = "jormungandr"; }
       { jobset = "kes-mmm-sumed25519"; }
       { jobset = "log-classifier"; }
-      { jobset = "monitoring-server"; }
+      { jobset = "metadata-server"; }
       { jobset = "ouroboros-network"; }
       { jobset = "plutus"; }
       { jobset = "rust-libs"; }

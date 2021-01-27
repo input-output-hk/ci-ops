@@ -29,6 +29,7 @@
 , cardanoFaucetPrsJSON ? ./simple-pr-dummy.json
 , cardanoGraphQLPrsJSON ? ./simple-pr-dummy.json
 , cardanoLedgerSpecsPrsJSON ? ./simple-pr-dummy.json
+, cardanoMetadataSubmitterPrsJSON ? ./simple-pr-dummy.json
 , cardanoNodePrsJSON ? ./simple-pr-dummy.json
 , cardanoOpsPrsJSON ? ./simple-pr-dummy.json
 , cardanoPreludePrsJSON ? ./simple-pr-dummy.json
@@ -130,6 +131,14 @@ let
       url = "https://github.com/input-output-hk/cardano-ledger.git";
       branch = "master";
       prs = ledgerPrsJSON;
+      bors = true;
+    };
+
+    cardano-metadata-submitter = {
+      description = "A library and CLI for manipulating data for the Metadata Server CIP";
+      url = "https://github.com/input-output-hk/cardano-metadata-submitter.git";
+      branch = "master";
+      prs = cardanoMetadataSubmitterPrsJSON;
       bors = true;
     };
 

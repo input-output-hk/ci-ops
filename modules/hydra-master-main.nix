@@ -53,29 +53,33 @@ let
       { jobset = "cardano-faucet"; }
       { jobset = "cardano-graphql"; }
       { jobset = "cardano-ledger-specs"; }
-      { jobset = "cardano-ledger"; }
+      { jobset = "cardano-ledger"; }                    # Below cardano-ledger-specs for regex match
+      { jobset = "cardano-metadata-submitter"; }
       { jobset = "cardano-node"; }
+      { jobset = "cardano-ops"; }
       { jobset = "cardano-prelude"; }
       { jobset = "cardano-rest"; }
       { jobset = "cardano-rosetta"; }
       { jobset = "cardano-rt-view"; }
       { jobset = "cardano-shell"; }
       { jobset = "cardano-wallet"; }
-      { jobset = "rust-libs"; }
-      { jobset = "cardano"; }
+      { jobset = "cardano"; }                           # Below all other cardano-.* jobsets for regex match
       { jobset = "ci-ops"; }
       { jobset = "decentralized-software-updates"; }
-      { jobset = "kes-mmm-sumed25519"; }
       { jobset = "haskell-nix"; }
       { jobset = "iohk-monitoring"; }
       { jobset = "iohk-nix"; }
       { jobset = "iohk-ops"; inputs = "jobsets"; }
       { jobset = "jormungandr"; }
+      { jobset = "kes-mmm-sumed25519"; }
       { jobset = "log-classifier"; }
+      { jobset = "monitoring-server"; }
       { jobset = "ouroboros-network"; }
       { jobset = "plutus"; }
+      { jobset = "rust-libs"; }
       { jobset = "smash"; }
       { jobset = "tools"; }
+      { jobset = "voting-tools"; }
     ]}
 
     # DEVOPS-1208 This CI status for cardano-sl is needed while the

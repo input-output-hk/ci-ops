@@ -12,34 +12,38 @@
     "inputs": {
          "src": { "type": "git", "value": "https://github.com/input-output-hk/ci-ops.git master", "emailresponsible": false }
          ,"nixpkgs": { "type": "git", "value": "https://github.com/NixOS/nixpkgs-channels.git nixos-18.09", "emailresponsible": false }
-         ,"nixopsPrsJSON": { "type": "githubpulls", "value": "input-output-hk iohk-ops", "emailresponsible": false }
-         ,"iohkNixPrsJSON": { "type": "githubpulls", "value": "input-output-hk iohk-nix", "emailresponsible": false }
-         ,"ciOpsPrsJSON": { "type": "githubpulls", "value": "input-output-hk ci-ops", "emailresponsible": false }
-         ,"haskellNixPrsJSON": { "type": "githubpulls", "value": "input-output-hk haskell.nix", "emailresponsible": false }
-         ,"cardanoPreludePrsJSON": { "type": "githubpulls", "value": "input-output-hk cardano-prelude", "emailresponsible": false }
-         ,"decentralizedSoftwareUpdatesPrsJSON": { "type": "githubpulls", "value": "input-output-hk decentralized-software-updates", "emailresponsible": false }
-         ,"daedalusPrsJSON": { "type": "githubpulls", "value": "input-output-hk daedalus", "emailresponsible": false }
-         ,"plutusPrsJSON": { "type": "githubpulls", "value": "input-output-hk plutus", "emailresponsible": false }
-         ,"ouroborosNetworkPrsJSON": { "type": "githubpulls", "value": "input-output-hk ouroboros-network", "emailresponsible": false }
-         ,"iohkMonitoringPrsJSON": { "type": "githubpulls", "value": "input-output-hk iohk-monitoring-framework", "emailresponsible": false }
-         ,"ledgerPrsJSON": { "type": "githubpulls", "value": "input-output-hk cardano-ledger", "emailresponsible": false }
-         ,"cardanoLedgerSpecsPrsJSON": { "type": "githubpulls", "value": "input-output-hk cardano-ledger-specs", "emailresponsible": false }
-         ,"walletPrsJSON": { "type": "githubpulls", "value": "input-output-hk cardano-wallet", "emailresponsible": false }
-         ,"shellPrsJSON": { "type": "githubpulls", "value": "input-output-hk cardano-shell", "emailresponsible": false }
          ,"cardanoAddressesPrsJSON": { "type": "githubpulls", "value": "input-output-hk cardano-addresses", "emailresponsible": false }
-         ,"cardanoNodePrsJSON": { "type": "githubpulls", "value": "input-output-hk cardano-node", "emailresponsible": false }
-         ,"cardanoBenchmarkingPrsJSON": { "type": "githubpulls", "value": "input-output-hk cardano-benchmarking", "emailresponsible": false }
          ,"cardanoBasePrsJSON": { "type": "githubpulls", "value": "input-output-hk cardano-base", "emailresponsible": false }
-         ,"cardanoRestPrsJSON": { "type": "githubpulls", "value": "input-output-hk cardano-rest", "emailresponsible": false }
+         ,"cardanoBenchmarkingPrsJSON": { "type": "githubpulls", "value": "input-output-hk cardano-benchmarking", "emailresponsible": false }
          ,"cardanoDbSyncPrsJSON": { "type": "githubpulls", "value": "input-output-hk cardano-db-sync", "emailresponsible": false }
          ,"cardanoExplorerAppPrsJSON": { "type": "githubpulls", "value": "input-output-hk cardano-explorer-app", "emailresponsible": false }
-         ,"cardanoGraphQLPrsJSON": { "type": "githubpulls", "value": "input-output-hk cardano-graphql", "emailresponsible": false }
          ,"cardanoFaucetPrsJSON": { "type": "githubpulls", "value": "input-output-hk cardano-faucet", "emailresponsible": false }
+         ,"cardanoGraphQLPrsJSON": { "type": "githubpulls", "value": "input-output-hk cardano-graphql", "emailresponsible": false }
+         ,"cardanoLedgerSpecsPrsJSON": { "type": "githubpulls", "value": "input-output-hk cardano-ledger-specs", "emailresponsible": false }
+         ,"cardanoMetadataSubmitterPrsJSON": { "type": "githubpulls", "value": "input-output-hk cardano-metadata-submitter", "emailresponsible": false }
+         ,"cardanoNodePrsJSON": { "type": "githubpulls", "value": "input-output-hk cardano-node", "emailresponsible": false }
+         ,"cardanoOpsPrsJSON": { "type": "githubpulls", "value": "input-output-hk cardano-ops", "emailresponsible": false }
+         ,"cardanoPreludePrsJSON": { "type": "githubpulls", "value": "input-output-hk cardano-prelude", "emailresponsible": false }
+         ,"cardanoRestPrsJSON": { "type": "githubpulls", "value": "input-output-hk cardano-rest", "emailresponsible": false }
          ,"cardanoRosettaPrsJSON": { "type": "githubpulls", "value": "input-output-hk cardano-rosetta", "emailresponsible": false }
          ,"cardanoRTViewPrsJSON": { "type": "githubpulls", "value": "input-output-hk cardano-rt-view", "emailresponsible": false }
-         ,"smashPrsJSON": { "type": "githubpulls", "value": "input-output-hk smash", "emailresponsible": false }
-         ,"toolsPrsJSON": { "type": "githubpulls", "value": "input-output-hk tools", "emailresponsible": false }
+         ,"ciOpsPrsJSON": { "type": "githubpulls", "value": "input-output-hk ci-ops", "emailresponsible": false }
+         ,"daedalusPrsJSON": { "type": "githubpulls", "value": "input-output-hk daedalus", "emailresponsible": false }
+         ,"decentralizedSoftwareUpdatesPrsJSON": { "type": "githubpulls", "value": "input-output-hk decentralized-software-updates", "emailresponsible": false }
+         ,"haskellNixPrsJSON": { "type": "githubpulls", "value": "input-output-hk haskell.nix", "emailresponsible": false }
+         ,"iohkMonitoringPrsJSON": { "type": "githubpulls", "value": "input-output-hk iohk-monitoring-framework", "emailresponsible": false }
+         ,"iohkNixPrsJSON": { "type": "githubpulls", "value": "input-output-hk iohk-nix", "emailresponsible": false }
          ,"jormungandrPrsJSON": { "type": "githubpulls", "value": "input-output-hk jormungandr-nix", "emailresponsible": false }
          ,"kesPrsJSON": { "type": "githubpulls", "value": "input-output-hk kes-mmm-sumed25519", "emailresponsible": false }
+         ,"ledgerPrsJSON": { "type": "githubpulls", "value": "input-output-hk cardano-ledger", "emailresponsible": false }
+         ,"metadataServerPrsJSON": { "type": "githubpulls", "value": "input-output-hk metadata-server", "emailresponsible": false }
+         ,"nixopsPrsJSON": { "type": "githubpulls", "value": "input-output-hk iohk-ops", "emailresponsible": false }
+         ,"ouroborosNetworkPrsJSON": { "type": "githubpulls", "value": "input-output-hk ouroboros-network", "emailresponsible": false }
+         ,"plutusPrsJSON": { "type": "githubpulls", "value": "input-output-hk plutus", "emailresponsible": false }
+         ,"shellPrsJSON": { "type": "githubpulls", "value": "input-output-hk cardano-shell", "emailresponsible": false }
+         ,"smashPrsJSON": { "type": "githubpulls", "value": "input-output-hk smash", "emailresponsible": false }
+         ,"toolsPrsJSON": { "type": "githubpulls", "value": "input-output-hk tools", "emailresponsible": false }
+         ,"votingToolsPrsJSON": { "type": "githubpulls", "value": "input-output-hk voting-tools", "emailresponsible": false }
+         ,"walletPrsJSON": { "type": "githubpulls", "value": "input-output-hk cardano-wallet", "emailresponsible": false }
     }
 }

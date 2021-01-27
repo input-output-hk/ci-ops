@@ -29,7 +29,9 @@
 , cardanoFaucetPrsJSON ? ./simple-pr-dummy.json
 , cardanoGraphQLPrsJSON ? ./simple-pr-dummy.json
 , cardanoLedgerSpecsPrsJSON ? ./simple-pr-dummy.json
+, cardanoMetadataSubmitterPrsJSON ? ./simple-pr-dummy.json
 , cardanoNodePrsJSON ? ./simple-pr-dummy.json
+, cardanoOpsPrsJSON ? ./simple-pr-dummy.json
 , cardanoPreludePrsJSON ? ./simple-pr-dummy.json
 , cardanoRestPrsJSON ? ./simple-pr-dummy.json
 , cardanoRosettaPrsJSON ? ./simple-pr-dummy.json
@@ -43,12 +45,14 @@
 , iohkNixPrsJSON ? ./simple-pr-dummy.json
 , kesPrsJSON ? ./simple-pr-dummy.json
 , ledgerPrsJSON ? ./simple-pr-dummy.json
+, metadataServerPrsJSON ? ./simple-pr-dummy.json
 , nixopsPrsJSON ? ./simple-pr-dummy.json
 , ouroborosNetworkPrsJSON ? ./simple-pr-dummy.json
 , plutusPrsJSON ? ./simple-pr-dummy.json
 , shellPrsJSON ? ./simple-pr-dummy.json
 , smashPrsJSON ? ./simple-pr-dummy.json
 , toolsPrsJSON ? ./simple-pr-dummy.json
+, votingToolsPrsJSON ? ./simple-pr-dummy.json
 , walletPrsJSON ? ./simple-pr-dummy.json
 }:
 
@@ -63,145 +67,12 @@ let
   # These are processed by the mkRepoJobsets function below.
 
   repos = {
-    daedalus = {
-      description = "Daedalus Wallet";
-      url = "https://github.com/input-output-hk/daedalus.git";
-      branch = "develop";
-      prs = daedalusPrsJSON;
-      bors = true;
-    };
-
-    plutus = {
-      description = "Plutus Language";
-      url = "https://github.com/input-output-hk/plutus.git";
-      prs = plutusPrsJSON;
-    };
-
     cardano-addresses = {
       description = "Cardano Addresses";
       url = "https://github.com/input-output-hk/cardano-addresses.git";
       branch = "master";
       prs = cardanoAddressesPrsJSON;
       bors = false;
-    };
-
-    cardano-ledger = {
-      description = "Cardano Ledger";
-      url = "https://github.com/input-output-hk/cardano-ledger.git";
-      branch = "master";
-      prs = ledgerPrsJSON;
-      bors = true;
-    };
-
-    cardano-ledger-specs = {
-      description = "Cardano Ledger Specs";
-      url = "https://github.com/input-output-hk/cardano-ledger-specs.git";
-      branch = "master";
-      prs = cardanoLedgerSpecsPrsJSON;
-      bors = true;
-    };
-
-    ouroboros-network = {
-      description = "Ouroboros Network";
-      url = "https://github.com/input-output-hk/ouroboros-network.git";
-      branch = "master";
-      prs = ouroborosNetworkPrsJSON;
-      bors = true;
-    };
-
-    cardano-prelude = {
-      description = "Cardano Prelude";
-      url = "https://github.com/input-output-hk/cardano-prelude.git";
-      branch = "master";
-      prs = cardanoPreludePrsJSON;
-      bors = true;
-    };
-
-    cardano-rosetta = {
-      description = "Cardano Rosetta API";
-      url = "https://github.com/input-output-hk/cardano-rosetta.git";
-      branch = "master";
-      prs = cardanoRosettaPrsJSON;
-    };
-
-    cardano-rt-view = {
-      description = "RTView";
-      url = "https://github.com/input-output-hk/cardano-rt-view.git";
-      branch = "master";
-      prs = cardanoRTViewPrsJSON;
-      bors = true;
-    };
-
-    decentralized-software-updates = {
-      description = "Decentralized Software Updates";
-      url = "https://github.com/input-output-hk/decentralized-software-updates";
-      branch = "master";
-      prs = decentralizedSoftwareUpdatesPrsJSON;
-      bors = true;
-    };
-
-    iohk-monitoring = {
-      description = "IOHK Monitoring Framework";
-      url = "https://github.com/input-output-hk/iohk-monitoring-framework.git";
-      branch = "master";
-      prs = iohkMonitoringPrsJSON;
-      bors = true;
-    };
-
-    iohk-nix = {
-      description = "IOHK Common Nix Expressions";
-      url = "https://github.com/input-output-hk/iohk-nix.git";
-      branch = "master";
-      prs = iohkNixPrsJSON;
-      bors = true;
-    };
-
-    ci-ops = {
-      description = "IOHK CI Infrastructure Repo";
-      url = "https://github.com/input-output-hk/ci-ops.git";
-      branch = "master";
-      prs = ciOpsPrsJSON;
-      bors = true;
-    };
-
-    haskell-nix = {
-      description = "Haskell.nix Build System";
-      url = "https://github.com/input-output-hk/haskell.nix.git";
-      branch = "master";
-      bors = true;
-      prs = haskellNixPrsJSON;
-      prFilter = inclusionFilter;
-      modifier.schedulingshares = 10;
-    };
-
-    cardano-wallet = {
-      description = "Cardano Wallet Backend";
-      url = "https://github.com/input-output-hk/cardano-wallet.git";
-      branch = "master";
-      prs = walletPrsJSON;
-      bors = true;
-    };
-
-    cardano-shell = {
-      description = "Cardano Shell";
-      url = "https://github.com/input-output-hk/cardano-shell.git";
-      branch = "master";
-      prs = shellPrsJSON;
-      bors = false;
-    };
-
-    cardano-node = {
-      description = "Cardano Node";
-      url = "https://github.com/input-output-hk/cardano-node.git";
-      prs = cardanoNodePrsJSON;
-      bors = true;
-    };
-
-    cardano-benchmarking = {
-      description = "Cardano benchmarks";
-      url = "https://github.com/input-output-hk/cardano-benchmarking.git";
-      prs = cardanoBenchmarkingPrsJSON;
-      bors = true;
     };
 
     cardano-base = {
@@ -211,10 +82,10 @@ let
       bors = true;
     };
 
-    cardano-rest = {
-      description = "Cardano REST API";
-      url = "https://github.com/input-output-hk/cardano-rest.git";
-      prs = cardanoRestPrsJSON;
+    cardano-benchmarking = {
+      description = "Cardano benchmarks";
+      url = "https://github.com/input-output-hk/cardano-benchmarking.git";
+      prs = cardanoBenchmarkingPrsJSON;
       bors = true;
     };
 
@@ -233,6 +104,13 @@ let
       bors = true;
     };
 
+    cardano-faucet = {
+      description = "Cardano Faucet";
+      url = "https://github.com/input-output-hk/cardano-faucet.git";
+      prs = cardanoFaucetPrsJSON;
+      bors = true;
+    };
+
     cardano-graphql = {
       description = "Cardano GraphQL";
       url = "https://github.com/input-output-hk/cardano-graphql.git";
@@ -240,10 +118,138 @@ let
       prs = cardanoGraphQLPrsJSON;
     };
 
-    cardano-faucet = {
-      description = "Cardano Faucet";
-      url = "https://github.com/input-output-hk/cardano-faucet.git";
-      prs = cardanoFaucetPrsJSON;
+    cardano-ledger-specs = {
+      description = "Cardano Ledger Specs";
+      url = "https://github.com/input-output-hk/cardano-ledger-specs.git";
+      branch = "master";
+      prs = cardanoLedgerSpecsPrsJSON;
+      bors = true;
+    };
+
+    cardano-ledger = {
+      description = "Cardano Ledger";
+      url = "https://github.com/input-output-hk/cardano-ledger.git";
+      branch = "master";
+      prs = ledgerPrsJSON;
+      bors = true;
+    };
+
+    cardano-metadata-submitter = {
+      description = "A library and CLI for manipulating data for the Metadata Server CIP";
+      url = "https://github.com/input-output-hk/cardano-metadata-submitter.git";
+      branch = "master";
+      prs = cardanoMetadataSubmitterPrsJSON;
+      bors = true;
+    };
+
+    cardano-node = {
+      description = "Cardano Node";
+      url = "https://github.com/input-output-hk/cardano-node.git";
+      prs = cardanoNodePrsJSON;
+      bors = true;
+    };
+
+    cardano-ops = {
+      description = "NixOps deployment configuration for IOHK/Cardano devops";
+      url = "https://github.com/input-output-hk/cardano-ops.git";
+      branch = "master";
+      prs = cardanoOpsPrsJSON;
+      bors = true;
+    };
+
+    cardano-prelude = {
+      description = "Cardano Prelude";
+      url = "https://github.com/input-output-hk/cardano-prelude.git";
+      branch = "master";
+      prs = cardanoPreludePrsJSON;
+      bors = true;
+    };
+
+    cardano-rest = {
+      description = "Cardano REST API";
+      url = "https://github.com/input-output-hk/cardano-rest.git";
+      prs = cardanoRestPrsJSON;
+      bors = true;
+    };
+
+    cardano-rosetta = {
+      description = "Cardano Rosetta API";
+      url = "https://github.com/input-output-hk/cardano-rosetta.git";
+      branch = "master";
+      prs = cardanoRosettaPrsJSON;
+    };
+
+    cardano-rt-view = {
+      description = "RTView";
+      url = "https://github.com/input-output-hk/cardano-rt-view.git";
+      branch = "master";
+      prs = cardanoRTViewPrsJSON;
+      bors = true;
+    };
+
+    cardano-shell = {
+      description = "Cardano Shell";
+      url = "https://github.com/input-output-hk/cardano-shell.git";
+      branch = "master";
+      prs = shellPrsJSON;
+      bors = false;
+    };
+
+    cardano-wallet = {
+      description = "Cardano Wallet Backend";
+      url = "https://github.com/input-output-hk/cardano-wallet.git";
+      branch = "master";
+      prs = walletPrsJSON;
+      bors = true;
+    };
+
+    ci-ops = {
+      description = "IOHK CI Infrastructure Repo";
+      url = "https://github.com/input-output-hk/ci-ops.git";
+      branch = "master";
+      prs = ciOpsPrsJSON;
+      bors = true;
+    };
+
+    daedalus = {
+      description = "Daedalus Wallet";
+      url = "https://github.com/input-output-hk/daedalus.git";
+      branch = "develop";
+      prs = daedalusPrsJSON;
+      bors = true;
+    };
+
+    decentralized-software-updates = {
+      description = "Decentralized Software Updates";
+      url = "https://github.com/input-output-hk/decentralized-software-updates";
+      branch = "master";
+      prs = decentralizedSoftwareUpdatesPrsJSON;
+      bors = true;
+    };
+
+    haskell-nix = {
+      description = "Haskell.nix Build System";
+      url = "https://github.com/input-output-hk/haskell.nix.git";
+      branch = "master";
+      bors = true;
+      prs = haskellNixPrsJSON;
+      prFilter = inclusionFilter;
+      modifier.schedulingshares = 10;
+    };
+
+    iohk-monitoring = {
+      description = "IOHK Monitoring Framework";
+      url = "https://github.com/input-output-hk/iohk-monitoring-framework.git";
+      branch = "master";
+      prs = iohkMonitoringPrsJSON;
+      bors = true;
+    };
+
+    iohk-nix = {
+      description = "IOHK Common Nix Expressions";
+      url = "https://github.com/input-output-hk/iohk-nix.git";
+      branch = "master";
+      prs = iohkNixPrsJSON;
       bors = true;
     };
 
@@ -252,6 +258,28 @@ let
       url = "https://github.com/input-output-hk/kes-mmm-sumed25519.git";
       prs = kesPrsJSON;
       bors = true;
+    };
+
+    metadata-server = {
+      description = "Metadata Server";
+      url = "https://github.com/input-output-hk/metadata-server.git";
+      branch = "master";
+      prs = metadataServerPrsJSON;
+      bors = true;
+    };
+
+    ouroboros-network = {
+      description = "Ouroboros Network";
+      url = "https://github.com/input-output-hk/ouroboros-network.git";
+      branch = "master";
+      prs = ouroborosNetworkPrsJSON;
+      bors = true;
+    };
+
+    plutus = {
+      description = "Plutus Language";
+      url = "https://github.com/input-output-hk/plutus.git";
+      prs = plutusPrsJSON;
     };
 
     smash = {
@@ -267,6 +295,14 @@ let
       url = "https://github.com/input-output-hk/tools.git";
       branch = "master";
       prs = toolsPrsJSON;
+    };
+
+    voting-tools = {
+      description = "Voting Tools";
+      url = "https://github.com/input-output-hk/voting-tools.git";
+      branch = "master";
+      prs = votingToolsPrsJSON;
+      bors = true;
     };
   };
 
@@ -319,7 +355,7 @@ let
   exclusionFilter = prInfo: !(prHasLabel (import ./pr-labels.nix).excluded prInfo);
   # Removes PRs which don't have any of the included labels in ./pr-labels.nix
   inclusionFilter = prHasLabel (import ./pr-labels.nix).included;
-  
+
   loadPrsJSON = prFilter: path: filterAttrs (_: prFilter)
     (builtins.fromJSON (builtins.readFile path));
 

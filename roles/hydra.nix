@@ -31,6 +31,8 @@
     postgresql = {
       extraConfig = ''
         max_connections 200
+        shared_preload_libraries = 'pg_stat_statements'
+        pg_stat_statements.track = all
       '';
     };
   };

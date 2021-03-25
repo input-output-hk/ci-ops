@@ -16,6 +16,7 @@ let
 
   settings = {
     resources.packetKeyPairs.global = credentials;
+    resources.packetKeyPairs.plutus = import ../secrets/packet-plutus-ci.nix;
 
     resources.route53RecordSets = __listToAttrs (map (name: {
       name = "${name}-route53";

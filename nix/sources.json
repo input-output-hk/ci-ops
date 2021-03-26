@@ -12,15 +12,15 @@
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "hercules-ci-agent": {
-        "branch": "v0.6.5",
+        "branch": "refs/tags/hercules-ci-agent-0.7.5",
         "description": "https://hercules-ci.com build agent",
         "homepage": "",
         "owner": "hercules-ci",
         "repo": "hercules-ci-agent",
-        "rev": "73dcac6593c0aad714e50648a2ea28dffa655139",
-        "sha256": "07ik7azky899yahm4i12b0bh64q54g0k1nqh87rz31dmqvkxdwn3",
+        "rev": "8b1f1fac4c0c27b003805778018c31ffb3cb5e33",
+        "sha256": "10ilgfq1x421fkx3c8ib5f81cmq5nrrwgdlf15h8j08nxilcniz1",
         "type": "tarball",
-        "url": "https://github.com/hercules-ci/hercules-ci-agent/archive/73dcac6593c0aad714e50648a2ea28dffa655139.tar.gz",
+        "url": "https://github.com/hercules-ci/hercules-ci-agent/archive/8b1f1fac4c0c27b003805778018c31ffb3cb5e33.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "hercules-ci-agent-darwin": {
@@ -172,10 +172,10 @@
         "homepage": null,
         "owner": "input-output-hk",
         "repo": "ops-lib",
-        "rev": "6213ab9d18e344f2bb62dd98c268670057b46151",
-        "sha256": "1lcakhsgnkv77ql6pqha58d0hybcj3x7zpjxpxvr66a6bk1c9n61",
+        "rev": "1cabb5ed6c86a0bbc1c4ac6ee05d62751f649ff4",
+        "sha256": "093x5cdxi2g3l7z4m7drxj21h4r2c5667rzhbfwcdx23ln1kiifj",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/ops-lib/archive/6213ab9d18e344f2bb62dd98c268670057b46151.tar.gz",
+        "url": "https://github.com/input-output-hk/ops-lib/archive/1cabb5ed6c86a0bbc1c4ac6ee05d62751f649ff4.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     }
 }

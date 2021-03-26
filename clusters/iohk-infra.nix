@@ -66,6 +66,24 @@ let
       };
     };
 
+    packet-ipxe-plutus-1 = {
+      imports = [
+        small
+        ../roles/plutus.nix
+        ({ resources, lib, ... }:
+          {
+            deployment.packet.keyPair = lib.mkForce resources.packetKeyPairs.plutus;
+          }
+        )
+      ];
+      deployment.packet = {
+        inherit facility;
+        project = lib.mkForce (import ../secrets/packet-plutus-ci.nix).project;
+        accessKeyId = lib.mkForce (import ../secrets/packet-plutus-ci.nix).accessKeyId;
+        ipxeScriptUrl = "http://images.platformequinix.net/nixos/installer-pre/x86/netboot.ipxe";
+      };
+    };
+
     packet-ipxe-1 = mkHydraSlaveBuildkite "1";
     packet-ipxe-2 = mkHydraSlaveBuildkite "2";
     packet-ipxe-3 = mkHydraSlaveBuildkite "3";

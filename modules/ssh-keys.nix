@@ -5,7 +5,7 @@ let
   sources = import ../nix/sources.nix;
   original-ssh-keys = import (sources.ops-lib + "/overlays/ssh-keys.nix") lib;
   allKeysFrom = keys: __concatLists (__attrValues keys);
-  inherit (original-ssh-keys) devOps csl-developers remoteBuilderKeys;
+  inherit (original-ssh-keys) devOps csl-developers plutus-developers remoteBuilderKeys;
   inherit (builtins) typeOf;
   inherit (lib) types mkOption;
 in with types; {
@@ -30,6 +30,12 @@ in with types; {
           linux = remoteBuilderKeys.hydraBuildFarm;
         };
         description = "Default buildSlave ssh authorized keys";
+      };
+
+      plutus-developers = mkOption {
+        type = listOf str;
+        default = allKeysFrom plutus-developers;
+        description = "Default plutus-developers ssh authorized keys";
       };
     };
   };

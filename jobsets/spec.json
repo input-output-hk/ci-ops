@@ -20,7 +20,6 @@
          ,"cardanoFaucetPrsJSON": { "type": "githubpulls", "value": "input-output-hk cardano-faucet", "emailresponsible": false }
          ,"cardanoGraphQLPrsJSON": { "type": "githubpulls", "value": "input-output-hk cardano-graphql", "emailresponsible": false }
          ,"cardanoLedgerSpecsPrsJSON": { "type": "githubpulls", "value": "input-output-hk cardano-ledger-specs", "emailresponsible": false }
-         ,"cardanoMetadataSubmitterPrsJSON": { "type": "githubpulls", "value": "input-output-hk cardano-metadata-submitter", "emailresponsible": false }
          ,"cardanoNodePrsJSON": { "type": "githubpulls", "value": "input-output-hk cardano-node", "emailresponsible": false }
          ,"cardanoOpsPrsJSON": { "type": "githubpulls", "value": "input-output-hk cardano-ops", "emailresponsible": false }
          ,"cardanoPreludePrsJSON": { "type": "githubpulls", "value": "input-output-hk cardano-prelude", "emailresponsible": false }
@@ -36,7 +35,7 @@
          ,"jormungandrPrsJSON": { "type": "githubpulls", "value": "input-output-hk jormungandr-nix", "emailresponsible": false }
          ,"kesPrsJSON": { "type": "githubpulls", "value": "input-output-hk kes-mmm-sumed25519", "emailresponsible": false }
          ,"ledgerPrsJSON": { "type": "githubpulls", "value": "input-output-hk cardano-ledger", "emailresponsible": false }
-         ,"metadataServerPrsJSON": { "type": "githubpulls", "value": "input-output-hk metadata-server", "emailresponsible": false }
+         ,"offchainMetadataToolsPrsJSON": { "type": "githubpulls", "value": "input-output-hk offchain-metadata-tools", "emailresponsible": false }
          ,"nixopsPrsJSON": { "type": "githubpulls", "value": "input-output-hk iohk-ops", "emailresponsible": false }
          ,"ouroborosNetworkPrsJSON": { "type": "githubpulls", "value": "input-output-hk ouroboros-network", "emailresponsible": false }
          ,"plutusPrsJSON": { "type": "githubpulls", "value": "input-output-hk plutus", "emailresponsible": false }

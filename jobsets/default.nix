@@ -29,7 +29,6 @@
 , cardanoFaucetPrsJSON ? ./simple-pr-dummy.json
 , cardanoGraphQLPrsJSON ? ./simple-pr-dummy.json
 , cardanoLedgerSpecsPrsJSON ? ./simple-pr-dummy.json
-, cardanoMetadataSubmitterPrsJSON ? ./simple-pr-dummy.json
 , cardanoNodePrsJSON ? ./simple-pr-dummy.json
 , cardanoOpsPrsJSON ? ./simple-pr-dummy.json
 , cardanoPreludePrsJSON ? ./simple-pr-dummy.json
@@ -45,7 +44,7 @@
 , iohkNixPrsJSON ? ./simple-pr-dummy.json
 , kesPrsJSON ? ./simple-pr-dummy.json
 , ledgerPrsJSON ? ./simple-pr-dummy.json
-, metadataServerPrsJSON ? ./simple-pr-dummy.json
+, offchainMetadataToolsPrsJSON ? ./simple-pr-dummy.json
 , nixopsPrsJSON ? ./simple-pr-dummy.json
 , ouroborosNetworkPrsJSON ? ./simple-pr-dummy.json
 , plutusPrsJSON ? ./simple-pr-dummy.json
@@ -131,14 +130,6 @@ let
       url = "https://github.com/input-output-hk/cardano-ledger.git";
       branch = "master";
       prs = ledgerPrsJSON;
-      bors = true;
-    };
-
-    cardano-metadata-submitter = {
-      description = "A library and CLI for manipulating data for the Metadata Server CIP";
-      url = "https://github.com/input-output-hk/cardano-metadata-submitter.git";
-      branch = "master";
-      prs = cardanoMetadataSubmitterPrsJSON;
       bors = true;
     };
 
@@ -260,11 +251,11 @@ let
       bors = true;
     };
 
-    metadata-server = {
-      description = "Metadata Server";
-      url = "https://github.com/input-output-hk/metadata-server.git";
+    offchain-metadata-tools = {
+      description = "Tools for creating, submitting, and managing off-chain metadata such as multi-asset token metadata";
+      url = "https://github.com/input-output-hk/offchain-metadata-tools.git";
       branch = "master";
-      prs = metadataServerPrsJSON;
+      prs = offchainMetadataToolsPrsJSON;
       bors = true;
     };
 

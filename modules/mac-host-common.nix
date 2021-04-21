@@ -103,6 +103,12 @@ in {
           endpoint = "hydra.project42.iohkdev.io:51820";
           persistentKeepalive = 25;
         }
+        { # Newer P42 Hydra
+          publicKey = "yDQMpW8Qkc89LmcZSlIOIHodVpYp2QF6wIlq3EZGNlE=";
+          allowedIPs = [ "192.168.142.3/32" ];
+          endpoint = "hydra.p42.at:17777";
+          persistentKeepalive = 25;
+        }
         { # Mantis Hydra
           publicKey = "O+Ec7HFu9QuROi88yL178KvzedlFkOEjDjuzLBy++HM=";
           allowedIPs = [ "192.168.18.2/32" ];

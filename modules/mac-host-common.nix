@@ -76,7 +76,12 @@ in {
           persistentKeepalive = 30;
           endpoint = "96.248.117.80:51820";
         }
-
+        {
+          publicKey = "x77Jq/+cbHfLP0jNuJkYKtsDZs+NvfiDw7NYrYwe9Cw=";
+          allowedIPs = [ "192.168.24.1/32" ];
+          persistentKeepalive = 30;
+          endpoint = "serval.nrdxp.dev:51820";
+        }
         # TODO: Add preshared key; migrate all to port 17777
         { # New CI Deployer
           publicKey = "ZWLewe0yVJ45eW39quTiyvC/kaxy8xNcVpD9QVvxwkk=";

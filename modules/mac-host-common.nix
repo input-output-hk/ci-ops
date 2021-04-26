@@ -111,7 +111,7 @@ in {
         { # Newer P42 Hydra
           publicKey = "yDQMpW8Qkc89LmcZSlIOIHodVpYp2QF6wIlq3EZGNlE=";
           allowedIPs = [ "192.168.142.3/32" ];
-          endpoint = "hydra.p42.at:17777";
+          endpoint = "hydra-wg.p42.at:17777";
           persistentKeepalive = 25;
         }
         { # Mantis Hydra

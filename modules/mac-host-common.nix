@@ -77,8 +77,8 @@ in {
           endpoint = "96.248.117.80:51820";
         }
         {
-          publicKey = "x77Jq/+cbHfLP0jNuJkYKtsDZs+NvfiDw7NYrYwe9Cw=";
-          allowedIPs = [ "192.168.24.1/32" ];
+          publicKey = "x/cUIzSdoeXonP5gSelaEfN8yYT8kJvi8E1w/myvkDg=";
+          allowedIPs = [ "192.168.24.2/32" ];
           persistentKeepalive = 30;
           endpoint = "serval.nrdxp.dev:51820";
         }

@@ -3,7 +3,7 @@
 let
   sources = import ../nix/sources.nix;
   pkgs = import (sources.nixpkgs) {};
-  nix-darwin = sources.nix-darwin-hercules;
+  nix-darwin = sources.nix-darwin;
   system = (import nix-darwin {
     nixpkgs = sources.nixpkgs;
     configuration = "${guestConfDir}/darwin-configuration.nix";

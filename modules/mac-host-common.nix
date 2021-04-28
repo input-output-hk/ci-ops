@@ -194,7 +194,7 @@ in {
       };
       machines = {
         ci = {
-          zvolName = "tank/mojave-image1-128gb";
+          zvolName = "tank/catalina-image1-128gb";
           network = {
             interiorNetworkPrefix = "192.168.3";
             guestSshPort = 2200;
@@ -216,7 +216,7 @@ in {
           };
         };
         signing = {
-          zvolName = "tank/mojave-image2-xcode-128gb";
+          zvolName = "tank/catalina-image2-xcode-128gb";
           network = {
             interiorNetworkPrefix = "192.168.4";
             guestSshPort = 2201;

@@ -41,6 +41,7 @@ EOF
 
 launchctl stop com.openssh.sshd
 launchctl unload /System/Library/LaunchDaemons/com.apple.platform.ptmd.plist
+launchctl unload /System/Library/LaunchDaemons/com.apple.metadata.mds.plist
 
 cd /Volumes/CONFIG
 
@@ -60,8 +61,8 @@ echo "%admin ALL = NOPASSWD: ALL" > /etc/sudoers.d/passwordless
     export HOME=~root
     export ALLOW_PREEXISTING_INSTALLATION=1
     env
-    curl https://nixos.org/releases/nix/nix-2.1.3/install > ~nixos/install-nix
-    sudo -i -H -u nixos -- sh ~nixos/install-nix --daemon < /dev/null
+    curl https://nixos.org/releases/nix/nix-2.3.10/install > ~nixos/install-nix
+    sudo -i -H -u nixos -- sh ~nixos/install-nix --daemon --darwin-use-unencrypted-nix-store-volume < /dev/null
 )
 
 (
@@ -132,10 +133,10 @@ EOF
     cp -vf /Volumes/CONFIG/darwin-configuration.nix ~nixos/.nixpkgs/darwin-configuration.nix
     cp -vrf /Volumes/CONFIG/ci-ops ~nixos/.nixpkgs/ci-ops
     chown -R nixos ~nixos/.nixpkgs
-    sudo -i -H -u nixos -- darwin-rebuild build
+    sudo -iHu nixos -- darwin-rebuild -I /nix/var/nix/profiles/per-user/nixos/channels -I darwin-config=/Users/nixos/.nixpkgs/darwin-configuration.nix build
     rm -f /etc/nix/nix.conf
     test -f /Volumes/CONFIG/nix/netrc && cp /Volumes/CONFIG/nix/netrc /etc/nix
-    sudo -i -H -u nixos -- darwin-rebuild switch
+    sudo -iHu nixos -- darwin-rebuild -I /nix/var/nix/profiles/per-user/nixos/channels -I darwin-config=/Users/nixos/.nixpkgs/darwin-configuration.nix switch
 )
 (
     if [ -f /Volumes/CONFIG/signing-config.json ]; then
@@ -181,6 +182,7 @@ EOF
         security unlock-keychain -p "$KEYCHAIN"
 
         mkdir -p "/var/lib/buildkite-agent/Library/MobileDevice/Provisioning Profiles/"
+        mkdir -p /var/lib/buildkite-agent/Library/Developer
         UUID=$(strings /Volumes/CONFIG/catalyst-dev.mobileprovision | grep -A1 UUID | tail -n 1 | egrep -io "[-A-F0-9]{36}")
         cp /Volumes/CONFIG/catalyst-dev.mobileprovision "/var/lib/buildkite-agent/Library/MobileDevice/Provisioning Profiles/$UUID.mobileprovision"
         UUID=$(strings /Volumes/CONFIG/catalyst-dist.mobileprovision | grep -A1 UUID | tail -n 1 | egrep -io "[-A-F0-9]{36}")

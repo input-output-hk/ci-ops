@@ -29,6 +29,7 @@
 , cardanoFaucetPrsJSON ? ./simple-pr-dummy.json
 , cardanoGraphQLPrsJSON ? ./simple-pr-dummy.json
 , cardanoLedgerSpecsPrsJSON ? ./simple-pr-dummy.json
+, cardanoNodeP2PPrsJSON ? ./simple-pr-dummy.json
 , cardanoNodePrsJSON ? ./simple-pr-dummy.json
 , cardanoOpsPrsJSON ? ./simple-pr-dummy.json
 , cardanoPreludePrsJSON ? ./simple-pr-dummy.json
@@ -138,6 +139,14 @@ let
       url = "https://github.com/input-output-hk/cardano-node.git";
       prs = cardanoNodePrsJSON;
       bors = true;
+    };
+
+    cardano-node-p2p = {
+      description = "Cardano Node Peer to Peer";
+      url = "https://github.com/input-output-hk/cardano-node.git";
+      branch = "p2p-master";
+      prs = cardanoNodeP2PPrsJSON;
+      bors = false;
     };
 
     cardano-ops = {

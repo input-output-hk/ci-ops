@@ -54,7 +54,8 @@ let
       { jobset = "cardano-graphql"; }
       { jobset = "cardano-ledger-specs"; }
       { jobset = "cardano-ledger"; }                    # Below cardano-ledger-specs for regex match
-      { jobset = "cardano-node"; }
+      { jobset = "cardano-node-p2p"; }
+      { jobset = "cardano-node"; }                      # Below cardano-node-p2p for regex match
       { jobset = "cardano-ops"; }
       { jobset = "cardano-prelude"; }
       { jobset = "cardano-rest"; }

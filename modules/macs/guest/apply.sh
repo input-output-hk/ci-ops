@@ -43,6 +43,8 @@ launchctl stop com.openssh.sshd
 launchctl unload /System/Library/LaunchDaemons/com.apple.platform.ptmd.plist
 launchctl unload /System/Library/LaunchDaemons/com.apple.metadata.mds.plist
 
+softwareupdate --schedule off
+
 cd /Volumes/CONFIG
 
 cp -rf ./etc/ssh/ssh_host_* /etc/ssh

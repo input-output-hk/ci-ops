@@ -146,6 +146,7 @@ let
       url = "https://github.com/input-output-hk/cardano-node.git";
       branch = "p2p-master";
       prs = cardanoNodeP2PPrsJSON;
+      prFilter = dontBuildPrsFilter;
       bors = false;
     };
 
@@ -355,6 +356,9 @@ let
   exclusionFilter = prInfo: !(prHasLabel (import ./pr-labels.nix).excluded prInfo);
   # Removes PRs which don't have any of the included labels in ./pr-labels.nix
   inclusionFilter = prHasLabel (import ./pr-labels.nix).included;
+
+  # Build only the repo branch target and not any additional PRs
+  dontBuildPrsFilter = prInfo: false;
 
   loadPrsJSON = prFilter: path: filterAttrs (_: prFilter)
     (builtins.fromJSON (builtins.readFile path));

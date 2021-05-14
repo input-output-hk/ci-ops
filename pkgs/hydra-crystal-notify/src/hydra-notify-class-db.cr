@@ -206,6 +206,20 @@ class HydraNotifier
       return nil
     end
   end
+
+  def evalHasNewBuilds(evalId)
+    begin
+      @db.scalar(<<-SQL, evalId).as(Int64)
+        SELECT hasnewbuilds FROM jobsetevals WHERE id = $1
+      SQL
+    rescue ex : DB::NoResultsError
+      Log.debug { "evalHasNewBuilds(#{evalId}) -- EXCEPTION: \"#{ex.message}\"" }
+      return nil
+    rescue ex
+      Log.error { "evalHasNewBuilds(#{evalId}}) -- EXCEPTION: \"#{ex}\"\n#{ex.inspect_with_backtrace}" }
+      return nil
+    end
+  end
 end
 
 # Included to allow raising exceptions on notify listener failure

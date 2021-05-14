@@ -261,20 +261,32 @@ class HydraNotifier
             target_url = "#{BASE_URI}/jobset/#{project}/#{jobset}#tabs-evaluations"
           end
         elsif flags[:evalAdded]
-	  # Check that the confJob attribute has been processed successfully by the eval and the aggregate job or at least one confJob build is present.
-	  # This check assumes that any job named "required" is an aggregate, and any other job name (or pattern) is not.
-	  if confJob == "required"
-            unless aggregateTarget = aggregateBuild(evalId, confJob)
-              evalAddedFailMsg = "EVAL_ADDED ERROR: JOB IS AN AGGREGATE, BUT NO AGGREGATE \"required\" BUILD FOUND -- evalId #{evalId}: #{confName}"
-              state = "error"
-              target_url = "#{BASE_URI}/jobset/#{project}/#{jobset}#tabs-errors"
-            end
-          else
-            count = evalBuildCount(evalId, confJob)
-            if count.nil? || count == 0
-              evalAddedFailMsg = "EVAL_ADDED ERROR: JOB IS NOT AN AGGREGATE, BUT NO PATTERN MATCHED JOB BUILDS FOUND -- evalId #{evalId}: #{confName}"
-              state = "error"
-              target_url = "#{BASE_URI}/jobset/#{project}/#{jobset}#tabs-errors"
+          # Ensure that the added eval is not simply using a prior cached eval and there are indeed new builds present before parsing further.
+          # This check allows forced evals from the UI to pass to get by a transient eval error when no new build products are present compared to a prior eval.
+          #
+          # As long as release.nix for a jobset includes forceNewEval functionality so that each new commit will be evaluated by hydra with at least one trivial
+          # new nix build, the new eval will be checked for a missing required attribute on aggregate jobs, or missing pattern matched jobs on non-aggregate jobs.
+          #
+          # For forced evals from the UI, where there there may be no new builds, a passing eval status will be accepted at face value without trying to
+          # examine a history of evals for required attribute or build pattern expectations.  This may result in an edge case where a forced UI eval
+          # passes but a required attribute is missing or no pattern matched builds are found.
+          hasNewBuilds = evalHasNewBuilds(evalId)
+          if hasNewBuilds == 1
+            # Check that the confJob attribute has been processed successfully by the eval and the aggregate job or at least one confJob build is present.
+            # This check assumes that any job named "required" is an aggregate, and any other job name (or pattern) is not.
+            if confJob == "required"
+              unless aggregateTarget = aggregateBuild(evalId, confJob)
+                evalAddedFailMsg = "EVAL_ADDED ERROR: JOB IS AN AGGREGATE, BUT NO AGGREGATE \"required\" BUILD FOUND -- evalId #{evalId}: #{confName}"
+                state = "error"
+                target_url = "#{BASE_URI}/jobset/#{project}/#{jobset}#tabs-errors"
+              end
+            else
+              count = evalBuildCount(evalId, confJob)
+              if count.nil? || count == 0
+                evalAddedFailMsg = "EVAL_ADDED ERROR: JOB IS NOT AN AGGREGATE, BUT NO PATTERN MATCHED JOB BUILDS FOUND -- evalId #{evalId}: #{confName}"
+                state = "error"
+                target_url = "#{BASE_URI}/jobset/#{project}/#{jobset}#tabs-errors"
+              end
             end
           end
 

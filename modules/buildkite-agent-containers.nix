@@ -268,6 +268,12 @@ in with lib;
         keyFile = ../secrets/catalyst-env.sh;
         user    = "buildkite-agent";
       };
+
+      # Catalyst sentry spec
+      "catalyst-sentry.properties" = {
+        keyFile = ../secrets/catalyst-sentry.properties;
+        user    = "buildkite-agent";
+      };
     };
 
     system.activationScripts.cacheDir = {

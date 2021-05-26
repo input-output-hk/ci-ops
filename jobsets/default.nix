@@ -41,6 +41,7 @@
 , decentralizedSoftwareUpdatesPrsJSON ? ./simple-pr-dummy.json
 , explorerPrsJSON ? ./simple-pr-dummy.json
 , haskellNixPrsJSON ? ./simple-pr-dummy.json
+, hydraPocPrsJSON ? ./simple-pr-dummy.json
 , iohkMonitoringPrsJSON ? ./simple-pr-dummy.json
 , iohkNixPrsJSON ? ./simple-pr-dummy.json
 , kesPrsJSON ? ./simple-pr-dummy.json
@@ -236,6 +237,14 @@ let
       prs = haskellNixPrsJSON;
       prFilter = inclusionFilter;
       modifier.schedulingshares = 10;
+    };
+
+    hydra-poc = {
+      description = "Proof of concept for the Hydra Head protocol";
+      url = "https://github.com/input-output-hk/hydra-poc.git";
+      branch = "master";
+      prs = hydraPocPrsJSON;
+      bors = true;
     };
 
     iohk-monitoring = {

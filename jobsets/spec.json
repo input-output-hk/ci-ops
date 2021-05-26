@@ -31,6 +31,7 @@
          ,"daedalusPrsJSON": { "type": "githubpulls", "value": "input-output-hk daedalus", "emailresponsible": false }
          ,"decentralizedSoftwareUpdatesPrsJSON": { "type": "githubpulls", "value": "input-output-hk decentralized-software-updates", "emailresponsible": false }
          ,"haskellNixPrsJSON": { "type": "githubpulls", "value": "input-output-hk haskell.nix", "emailresponsible": false }
+         ,"hydraPocPrsJSON": { "type": "githubpulls", "value": "input-output-hk hydra-poc", "emailresponsible": false }
          ,"iohkMonitoringPrsJSON": { "type": "githubpulls", "value": "input-output-hk iohk-monitoring-framework", "emailresponsible": false }
          ,"iohkNixPrsJSON": { "type": "githubpulls", "value": "input-output-hk iohk-nix", "emailresponsible": false }
          ,"jormungandrPrsJSON": { "type": "githubpulls", "value": "input-output-hk jormungandr-nix", "emailresponsible": false }

@@ -67,6 +67,7 @@ let
       { jobset = "ci-ops"; }
       { jobset = "decentralized-software-updates"; }
       { jobset = "haskell-nix"; }
+      { jobset = "hydra-poc"; }
       { jobset = "iohk-monitoring"; }
       { jobset = "iohk-nix"; }
       { jobset = "iohk-ops"; inputs = "jobsets"; }

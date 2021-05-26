@@ -41,6 +41,7 @@
          ,"nixopsPrsJSON": { "type": "githubpulls", "value": "input-output-hk iohk-ops", "emailresponsible": false }
          ,"ouroborosNetworkPrsJSON": { "type": "githubpulls", "value": "input-output-hk ouroboros-network", "emailresponsible": false }
          ,"plutusPrsJSON": { "type": "githubpulls", "value": "input-output-hk plutus", "emailresponsible": false }
+         ,"plutusStarterPrsJSON": { "type": "githubpulls", "value": "input-output-hk plutus-starter", "emailresponsible": false }
          ,"shellPrsJSON": { "type": "githubpulls", "value": "input-output-hk cardano-shell", "emailresponsible": false }
          ,"smashPrsJSON": { "type": "githubpulls", "value": "input-output-hk smash", "emailresponsible": false }
          ,"toolsPrsJSON": { "type": "githubpulls", "value": "input-output-hk tools", "emailresponsible": false }

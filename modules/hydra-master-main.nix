@@ -76,7 +76,8 @@ let
       { jobset = "log-classifier"; }
       { jobset = "offchain-metadata-tools"; }
       { jobset = "ouroboros-network"; }
-      { jobset = "plutus"; }
+      { jobset = "plutus-starter"; }
+      { jobset = "plutus"; }                            # Below plutus-starter for regex match
       { jobset = "rust-libs"; }
       { jobset = "smash"; }
       { jobset = "tools"; }

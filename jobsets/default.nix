@@ -41,6 +41,7 @@
 , decentralizedSoftwareUpdatesPrsJSON ? ./simple-pr-dummy.json
 , explorerPrsJSON ? ./simple-pr-dummy.json
 , haskellNixPrsJSON ? ./simple-pr-dummy.json
+, hydraPocPrsJSON ? ./simple-pr-dummy.json
 , iohkMonitoringPrsJSON ? ./simple-pr-dummy.json
 , iohkNixPrsJSON ? ./simple-pr-dummy.json
 , kesPrsJSON ? ./simple-pr-dummy.json
@@ -49,6 +50,7 @@
 , nixopsPrsJSON ? ./simple-pr-dummy.json
 , ouroborosNetworkPrsJSON ? ./simple-pr-dummy.json
 , plutusPrsJSON ? ./simple-pr-dummy.json
+, plutusStarterPrsJSON ? ./simple-pr-dummy.json
 , shellPrsJSON ? ./simple-pr-dummy.json
 , smashPrsJSON ? ./simple-pr-dummy.json
 , toolsPrsJSON ? ./simple-pr-dummy.json
@@ -238,6 +240,14 @@ let
       modifier.schedulingshares = 10;
     };
 
+    hydra-poc = {
+      description = "Proof of concept for the Hydra Head protocol";
+      url = "https://github.com/input-output-hk/hydra-poc.git";
+      branch = "master";
+      prs = hydraPocPrsJSON;
+      bors = true;
+    };
+
     iohk-monitoring = {
       description = "IOHK Monitoring Framework";
       url = "https://github.com/input-output-hk/iohk-monitoring-framework.git";
@@ -281,6 +291,14 @@ let
       description = "Plutus Language";
       url = "https://github.com/input-output-hk/plutus.git";
       prs = plutusPrsJSON;
+    };
+
+    plutus-starter = {
+      description = "A starter project for Plutus apps";
+      url = "https://github.com/input-output-hk/plutus-starter.git";
+      branch = "main";
+      prs = plutusStarterPrsJSON;
+      bors = true;
     };
 
     smash = {

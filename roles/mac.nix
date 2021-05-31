@@ -57,6 +57,10 @@
         destDir = "/var/lib/macos-vm-persistent-config-signing";
         keyFile = ../secrets/catalyst-env.sh;
       };
+      "catalyst-sentry.properties" = {
+        destDir = "/var/lib/macos-vm-persistent-config-signing";
+        keyFile = ../secrets/catalyst-sentry.properties;
+      };
     };
   };
 }

@@ -172,6 +172,7 @@ EOF
         cp /Volumes/CONFIG/code-signing-config.json /var/lib/buildkite-agent/
         cp /Volumes/CONFIG/catalyst-ios-build.json /var/lib/buildkite-agent/
         cp /Volumes/CONFIG/catalyst-env.sh /var/lib/buildkite-agent/
+        cp /Volumes/CONFIG/catalyst-sentry.properties /var/lib/buildkite-agent/
         cp "/Volumes/CONFIG/AuthKey_${CATALYSTKEY}.p8" "/var/lib/buildkite-agent/.private_keys/AuthKey_${CATALYSTKEY}.p8"
         chown buildkite-agent:admin /var/lib/buildkite-agent/{ci-signing.keychain-db,signing.sh,signing-config.json,code-signing-config.json}
         chown -R buildkite-agent:admin /var/lib/buildkite-agent/{signing-catalyst.sh,catalyst-ios-build.json,catalyst-env.sh,.private_keys}

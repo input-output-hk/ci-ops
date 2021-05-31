@@ -67,6 +67,7 @@ let
       { jobset = "ci-ops"; }
       { jobset = "decentralized-software-updates"; }
       { jobset = "haskell-nix"; }
+      { jobset = "hydra-poc"; }
       { jobset = "iohk-monitoring"; }
       { jobset = "iohk-nix"; }
       { jobset = "iohk-ops"; inputs = "jobsets"; }
@@ -75,7 +76,8 @@ let
       { jobset = "log-classifier"; }
       { jobset = "offchain-metadata-tools"; }
       { jobset = "ouroboros-network"; }
-      { jobset = "plutus"; }
+      { jobset = "plutus-starter"; }
+      { jobset = "plutus"; }                            # Below plutus-starter for regex match
       { jobset = "rust-libs"; }
       { jobset = "smash"; }
       { jobset = "tools"; }

@@ -4,6 +4,14 @@
 in {
   imports = [ ../modules/buildkite-agent-containers.nix ];
 
+  deployment.keys = {
+    "buildkite-github-token" = {
+      keyFile = ../secrets/buildkite_github_token;
+      user = "buildkite-agent";
+    };
+  };
+
+
   users.extraUsers.root.openssh.authorizedKeys.keys = ssh-keys.devOps ++ ssh-keys.plutus-developers;
   environment.etc."mdadm.conf".text = ''
     MAILADDR root

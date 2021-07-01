@@ -1,8 +1,11 @@
 { config, lib, pkgs, ... }:
 
 let
+  # To avoid multiple locks on /nix/var/nix/gc.lock and subsequent GC hang,
+  # minFreeMB should be significantly higher than nixAutoMinFreeMB.
+  # The closer those two numbers are, the more likely GC locking will occur.
   nixAutoMaxFreedMB = 33000;     # An absolute amount to free
-  nixAutoMinFreeMB = 14000;
+  nixAutoMinFreeMB = 4000;
   maxFreedMB = 25000;            # A relative amount to free
   minFreeMB = 15000;
 
@@ -23,9 +26,4 @@ in {
     enable = true;
     inherit maxFreedMB minFreeMB;
   };
-  # TODO, switch over?
-  #nix.gc.automatic = true;
-  #nix.gc.options = let
-  #    gbFree = 25;
-  #in "--max-freed $((${toString gbFree} * 1024**3 - 1024 * $(df -P -k /nix/store | tail -n 1 | awk '{ print $4 }')))";
 }

@@ -70,7 +70,7 @@ class HydraNotifier
              :evalHistory => false}
 
     id = project = jobset = type = uri = rev = evalId = owner = repo = queryMsg = nil
-    context = "ci/hydra-eval"
+    baseContext = "ci/hydra-eval"
     timeEpochNow = Time.utc.to_unix
     timeRfc2822Now = Time.utc.to_rfc2822
 
@@ -177,6 +177,8 @@ class HydraNotifier
     end
 
     evalSeen = Hash(String, Hash(String, Bool)).new
+
+    context = "#{baseContext}:#{jobSet}"
 
     # Determine relevant API and DB state history
     if !flags[:evalHashed]

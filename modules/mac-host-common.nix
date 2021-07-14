@@ -74,7 +74,7 @@ in {
           publicKey = "MRowDI1eC9B5Hx/zgPk5yyq2eWSq6kYFW5Sjm7w52AY=";
           allowedIPs = [ "192.168.24.1/32" ];
           persistentKeepalive = 30;
-          endpoint = "96.248.117.80:51820";
+          endpoint = "adaplanet.ddns.net:51820";
         }
         {
           publicKey = "x/cUIzSdoeXonP5gSelaEfN8yYT8kJvi8E1w/myvkDg=";

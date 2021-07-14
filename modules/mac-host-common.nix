@@ -74,7 +74,7 @@ in {
           publicKey = "MRowDI1eC9B5Hx/zgPk5yyq2eWSq6kYFW5Sjm7w52AY=";
           allowedIPs = [ "192.168.24.1/32" ];
           persistentKeepalive = 30;
-          endpoint = "96.248.117.80:51820";
+          endpoint = "adaplanet.ddns.net:51820";
         }
         {
           publicKey = "x/cUIzSdoeXonP5gSelaEfN8yYT8kJvi8E1w/myvkDg=";
@@ -229,7 +229,7 @@ in {
             cores = 2;
             threads = 2;
             sockets = 1;
-            memoryInMegs = 6 * 1024;
+            memoryInMegs = 12 * 1024;
             ovmfCodeFile = ./macs/dist/OVMF_CODE.fd;
             ovmfVarsFile = ./macs/dist/OVMF_VARS-1024x768.fd;
             cloverImage = (pkgs.callPackage ./macs/clover-image.nix { csrFlag = "0x23"; }).clover-image;

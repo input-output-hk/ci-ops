@@ -291,6 +291,7 @@ let
       description = "Plutus Language";
       url = "https://github.com/input-output-hk/plutus.git";
       prs = plutusPrsJSON;
+      branches = [ "marlowe-dist-demo" ];
     };
 
     plutus-starter = {

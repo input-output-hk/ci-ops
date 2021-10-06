@@ -157,6 +157,8 @@ EOF
         security import /Volumes/CONFIG/iohk-sign.p12 -P "$SIGNING" -k "ci-signing.keychain" -T /usr/bin/productsign
         security set-key-partition-list -S apple-tool:,apple: -s -k "$KEYCHAIN" "ci-signing.keychain"
         security import /Volumes/CONFIG/iohk-codesign.cer -k /Library/Keychains/System.keychain
+        security import /Volumes/CONFIG/dev.cer -k /Library/Keychains/System.keychain
+        security import /Volumes/CONFIG/dist.cer -k /Library/Keychains/System.keychain
         security import /Volumes/CONFIG/AppleWWDRCAG3.cer -k /Library/Keychains/System.keychain
         security import /Volumes/CONFIG/iohk-codesign.p12 -P "$CODESIGNING" -k /Library/Keychains/System.keychain -T /usr/bin/codesign
         security import /Volumes/CONFIG/catalyst-ios-dev.p12 -P "$CATALYST" -k /Library/Keychains/System.keychain -T /usr/bin/codesign

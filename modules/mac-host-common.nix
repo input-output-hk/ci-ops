@@ -104,12 +104,6 @@ in {
           persistentKeepalive = 25;
           endpoint = "hydra.ci.iohkdev.io:17777";
         }
-        { # P42 Hydra
-          publicKey = "GMCYZoSFyLuyUJYgQJkVwvW5E2SJxFjRayyJ7SL4oXg=";
-          allowedIPs = [ "192.168.150.3/32" ];
-          endpoint = "hydra.project42.iohkdev.io:51820";
-          persistentKeepalive = 25;
-        }
         { # Newer P42 Hydra
           publicKey = "yDQMpW8Qkc89LmcZSlIOIHodVpYp2QF6wIlq3EZGNlE=";
           allowedIPs = [ "192.168.142.3/32" ];

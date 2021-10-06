@@ -53,13 +53,11 @@ in {
   '';
 
   nix.binaryCachePublicKeys = [
-    "hydra.project42.iohkdev.io-1:RgWYMSuGbLEc2x7lXFhywxb+s61bZSiigIHG3PTcRos="
     "hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ="
     "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
   ];
 
-  nix.binaryCaches =
-    [ "http://192.168.3.1:8081" "https://hydra.project42.iohkdev.io" ];
+  nix.binaryCaches = [ "http://192.168.3.1:8081" ];
 
   nix.trustedUsers = [ "@admin" ];
 

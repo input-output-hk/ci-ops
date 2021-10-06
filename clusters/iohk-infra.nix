@@ -7,6 +7,8 @@ let
   globals = import ../globals.nix;
 
   ipxeScriptUrl = "https://netboot.gsc.io/installer-pre/x86/netboot.ipxe";
+  # ipxeScriptUrl = "http://images.platformequinix.net/nixos/installer-pre/x86/netboot.ipxe";
+
   facility = "ams1";
   reservationId = "next-available";
 
@@ -60,10 +62,7 @@ let
       imports = [
         medium-cpr
       ];
-      deployment.packet = {
-        inherit facility;
-        ipxeScriptUrl = "http://images.platformequinix.net/nixos/installer-pre/x86/netboot.ipxe";
-      };
+      deployment.packet = { inherit ipxeScriptUrl facility; };
     };
 
     packet-ipxe-plutus-1 = {
@@ -77,10 +76,9 @@ let
         )
       ];
       deployment.packet = {
-        inherit facility;
+        inherit ipxeScriptUrl facility;
         project = lib.mkForce (import ../secrets/packet-plutus-ci.nix).project;
         accessKeyId = lib.mkForce (import ../secrets/packet-plutus-ci.nix).accessKeyId;
-        ipxeScriptUrl = "http://images.platformequinix.net/nixos/installer-pre/x86/netboot.ipxe";
       };
     };
 

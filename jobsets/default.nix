@@ -50,6 +50,7 @@
 , nixopsPrsJSON ? ./simple-pr-dummy.json
 , ouroborosNetworkPrsJSON ? ./simple-pr-dummy.json
 , plutusPrsJSON ? ./simple-pr-dummy.json
+, plutusAppsPrsJSON ? ./simple-pr-dummy.json
 , plutusStarterPrsJSON ? ./simple-pr-dummy.json
 , shellPrsJSON ? ./simple-pr-dummy.json
 , smashPrsJSON ? ./simple-pr-dummy.json
@@ -291,6 +292,12 @@ let
       description = "Plutus Language";
       url = "https://github.com/input-output-hk/plutus.git";
       prs = plutusPrsJSON;
+    };
+
+    plutus-apps = {
+      description = "Plutus Application Framework";
+      url = "https://github.com/input-output-hk/plutus-apps.git";
+      prs = plutusAppsPrsJSON;
     };
 
     plutus-starter = {

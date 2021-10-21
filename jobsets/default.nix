@@ -277,6 +277,7 @@ let
       description = "Marlowe Cardano implementation";
       url = "https://github.com/input-output-hk/marlowe-cardano.git";
       prs = marloweCardanoPrsJSON;
+      branch = "main";
     };
 
     offchain-metadata-tools = {
@@ -305,6 +306,7 @@ let
       description = "Plutus Application Framework";
       url = "https://github.com/input-output-hk/plutus-apps.git";
       prs = plutusAppsPrsJSON;
+      branch = "main";
     };
 
     plutus-starter = {

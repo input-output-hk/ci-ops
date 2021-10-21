@@ -47,6 +47,7 @@
 , kesPrsJSON ? ./simple-pr-dummy.json
 , ledgerPrsJSON ? ./simple-pr-dummy.json
 , offchainMetadataToolsPrsJSON ? ./simple-pr-dummy.json
+, marloweCardanoPrsJSON ? ./simple-pr-dummy.json
 , nixopsPrsJSON ? ./simple-pr-dummy.json
 , ouroborosNetworkPrsJSON ? ./simple-pr-dummy.json
 , plutusPrsJSON ? ./simple-pr-dummy.json
@@ -270,6 +271,12 @@ let
       url = "https://github.com/input-output-hk/kes-mmm-sumed25519.git";
       prs = kesPrsJSON;
       bors = true;
+    };
+
+    marlowe-cardano = {
+      description = "Marlowe Cardano implementation";
+      url = "https://github.com/input-output-hk/marlowe-cardano.git";
+      prs = marloweCardanoPrsJSON;
     };
 
     offchain-metadata-tools = {

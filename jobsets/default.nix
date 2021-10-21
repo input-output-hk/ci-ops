@@ -47,9 +47,11 @@
 , kesPrsJSON ? ./simple-pr-dummy.json
 , ledgerPrsJSON ? ./simple-pr-dummy.json
 , offchainMetadataToolsPrsJSON ? ./simple-pr-dummy.json
+, marloweCardanoPrsJSON ? ./simple-pr-dummy.json
 , nixopsPrsJSON ? ./simple-pr-dummy.json
 , ouroborosNetworkPrsJSON ? ./simple-pr-dummy.json
 , plutusPrsJSON ? ./simple-pr-dummy.json
+, plutusAppsPrsJSON ? ./simple-pr-dummy.json
 , plutusStarterPrsJSON ? ./simple-pr-dummy.json
 , shellPrsJSON ? ./simple-pr-dummy.json
 , smashPrsJSON ? ./simple-pr-dummy.json
@@ -271,6 +273,12 @@ let
       bors = true;
     };
 
+    marlowe-cardano = {
+      description = "Marlowe Cardano implementation";
+      url = "https://github.com/input-output-hk/marlowe-cardano.git";
+      prs = marloweCardanoPrsJSON;
+    };
+
     offchain-metadata-tools = {
       description = "Tools for creating, submitting, and managing off-chain metadata such as multi-asset token metadata";
       url = "https://github.com/input-output-hk/offchain-metadata-tools.git";
@@ -291,6 +299,12 @@ let
       description = "Plutus Language";
       url = "https://github.com/input-output-hk/plutus.git";
       prs = plutusPrsJSON;
+    };
+
+    plutus-apps = {
+      description = "Plutus Application Framework";
+      url = "https://github.com/input-output-hk/plutus-apps.git";
+      prs = plutusAppsPrsJSON;
     };
 
     plutus-starter = {

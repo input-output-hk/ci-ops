@@ -1,5 +1,5 @@
-with { pkgs = import ./nix { }; };
-pkgs.mkShell {
-  buildInputs = with pkgs; [ niv nixops cacert ];
-  NIX_PATH = "nixpkgs=${pkgs.path}";
+with import ./nix { };
+mkShell {
+  nativeBuildInputs = [ niv nixUnstable nixops cacert direnv nix-direnv lorri];
+  NIX_PATH = "nixpkgs=${path}";
 }

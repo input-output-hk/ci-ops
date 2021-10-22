@@ -104,12 +104,14 @@ let
   githubStatusConfig = pkgs.writeText "github-notify.conf"  mkGithubStatusConfig;
 
 in {
-  environment.etc = lib.singleton {
-    target = "nix/id_buildfarm";
-    source = ../secrets/id_buildfarm;
-    uid = config.ids.uids.hydra-queue-runner;
-    gid = config.ids.gids.hydra;
-    mode = "0400";
+  environment.etc = {
+    id_buildfarm_secret = {
+      target = "nix/id_buildfarm";
+      source = ../secrets/id_buildfarm;
+      uid = config.ids.uids.hydra-queue-runner;
+      gid = config.ids.gids.hydra;
+      mode = "0400";
+    };
   };
   programs.ssh.extraConfig = lib.mkAfter ''
     Host sarov
@@ -162,6 +164,9 @@ in {
       ${mkGithubStatusConfig}
     '';
   };
+  # The following is to work around the following error from hydra-server:
+  #   [error] Caught exception in engine "Cannot determine local time zone"
+  time.timeZone = "UTC";
   services.grafana = {
     enable = true;
     users.allowSignUp = true;
@@ -213,5 +218,9 @@ in {
                        '"$http_referer" "$http_user_agent" "$http_x_forwarded_for"';
       access_log syslog:server=unix:/dev/log x-fwd;
     '';
+  };
+  security.acme = lib.mkIf (config.deployment.targetEnv != "libvirtd") {
+    email = "devops@iohk.io";
+    acceptTerms = true; # https://letsencrypt.org/repository/
   };
 }

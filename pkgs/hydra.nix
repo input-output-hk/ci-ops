@@ -11,4 +11,7 @@ in
     nixpkgsPath = hydraNixpkgs.path;
     patches = hydraPatches;
     src = hydraSrc;
+    overlays = [(final: prev: {
+      inherit (pkgs) nix nixUnstable;
+    })];
   }

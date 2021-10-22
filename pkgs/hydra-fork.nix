@@ -1,8 +1,9 @@
-{ fetchFromGitHub, nixpkgsPath, src, patches }:
+{ fetchFromGitHub, nixpkgsPath, src, patches, overlays }:
 
 let
   hydraRelease = (import (src + "/release.nix") {
     nixpkgs = nixpkgsPath;
+    inherit overlays;
     hydraSrc = {
       outPath = src;
       rev = builtins.substring 0 6 src.rev;

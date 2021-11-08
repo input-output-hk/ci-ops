@@ -8,6 +8,7 @@ in pkgs.lib.fix (self: {
   buildkite-agent = (import ./nix-darwin/test.nix { role = "buildkite-agent"; host = "build"; port = "123"; hostname = "hostname"; }).system;
   hydra-slave = (import ./nix-darwin/test.nix { role = "hydra-slave"; host = "build"; port = "123"; hostname = "hostname"; }).system;
   signing = (import ./nix-darwin/test.nix { role = "signing"; host = "build"; port = "123"; hostname = "hostname"; }).system;
+  forceNewEvalTest = pkgs.writeText "forceNewEval-test" (ci-ops.rev + "-Test");
   forceNewEval = pkgs.writeText "forceNewEval" ci-ops.rev;
   required = pkgs.releaseTools.aggregate {
     name = "required";
@@ -20,6 +21,7 @@ in pkgs.lib.fix (self: {
       buildkite-agent
       signing
       forceNewEval
+      forceNewEvalTest
     ];
   };
 })

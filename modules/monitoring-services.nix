@@ -636,7 +636,8 @@ in {
 
         prometheus = {
           enable = true;
-          listenAddress = "127.0.0.1:9090";
+          listenAddress = "127.0.0.1";
+          port = 9090;
           webExternalUrl = "https://${cfg.webhost}/prometheus/";
           extraFlags = [ "--storage.tsdb.retention=4380h" ];
 

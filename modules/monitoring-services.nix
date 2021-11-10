@@ -361,8 +361,6 @@ in {
                      ++ (optional config.services.nginx.enable "nginx.service");
       };
 
-      boot.extraModulePackages = [ config.boot.kernelPackages.wireguard ];
-
       networking.wg-quick.interfaces.wg0 = {
         listenPort = 17777;
         address = [ "${config.node.wireguardIP}/24" ];

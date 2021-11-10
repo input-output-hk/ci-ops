@@ -107,7 +107,7 @@ in {
 
       logging = mkOption {
         type = types.bool;
-        default = true;
+        default = false;
         description = ''
           Enable log collection via graylog and journalbeat.
           This option installs graylog, elasticsearch, mongodb and

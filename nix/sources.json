@@ -41,10 +41,10 @@
         "homepage": "http://nixos.org/hydra",
         "owner": "input-output-hk",
         "repo": "hydra",
-        "rev": "fdd58de35009629e30e84ede68cde9558ce7fac2",
-        "sha256": "1ngc9nqwi5h021r1dmc6kl7bickm541cqdsccyw3211lvyy1bz7v",
+        "rev": "5cae2f30efcbb4dcca916597ac0a6093c33fef74",
+        "sha256": "12a5bi2cyhcj25jhidj648xq2xh1vzdmqfd8ksxdvfvix01mj08a",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/hydra/archive/fdd58de35009629e30e84ede68cde9558ce7fac2.tar.gz",
+        "url": "https://github.com/input-output-hk/hydra/archive/5cae2f30efcbb4dcca916597ac0a6093c33fef74.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "hydra-nixpkgs": {

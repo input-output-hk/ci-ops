@@ -40,8 +40,7 @@ in with lib;
           Note that container names cannot be more than 7 characters.
         '';
         example = ''
-          [ { containerName = "ci1-1"; guestIp = "10.254.1.11"; metadata = "system=x86_64-linux,queue=custom"; }
-            { containerName = "ci1-2"; guestIp = "10.254.1.12"; metadata = "system=x86_64-linux,queue=custom"; } ];
+          [ { containerName = "ci1-1"; guestIp = "10.254.1.11"; tags = { system = "x86_64-linux"; queue = "custom"; }; } ];
         '';
       };
 
@@ -63,7 +62,7 @@ in with lib;
     createBuildkiteContainer = { containerName                           # The desired container name
                                , hostIp ? "10.254.1.1"                   # The IPv4 host virtual eth nic IP
                                , guestIp ? "10.254.1.11"                 # The IPv4 container guest virtual eth nic IP
-                               , metadata ? "system=x86_64-linux"        # Agent metadata customization
+                               , tags ? { system = "x86_64-linux"; }     # Agent metadata customization
                                , prio ? null                             # Agent priority
                                }: {
       name = containerName;
@@ -96,17 +95,15 @@ in with lib;
           services.ntp.enable = mkForce false;
 
           systemd.services.buildkite-agent.serviceConfig = {
-            ExecStart = mkForce "${config.services.buildkite-agent.package}/bin/buildkite-agent start --config /var/lib/buildkite-agent/buildkite-agent.cfg";
+            ExecStart = mkForce "${pkgs.buildkite-agent}/bin/buildkite-agent start --config /var/lib/buildkite-agent/buildkite-agent.cfg";
             LimitNOFILE = 1024 * 512;
           };
 
-          services.buildkite-agent = {
-            enable = true;
+          services.buildkite-agents.iohk = {
             name   = name + "-" + containerName;
-            openssh.privateKeyPath = "/run/keys/buildkite-ssh-iohk-devops-private";
-            openssh.publicKeyPath  = "/run/keys/buildkite-ssh-iohk-devops";
+            privateSshKeyPath      = "/run/keys/buildkite-ssh-iohk-devops-private";
             tokenPath              = "/run/keys/buildkite-token";
-            meta-data              = metadata;
+            inherit tags;
             runtimePackages        = with pkgs; [
                bash gnutar gzip bzip2 xz
                git git-lfs
@@ -144,6 +141,7 @@ in with lib;
             '';
           };
           users.users.buildkite-agent = {
+            isSystemUser = true;
             # To ensure buildkite-agent user sharing of keys in guests
             uid = 10000;
             extraGroups = [
@@ -174,7 +172,7 @@ in with lib;
     };
   in {
     users.users.root.openssh.authorizedKeys.keys = ssh-keys.ciInfra;
-    services.buildkite-agent.package = pkgs.buildkite-agent;
+    #services.buildkite-agents.package = pkgs.buildkite-agent;
 
     # To go on the host -- and get shared to the container(s)
     deployment.keys = {
@@ -286,6 +284,7 @@ in with lib;
 
     users.users.buildkite-agent = {
       home = "/var/lib/buildkite-agent";
+      isSystemUser = true;
       createHome = true;
       # To ensure buildkite-agent user sharing of keys in guests
       uid = 10000;

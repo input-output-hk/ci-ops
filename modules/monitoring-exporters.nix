@@ -102,6 +102,7 @@ in {
           enable = true;
           host = bindingIp;
           unitWhitelist = [ ".*\\.service$"];
+          after = [ "wg-quick-wg0.service" ];
         };
         prometheus.exporters.node = {
           enable = true;
@@ -130,6 +131,7 @@ in {
           ];
         };
       };
+      systemd.services.prometheus-node-exporter.after = [ "wg-quick-wg0.service" ];
       # Node exporter default port
       networking.firewall.allowedTCPPorts = [
         9100

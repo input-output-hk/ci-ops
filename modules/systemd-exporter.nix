@@ -30,6 +30,11 @@ in {
       default = "0.0.0.0";
     };
 
+    after = mkOption {
+      type = listOf str;
+      default = [];
+    };
+
     port = mkOption {
       type = port;
       default = 9558;
@@ -43,7 +48,7 @@ in {
     systemd.services.systemd-exporter = {
       enable = true;
       wantedBy = [ "multi-user.target" ];
-      after = [ "network-online.service" ];
+      after = [ "network-online.service" ] ++ cfg.after;
 
       serviceConfig.ExecStart = let
         flags = cli.toGNUCommandLineShell { } {

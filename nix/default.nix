@@ -14,7 +14,11 @@ let
       nixpkgs = super.path;
       p = (p:
         let
-          pluginSources = with sources; [ nixops-packet nixops-libvirtd ];
+          pluginSources = with sources; [
+            nixops-packet
+            # python2 libvirtd is flagged as insecure in nixpkgs
+            #nixops-libvirtd
+          ];
           plugins = map (source: p.callPackage (source + "/release.nix") { })
             pluginSources;
         in

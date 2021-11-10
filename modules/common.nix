@@ -56,11 +56,13 @@ in {
       '';
     };
 
-    ntp.enable = true;
+    timesyncd.enable = true;
     cron.enable = true;
   };
 
   nix = rec {
+    package = pkgs.nixUnstable;
+
     # use nix sandboxing for greater determinism
     useSandbox = true;
 
@@ -72,6 +74,8 @@ in {
       connect-timeout = 10
       http2 = true
       show-trace = true
+      experimental-features = nix-command flakes
+      allow-import-from-derivation = true
     '';
 
     # use all cores

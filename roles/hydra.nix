@@ -1,4 +1,4 @@
-{ config, ... }:
+{ config, pkgs, ... }:
 {
   imports = [
     ../modules/hydra-master-common.nix
@@ -29,11 +29,11 @@
       mockMode = false;
     };
     postgresql = {
-      extraConfig = ''
-        max_connections 200
-        shared_preload_libraries = 'pg_stat_statements'
-        pg_stat_statements.track = all
-      '';
+      settings = {
+        max_connections = 200;
+        shared_preload_libraries = "pg_stat_statements";
+        "pg_stat_statements.track" = "all";
+      };
     };
   };
 

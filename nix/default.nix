@@ -1,13 +1,13 @@
-{ sources ? import ./sources.nix, system ? __currentSystem }:
+{ system ? builtins.currentSystem
+, config ? { }
+}:
 let
-  crystalPkgs = import sources.nixpkgs-crystal {};
-in with {
+  sources = import ./sources.nix { inherit pkgs; };
+
   overlay = self: super: {
-    inherit (import sources.niv { }) niv;
-    inherit (crystalPkgs) crystal2nix jq shards openssl pkg-config lib;
-    crystal = crystalPkgs.crystal_0_34;
+    crystal = self.crystal_0_34;
     packages = self.callPackages ./packages.nix { };
-    systemd-exporter = crystalPkgs.callPackage ../pkgs/systemd_exporter {};
+    systemd-exporter = self.callPackage ../pkgs/systemd_exporter { };
     globals = import ../globals.nix;
 
     nixops = (import (sources.nixops-core + "/release.nix") {
@@ -17,12 +17,15 @@ in with {
           pluginSources = with sources; [ nixops-packet nixops-libvirtd ];
           plugins = map (source: p.callPackage (source + "/release.nix") { })
             pluginSources;
-        in [ p.aws ] ++ plugins);
+        in
+        [ p.aws ] ++ plugins);
     }).build.${system};
   };
-};
-import sources.nixpkgs {
-  overlays = [ overlay ];
-  inherit system;
-  config = { };
-}
+
+  pkgs = import sources.nixpkgs {
+    overlays = [ overlay ];
+    inherit system config;
+  };
+
+in
+pkgs

@@ -1,4 +1,4 @@
-{ lib, config, name, nodes, resources, ...}:
+{ pkgs, lib, config, name, nodes, resources, ...}:
 let
   uniqueKey = "wg_${name}";
   sharedKey = "wg_shared";
@@ -34,7 +34,11 @@ in {
                    ++ (optional config.services.nginx.enable "nginx.service");
     };
 
-    boot.extraModulePackages = [ config.boot.kernelPackages.wireguard ];
+    boot = {
+      # Wiregard is not packaged for more recent kernels:
+      kernelPackages = pkgs.linuxPackages_5_4;
+      extraModulePackages = [ config.boot.kernelPackages.wireguard ];
+    };
 
     networking.wg-quick.interfaces.wg0 = {
       inherit listenPort;

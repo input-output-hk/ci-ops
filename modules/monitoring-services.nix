@@ -509,6 +509,10 @@ in {
         enableACME = true;
         forceSSL = true;
       };
+      security.acme = lib.mkIf (config.deployment.targetEnv != "libvirtd") {
+        email = "devops@iohk.io";
+        acceptTerms = true; # https://letsencrypt.org/repository/
+      };
     })
 
     (lib.mkIf cfg.grafanaAutoLogin {

@@ -65,11 +65,12 @@ in {
               -drive if=pflash,format=raw,snapshot=on,file=${ovmfVarsFile} \
               -smbios type=2 \
               -device ich9-intel-hda -device hda-duplex \
-              -device ide-drive,bus=ide.2,drive=Clover \
+              -device ich9-ahci,id=sata \
+              -device ide-hd,bus=sata.0,drive=Clover \
               -drive id=Clover,if=none,snapshot=on,format=qcow2,file='${cloverImage}' \
-              -device ide-drive,bus=ide.1,drive=MacHDD \
+              -device ide-hd,bus=sata.1,drive=MacHDD \
               -drive id=MacHDD,cache=unsafe,if=none,file=${clonedZvolDevice},format=raw \
-              -device ide-drive,bus=ide.0,drive=config \
+              -device ide-cd,bus=sata.2,drive=config \
               -drive id=config,if=none,snapshot=on,media=cdrom,file=/tmp/config.iso \
               -netdev tap,id=net0,ifname=tap-${key},script=no,downscript=no -device e1000-82545em,netdev=net0,id=net0,mac=${MACAddress} \
               -global PIIX4_PM.disable_s3=1 -global PIIX4_PM.disable_s5=1 \

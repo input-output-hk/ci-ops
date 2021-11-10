@@ -24,7 +24,7 @@ in {
       };
     };
     boot = {
-      initrd.availableKernelModules = [ "xhci_pci" "ahci" "usb_storage" "usbhid" "sd_mod" "zfsUnstable" "nvme" ];
+      initrd.availableKernelModules = [ "xhci_pci" "ahci" "usb_storage" "usbhid" "sd_mod" "zfs" "nvme" ];
       kernelModules = [ "kvm-intel" ];
       extraModulePackages = with config.boot.kernelPackages; lib.mkForce [ zfsUnstable wireguard ];
       loader = {

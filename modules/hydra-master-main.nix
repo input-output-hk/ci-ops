@@ -89,6 +89,7 @@ let
       { jobset = "plutus-starter"; }
       { jobset = "plutus-apps"; }                       # Below plutus-starter for regex match
       { jobset = "plutus"; }                            # Below plutus-apps for regex match
+      { jobset = "purescript-web-common"; }
       { jobset = "rust-libs"; }
       { jobset = "smash"; }
       { jobset = "tools"; }

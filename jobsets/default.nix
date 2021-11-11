@@ -54,6 +54,7 @@
 , plutusPrsJSON ? ./simple-pr-dummy.json
 , plutusAppsPrsJSON ? ./simple-pr-dummy.json
 , plutusStarterPrsJSON ? ./simple-pr-dummy.json
+, purescriptWebCommonPrsJSON ? ./simple-pr-dummy.json
 , shellPrsJSON ? ./simple-pr-dummy.json
 , smashPrsJSON ? ./simple-pr-dummy.json
 , toolsPrsJSON ? ./simple-pr-dummy.json
@@ -323,6 +324,13 @@ let
       branch = "main";
       prs = plutusStarterPrsJSON;
       bors = true;
+    };
+
+    purescript-web-common = {
+      description = "Shared library for web development";
+      url = "github:input-output-hk/purescript-web-common";
+      prs = purescriptWebCommonPrsJSON;
+      flake = true;
     };
 
     smash = {

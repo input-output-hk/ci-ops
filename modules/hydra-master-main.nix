@@ -75,6 +75,7 @@ let
       { jobset = "kes-mmm-sumed25519"; }
       { jobset = "log-classifier"; }
       { jobset = "marlowe-cardano"; }
+      { jobset = "marlowe-website"; }
       { jobset = "offchain-metadata-tools"; }
       { jobset = "ouroboros-network"; }
       { jobset = "plutus-starter"; }

@@ -8,6 +8,9 @@
     autoPrune.flags = [ "--all" "--force" ];
   };
 
+  # Work around for https://github.com/docker/cli/issues/2104
+  systemd.enableUnifiedCgroupHierarchy = false;
+
   # Provide dockerhub credentials to buildkite
   systemd.services.buildkite-agent-setup-docker = {
     wantedBy = [ "buildkite-agent.service" ];

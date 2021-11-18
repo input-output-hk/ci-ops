@@ -1,14 +1,4 @@
-{ pkgs }:
-
 let
-  sources = import ../nix/sources.nix;
-
-  hydraSrc = sources.hydra;
-  hydraNixpkgs = import sources.hydra-nixpkgs { };
-  hydraPatches = [ ];
+  self = builtins.getFlake (toString ./..);
 in
-  hydraNixpkgs.callPackage ./hydra-fork.nix {
-    nixpkgsPath = hydraNixpkgs.path;
-    patches = hydraPatches;
-    src = hydraSrc;
-  }
+  self.inputs.hydra.outputs.packages.x86_64-linux.hydra

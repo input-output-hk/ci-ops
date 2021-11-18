@@ -35,30 +35,6 @@
         "url": "https://github.com/hercules-ci/hercules-ci-agent/archive/73dcac6593c0aad714e50648a2ea28dffa655139.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
-    "hydra": {
-        "branch": "iohk-master",
-        "description": "Hydra, the Nix-based continuous build system",
-        "homepage": "http://nixos.org/hydra",
-        "owner": "input-output-hk",
-        "repo": "hydra",
-        "rev": "fdd58de35009629e30e84ede68cde9558ce7fac2",
-        "sha256": "1ngc9nqwi5h021r1dmc6kl7bickm541cqdsccyw3211lvyy1bz7v",
-        "type": "tarball",
-        "url": "https://github.com/input-output-hk/hydra/archive/fdd58de35009629e30e84ede68cde9558ce7fac2.tar.gz",
-        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
-    },
-    "hydra-nixpkgs": {
-        "branch": "release-19.09",
-        "description": "Nix Packages collection",
-        "homepage": null,
-        "owner": "NixOS",
-        "repo": "nixpkgs",
-        "rev": "0ee9ceff38f1abd0fcb672841a40e75f6cbc2620",
-        "sha256": "12cwvb8wm3grl39ir0w75n7b5zm59f1lv6xl3k9cjc2zvq5dsd8d",
-        "type": "tarball",
-        "url": "https://github.com/NixOS/nixpkgs/archive/0ee9ceff38f1abd0fcb672841a40e75f6cbc2620.tar.gz",
-        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
-    },
     "iohk-nix": {
         "branch": "master",
         "description": "nix scripts shared across projects",

@@ -3,6 +3,7 @@
 with lib;
 
 let
+  packages = pkgs.callPackages ../nix/packages.nix { };
   commonBuildMachineOpt = {
     speedFactor = 1;
     sshKey = "/etc/nix/id_buildfarm";
@@ -145,7 +146,7 @@ in {
   systemd.services.hydra-evaluator.environment.GC_INITIAL_HEAP_SIZE = toString (1024*1024*1024*5); # 5gig
   services.hydra = {
     hydraURL = "https://hydra.iohk.io";
-    package = pkgs.packages.hydra;
+    package = packages.hydra;
     # max output is 4GB because of amis
     # auth token needs `repo:status`
     extraConfig = ''

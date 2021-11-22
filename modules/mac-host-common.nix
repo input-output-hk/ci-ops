@@ -42,7 +42,11 @@ in {
     nixpkgs = {
       config.allowUnfree = true;
     };
-    networking.firewall.allowedTCPPorts = [ 5900 5901 8081 ];
+    networking.firewall.allowedTCPPorts = [
+      5900 5901 # vnc
+      5950 5951 # spice
+      8081
+    ];
     networking.firewall.extraCommands = lib.mkAfter ''
       iptables -t nat -A nixos-nat-pre -i wg0 -p tcp -m tcp --dport 2200 -j DNAT --to-destination 192.168.3.2:22
       iptables -t nat -A nixos-nat-pre -i wg0 -p tcp -m tcp --dport 2201 -j DNAT --to-destination 192.168.4.2:22

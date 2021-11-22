@@ -200,7 +200,7 @@ in {
             sockets = 1;
             memoryInMegs = 24 * 1024;
             ovmfCodeFile = ./macs/dist/OVMF_CODE.fd;
-            ovmfVarsFile = ./macs/dist/OVMF_VARS-1024x768.fd;
+            ovmfVarsFile = "${pkgs.OVMF.fd}/FV/OVMF_VARS.fd";
             cloverImage = (pkgs.callPackage ./macs/clover-image.nix { csrFlag = "0x23"; }).clover-image;
             MACAddress = "52:54:00:c9:18:27";
             vncListen = "0.0.0.0:0";
@@ -222,7 +222,7 @@ in {
             sockets = 1;
             memoryInMegs = 12 * 1024;
             ovmfCodeFile = ./macs/dist/OVMF_CODE.fd;
-            ovmfVarsFile = ./macs/dist/OVMF_VARS-1024x768.fd;
+            ovmfVarsFile = "${pkgs.OVMF.fd}/FV/OVMF_VARS.fd";
             cloverImage = (pkgs.callPackage ./macs/clover-image.nix { csrFlag = "0x23"; }).clover-image;
             MACAddress = "52:54:00:c9:18:28";
             vncListen = "0.0.0.0:1";

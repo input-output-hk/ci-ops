@@ -14,7 +14,7 @@ in {
       clonedVol = "${zvolName}-${key}";
       clonedZvolDevice = "/dev/zvol/${clonedVol}";
       inherit (value.guest) cores threads sockets memoryInMegs ovmfCodeFile ovmfVarsFile cloverImage MACAddress;
-      deps = [ "create-macos-secrets-${key}.service" "dhcpd4.service" "kresd.service" "network-online.target" ];
+      deps = [ "create-macos-secrets-${key}.service" "dhcpd4.service" "kresd@.service" "network-online.target" ];
     in [ {
       name = "run-macos-vm-${key}";
       value = {

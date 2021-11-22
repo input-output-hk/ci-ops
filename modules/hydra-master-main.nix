@@ -145,7 +145,7 @@ in {
   systemd.services.hydra-evaluator.environment.GC_INITIAL_HEAP_SIZE = toString (1024*1024*1024*5); # 5gig
   services.hydra = {
     hydraURL = "https://hydra.iohk.io";
-    package = pkgs.callPackage ../pkgs/hydra.nix {};
+    package = pkgs.packages.hydra;
     # max output is 4GB because of amis
     # auth token needs `repo:status`
     extraConfig = ''

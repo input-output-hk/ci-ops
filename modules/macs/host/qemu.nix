@@ -75,7 +75,7 @@ in {
               -netdev tap,id=net0,ifname=tap-${key},script=no,downscript=no -device e1000-82545em,netdev=net0,id=net0,mac=${MACAddress} \
               -global PIIX4_PM.disable_s3=1 -global PIIX4_PM.disable_s5=1 \
               -vnc ${value.guest.vncListen} \
-              -spice port=${value.guest.spicePort},addr=0.0.0.0,image-compression=auto_glz,playback-compression=off,agent-mouse=on,zlib-glz-wan-compression=never,jpeg-wan-compression=never,seamless-migration=on,disable-ticketing=on,plaintext-channel=main,plaintext-channel=display,plaintext-channel=inputs,plaintext-channel=cursor,plaintext-channel=playback,plaintext-channel=record,plaintext-channel=usbredir,streaming-video=filter \
+              -spice port=${toString value.guest.spicePort},addr=0.0.0.0,image-compression=auto_glz,playback-compression=off,agent-mouse=on,zlib-glz-wan-compression=never,jpeg-wan-compression=never,seamless-migration=on,disable-ticketing=on,plaintext-channel=main,plaintext-channel=display,plaintext-channel=inputs,plaintext-channel=cursor,plaintext-channel=playback,plaintext-channel=record,plaintext-channel=usbredir,streaming-video=filter \
               -monitor unix:/tmp/monitor-socket,server,nowait
         '';
       };

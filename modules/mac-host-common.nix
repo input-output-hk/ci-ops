@@ -204,6 +204,7 @@ in {
             cloverImage = (pkgs.callPackage ./macs/clover-image.nix { csrFlag = "0x23"; }).clover-image;
             MACAddress = "52:54:00:c9:18:27";
             vncListen = "0.0.0.0:0";
+            spicePort = 5950;
           };
         };
         signing = {
@@ -226,6 +227,7 @@ in {
             cloverImage = (pkgs.callPackage ./macs/clover-image.nix { csrFlag = "0x23"; }).clover-image;
             MACAddress = "52:54:00:c9:18:28";
             vncListen = "0.0.0.0:1";
+            spicePort = 5951;
           };
         };
       };

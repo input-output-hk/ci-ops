@@ -64,8 +64,7 @@ class HydraNotifier
     begin
       @db.query_one(<<-SQL, evalId, as: QUERY_EVALS)
         SELECT id,
-               project,
-               jobset,
+               jobset_id,
                timestamp,
                checkouttime,
                evaltime,
@@ -90,8 +89,7 @@ class HydraNotifier
     begin
       @db.query(<<-SQL, buildId) do |rs|
         SELECT id,
-               project,
-               jobset,
+               jobset_id,
                timestamp,
                checkouttime,
                evaltime,

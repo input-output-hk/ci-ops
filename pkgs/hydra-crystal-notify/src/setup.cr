@@ -43,13 +43,12 @@ LISTEN_CHANNELS = {"step_started"   => '\t',
                    "eval_cached"    => '\t',
                    "eval_added"     => '\t'}
 
-alias QUERY_BUILD_TYPE = {id: Int32, finished: Int32, timestamp: Int32, project: String, jobset: String, job: String, nixname: String, drvpath: String, system: String, iscurrent: Int32 | Nil, starttime: Int32 | Nil, stoptime: Int32 | Nil, iscachedbuild: Int32 | Nil, buildstatus: Int32 | Nil, size: Int64 | Nil, closuresize: Int64 | Nil, keep: Int32, notificationpendingsince: Int32 | Nil, jobset_id: Int32}
+alias QUERY_BUILD_TYPE = {id: Int32, finished: Int32, timestamp: Int32, jobset_id: Int32, job: String, nixname: String, drvpath: String, system: String, iscurrent: Int32 | Nil, starttime: Int32 | Nil, stoptime: Int32 | Nil, iscachedbuild: Int32 | Nil, buildstatus: Int32 | Nil, size: Int64 | Nil, closuresize: Int64 | Nil, keep: Int32, notificationpendingsince: Int32 | Nil}
 
 QUERY_BUILD = {id:                       Int32,
                finished:                 Int32,
                timestamp:                Int32,
-               project:                  String,
-               jobset:                   String,
+               jobset_id:                Int32,
                job:                      String,
                nixname:                  String,
                drvpath:                  String,
@@ -62,14 +61,12 @@ QUERY_BUILD = {id:                       Int32,
                size:                     Int64 | Nil,
                closuresize:              Int64 | Nil,
                keep:                     Int32,
-               notificationpendingsince: Int32 | Nil,
-               jobset_id:                Int32}
+               notificationpendingsince: Int32 | Nil}
 
-alias QUERY_EVALS_TYPE = {id: Int32, project: String, jobset: String, timestamp: Int32, checkouttime: Int32, evaltime: Int32, hasnewbuilds: Int32, hash: String, nrbuilds: Int32 | Nil, nrsucceeded: Int32 | Nil, flake: String | Nil}
+alias QUERY_EVALS_TYPE = {id: Int32, jobset_id: Int32, timestamp: Int32, checkouttime: Int32, evaltime: Int32, hasnewbuilds: Int32, hash: String, nrbuilds: Int32 | Nil, nrsucceeded: Int32 | Nil, flake: String | Nil}
 
 QUERY_EVALS = {id:           Int32,
-               project:      String,
-               jobset:       String,
+               jobset_id:    Int32,
                timestamp:    Int32,
                checkouttime: Int32,
                evaltime:     Int32,

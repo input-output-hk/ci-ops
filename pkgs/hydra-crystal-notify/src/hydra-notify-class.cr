@@ -69,7 +69,7 @@ class HydraNotifier
              :evalHashed  => false,
              :evalHistory => false}
 
-    id = project = jobset = type = uri = rev = evalId = owner = repo = queryMsg = nil
+    id = project = jobset_id.to_string = type = uri = rev = evalId = owner = repo = queryMsg = nil
     context = "ci/hydra-eval"
     timeEpochNow = Time.utc.to_unix
     timeRfc2822Now = Time.utc.to_rfc2822
@@ -96,8 +96,7 @@ class HydraNotifier
         return nil
       else
         id = p[0]
-        project = p[1]
-        jobset = p[2]
+        jobset_id = p[2]
         type = p[3]
         uri = p[4]
         rev = p[5]
@@ -105,7 +104,7 @@ class HydraNotifier
           Log.error { "#{n.channel}: #{n.payload}, Size: #{p.size} -- EVAL_PENDING FIELD VALIDATION ERROR" }
           return nil
         else
-          jobSet = "#{project}:#{jobset}"
+          jobSet = "#{jobset_id}"
           key = "#{uri}|#{rev}"
         end
       end
@@ -193,10 +192,10 @@ class HydraNotifier
           Log.debug { "#{n.channel} : #{n.payload} -- MISSING EVAL FOR #{evalId}" }
           return nil
         else
-          jobSet = "#{i["project"]}:#{i["jobset"]}"
+          jobSet = "#{i["jobset_id"]}"
           Log.debug { "EVAL_ADDED: DB QUERY OBTAINED -- jobSet: #{jobSet}" }
           # Obtain eval_added key info
-          jobsetInput = i["jobset"].gsub(/-(pr-\d+|bors-(staging|trying))/, "")
+          jobsetInput = i["jobset_id"].gsub(/-(pr-\d+|bors-(staging|trying))/, "")
           unless j = queryEvalInputs(evalId, jobsetInput)
             Log.debug { "#{n.channel} : #{n.payload} -- MISSING EVAL INPUT FOR #{evalId}, #{jobsetInput}" }
             return nil
@@ -435,7 +434,7 @@ class HydraNotifier
         evalsSize = evals.size
       end
 
-      jobSet = "#{build[:project]}:#{build[:jobset]}"
+      jobSet = "#{build[:jobset_id]}"
       jobName = "#{jobSet}:#{build[:job]}"
       Log.debug { "#{n.channel}: #{build[:id]}, EvalSize: #{evalsSize}, JobName: #{jobName}" }
 

@@ -40,6 +40,18 @@ let
     services.buildkite-containers.hostIdSuffix = hostIdSuffix;
   };
 
+  mkBenchmarkHydra = hostIdSuffix: {
+    imports = [
+      smaller
+    ];
+    deployment.packet = {
+      inherit ipxeScriptUrl;
+      facility = "sjc1";
+    };
+    node.isBuildkite = false;
+    node.isHydraSlave = true;
+  };
+
   nodes = mkNodes {
     monitoring = {
       imports = [ small ../roles/monitor.nix ];
@@ -92,6 +104,9 @@ let
 
     # Tmp locally for testing -- do not commit
     #packet-ipxe-6 = mkHydraSlaveBuildkite "6" // { deployment.packet = { inherit ipxeScriptUrl facility; }; };
+
+    # benchmarking hydra slave
+    packet-ipxe-7 = mkBenchmarkHydra "7";
   };
 
   macs = mkMacs {

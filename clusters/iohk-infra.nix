@@ -1,4 +1,4 @@
-{ targetEnv, smaller, small, small-cpr, medium, medium-cpr, medium-cpr-reserved }:
+{ targetEnv, smaller, small, small-cpr, medium, medium-cpr, medium-ng-cpr, medium-ng, medium-cpr-reserved, large-storage }:
 let
   mkNodes = import ../nix/mk-nodes.nix { inherit targetEnv; };
   mkMacs = import ../nix/mk-macs.nix;
@@ -7,6 +7,7 @@ let
   globals = import ../globals.nix;
 
   ipxeScriptUrl = "https://netboot.gsc.io/installer-pre/x86/netboot.ipxe";
+  nixosVersion = "nixos_21_05.01";
   # ipxeScriptUrl = "http://images.platformequinix.net/nixos/installer-pre/x86/netboot.ipxe";
 
   facility = "ams1";
@@ -42,12 +43,19 @@ let
 
   mkBenchmarkHydra = hostIdSuffix: {
     imports = [
-      smaller
+      medium-ng-cpr
     ];
     deployment.packet = {
-      inherit ipxeScriptUrl;
-      facility = "sjc1";
+      inherit nixosVersion;
+      facility = "ams1";
+      #plan = lib.mkForce "c3.medium.x86";
     };
+    # boot.loader.grub = {
+    #   efiSupport = false;
+    #   enable = true;
+    #   version = 2;
+    #   device = "/dev/sda";
+    # };
     node.isBuildkite = false;
     node.isHydraSlave = true;
   };
@@ -106,7 +114,7 @@ let
     #packet-ipxe-6 = mkHydraSlaveBuildkite "6" // { deployment.packet = { inherit ipxeScriptUrl facility; }; };
 
     # benchmarking hydra slave
-    packet-ipxe-7 = mkBenchmarkHydra "7";
+     packet-benchmark-hydra-1 = mkBenchmarkHydra "6";
   };
 
   macs = mkMacs {

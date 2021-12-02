@@ -16,6 +16,13 @@ let
     maxJobs = 10;
     speedFactor = 1;
   };
+  mkLinuxBench = hostName: commonBuildMachineOpt // {
+    inherit hostName;
+    maxJobs = 1;
+    speedFactor = 1;
+    mandatoryFeatures = [ "benchmark" ];
+    supportedFeatures = lib.mkForce [];
+  };
   mkMac = hostName: commonBuildMachineOpt // {
     inherit hostName;
     maxJobs = 4;
@@ -133,6 +140,7 @@ in {
       (mkLinux "packet-ipxe-1.ci.iohkdev.io")
       (mkLinux "packet-ipxe-2.ci.iohkdev.io")
       (mkLinux "packet-ipxe-3.ci.iohkdev.io")
+      (mkLinuxBench "packet-benchmark-1.ci.iohkdev.io")
 
       # Tmp extra builders
       (mkLinux "packet-ipxe-5.ci.iohkdev.io")

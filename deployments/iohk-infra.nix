@@ -9,7 +9,10 @@ let
     small-cpr = ../physical/packet/c1-cpr.small.nix;
     medium = ../physical/packet/c2.medium.nix;
     medium-cpr = ../physical/packet/c2-cpr.medium.nix;
+    medium-ng = ../physical/packet/c3.medium.nix;
+    medium-ng-cpr = ../physical/packet/c3-cpr.medium.nix;
     medium-cpr-reserved = ../physical/packet/c2-cpr-reserved.medium.nix;
+    large-storage = ../physical/packet/s3-cpr.large.nix;
   };
 
   lib = (import ../nix { }).lib;

@@ -48,11 +48,13 @@
 , ledgerPrsJSON ? ./simple-pr-dummy.json
 , offchainMetadataToolsPrsJSON ? ./simple-pr-dummy.json
 , marloweCardanoPrsJSON ? ./simple-pr-dummy.json
+, marloweWebsitePrsJSON ? ./simple-pr-dummy.json
 , nixopsPrsJSON ? ./simple-pr-dummy.json
 , ouroborosNetworkPrsJSON ? ./simple-pr-dummy.json
 , plutusPrsJSON ? ./simple-pr-dummy.json
 , plutusAppsPrsJSON ? ./simple-pr-dummy.json
 , plutusStarterPrsJSON ? ./simple-pr-dummy.json
+, purescriptWebCommonPrsJSON ? ./simple-pr-dummy.json
 , shellPrsJSON ? ./simple-pr-dummy.json
 , smashPrsJSON ? ./simple-pr-dummy.json
 , toolsPrsJSON ? ./simple-pr-dummy.json
@@ -280,6 +282,13 @@ let
       branch = "main";
     };
 
+    marlowe-website = {
+      description = "Marlowe website";
+      url = "github:input-output-hk/marlowe-website";
+      prs = marloweWebsitePrsJSON;
+      flake = true;
+    };
+
     offchain-metadata-tools = {
       description = "Tools for creating, submitting, and managing off-chain metadata such as multi-asset token metadata";
       url = "https://github.com/input-output-hk/offchain-metadata-tools.git";
@@ -315,6 +324,13 @@ let
       branch = "main";
       prs = plutusStarterPrsJSON;
       bors = true;
+    };
+
+    purescript-web-common = {
+      description = "Shared library for web development";
+      url = "github:input-output-hk/purescript-web-common";
+      prs = purescriptWebCommonPrsJSON;
+      flake = true;
     };
 
     smash = {
@@ -356,20 +372,26 @@ let
     emailresponsible = false;
   };
 
-  defaultSettings = {
+  baseSettings = {
     enabled = 1;
     hidden = false;
-    nixexprinput = "jobsets";
     keepnr = 5;
     schedulingshares = 42;
     checkinterval = 60;
+    enableemail = false;
+    emailoverride = "";
+  };
+
+  legacyDefaultSettings = baseSettings // {
+    nixexprinput = "jobsets";
     inputs = {
       nixpkgs = mkFetchGithub "https://github.com/NixOS/nixpkgs.git ${defaultNixpkgsRev}";
       jobsets = mkFetchGithub "${iohkOpsURI} master";
     };
-    enableemail = false;
-    emailoverride = "";
+    type = 0;
   };
+
+  flakeDefaultSettings = baseSettings // { type = 1; };
 
   # Use this modifier to put Bors jobs at the front of the build
   # queue.
@@ -398,8 +420,12 @@ let
     (builtins.fromJSON (builtins.readFile path));
 
   # Make jobset for a project default build
-  mkJobset = { name, description, url, input, branch, modifier ? {} }: let
-    jobset = recursiveUpdate (defaultSettings // {
+  mkJobset = { name, description, url, input, branch, modifier ? {}, flake }: let
+    jobset = recursiveUpdate (if flake
+    then flakeDefaultSettings // {
+      flake = "${url}/${branch}";
+      inherit description;
+    } else legacyDefaultSettings // {
       nixexprpath = "release.nix";
       nixexprinput = input;
       inherit description;
@@ -411,14 +437,18 @@ let
     nameValuePair name jobset;
 
   # Make jobsets for extra project branches (e.g. release branches)
-  mkJobsetBranches = { name, description, url, input, modifier ? {} }:
+  mkJobsetBranches = { name, description, url, input, modifier ? {}, flake }:
     mapAttrsToList (suffix: branch:
-      mkJobset { name = "${name}-${suffix}"; inherit description url input branch modifier; });
+      mkJobset { name = "${name}-${suffix}"; inherit description url input branch modifier flake; });
 
   # Make a jobset for a GitHub PRs
-  mkJobsetPR = { name, input, modifier ? {} }: num: info: {
+  mkJobsetPR = { name, input, modifier ? {}, flake }: num: info: {
     name = "${name}-pr-${num}";
-    value = recursiveUpdate (defaultSettings // {
+    value = recursiveUpdate (if flake
+    then flakeDefaultSettings // {
+      description = "PR ${num}: ${info.title}";
+      flake = "github:${info.head.repo.owner.login}/${info.head.repo.name}/${info.head.ref}";
+    } else legacyDefaultSettings // {
       description = "PR ${num}: ${info.title}";
       nixexprinput = input;
       nixexprpath = "release.nix";
@@ -430,9 +460,9 @@ let
   };
 
   # Load the PRs json and make a jobset for each
-  mkJobsetPRs = { name, input, prs, prFilter, modifier ? {} }:
+  mkJobsetPRs = { name, input, prs, prFilter, modifier ? {}, flake }:
     mapAttrsToList
-      (mkJobsetPR { inherit name input modifier; })
+      (mkJobsetPR { inherit name input modifier flake; })
       (loadPrsJSON prFilter prs);
 
   # Add two extra jobsets for the bors staging and trying branches.
@@ -454,14 +484,15 @@ let
       input = info.input or name;
       branch = info.branch or "master";
       modifier = info.modifier or {};
-      params = { inherit name input modifier; inherit (info) description url; };
+      flake = info.flake or false;
+      params = { inherit name input modifier flake; inherit (info) description url; };
     in concatLists
       [ (optional (branch != null)
           (mkJobset (params // { inherit branch; })))
         (mkJobsetBranches params (info.branches or {}))
         (optionals (info ? prs)
           (mkJobsetPRs {
-            inherit name input;
+            inherit name input flake;
             inherit (info) prs;
             prFilter = info.prFilter or exclusionFilter;
             modifier = recursiveUpdate modifier (info.prModifier or {});
@@ -489,7 +520,7 @@ let
   };
   makeNixopsPR = num: info: {
     name = "iohk-ops-pr-${num}";
-    value = defaultSettings // {
+    value = legacyDefaultSettings // {
       description = "PR ${num}: ${info.title}";
       nixexprpath = "jobsets/cardano.nix";
       inputs = {
@@ -504,7 +535,7 @@ let
   ##########################################################################
   # Jobsets which don't fit into the regular structure
 
-  extraJobsets = mapAttrs (name: settings: defaultSettings // settings) ({
+  extraJobsets = mapAttrs (name: settings: legacyDefaultSettings // settings) ({
     # ci-ops (this repo)
     iohk-ops = mkNixops "master" defaultNixpkgsRev;
     iohk-ops-bors-staging = recursiveUpdate (mkNixops "bors-staging" defaultNixpkgsRev) highPrioJobset;

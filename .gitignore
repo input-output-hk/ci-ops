@@ -4,6 +4,7 @@ static/
 secrets/
 stats/
 backup/
+backups/
 *.swp
 result*
 static*

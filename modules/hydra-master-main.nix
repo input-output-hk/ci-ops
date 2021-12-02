@@ -3,6 +3,7 @@
 with lib;
 
 let
+  packages = pkgs.callPackages ../nix/packages.nix { };
   commonBuildMachineOpt = {
     speedFactor = 1;
     sshKey = "/etc/nix/id_buildfarm";
@@ -14,6 +15,13 @@ let
     inherit hostName;
     maxJobs = 10;
     speedFactor = 1;
+  };
+  mkLinuxBench = hostName: commonBuildMachineOpt // {
+    inherit hostName;
+    maxJobs = 1;
+    speedFactor = 1;
+    mandatoryFeatures = [ "benchmark" ];
+    supportedFeatures = lib.mkForce [];
   };
   mkMac = hostName: commonBuildMachineOpt // {
     inherit hostName;
@@ -104,12 +112,14 @@ let
   githubStatusConfig = pkgs.writeText "github-notify.conf"  mkGithubStatusConfig;
 
 in {
-  environment.etc = lib.singleton {
-    target = "nix/id_buildfarm";
-    source = ../secrets/id_buildfarm;
-    uid = config.ids.uids.hydra-queue-runner;
-    gid = config.ids.gids.hydra;
-    mode = "0400";
+  environment.etc = {
+    id_buildfarm_secret = {
+      target = "nix/id_buildfarm";
+      source = ../secrets/id_buildfarm;
+      uid = config.ids.uids.hydra-queue-runner;
+      gid = config.ids.gids.hydra;
+      mode = "0400";
+    };
   };
   programs.ssh.extraConfig = lib.mkAfter ''
     Host sarov
@@ -130,6 +140,7 @@ in {
       (mkLinux "packet-ipxe-1.ci.iohkdev.io")
       (mkLinux "packet-ipxe-2.ci.iohkdev.io")
       (mkLinux "packet-ipxe-3.ci.iohkdev.io")
+      (mkLinuxBench "packet-benchmark-1.ci.iohkdev.io")
 
       # Tmp extra builders
       (mkLinux "packet-ipxe-5.ci.iohkdev.io")
@@ -143,7 +154,7 @@ in {
   systemd.services.hydra-evaluator.environment.GC_INITIAL_HEAP_SIZE = toString (1024*1024*1024*5); # 5gig
   services.hydra = {
     hydraURL = "https://hydra.iohk.io";
-    package = pkgs.callPackage ../pkgs/hydra.nix {};
+    package = packages.hydra;
     # max output is 4GB because of amis
     # auth token needs `repo:status`
     extraConfig = ''
@@ -162,6 +173,9 @@ in {
       ${mkGithubStatusConfig}
     '';
   };
+  # The following is to work around the following error from hydra-server:
+  #   [error] Caught exception in engine "Cannot determine local time zone"
+  time.timeZone = "UTC";
   services.grafana = {
     enable = true;
     users.allowSignUp = true;
@@ -213,5 +227,9 @@ in {
                        '"$http_referer" "$http_user_agent" "$http_x_forwarded_for"';
       access_log syslog:server=unix:/dev/log x-fwd;
     '';
+  };
+  security.acme = lib.mkIf (config.deployment.targetEnv != "libvirtd") {
+    email = "devops@iohk.io";
+    acceptTerms = true; # https://letsencrypt.org/repository/
   };
 }

@@ -40,8 +40,7 @@ in with lib;
           Note that container names cannot be more than 7 characters.
         '';
         example = ''
-          [ { containerName = "ci1-1"; guestIp = "10.254.1.11"; metadata = "system=x86_64-linux,queue=custom"; }
-            { containerName = "ci1-2"; guestIp = "10.254.1.12"; metadata = "system=x86_64-linux,queue=custom"; } ];
+          [ { containerName = "ci1-1"; guestIp = "10.254.1.11"; tags = { system = "x86_64-linux"; queue = "custom"; }; } ];
         '';
       };
 
@@ -63,7 +62,7 @@ in with lib;
     createBuildkiteContainer = { containerName                           # The desired container name
                                , hostIp ? "10.254.1.1"                   # The IPv4 host virtual eth nic IP
                                , guestIp ? "10.254.1.11"                 # The IPv4 container guest virtual eth nic IP
-                               , metadata ? "system=x86_64-linux"        # Agent metadata customization
+                               , tags ? { system = "x86_64-linux"; }     # Agent metadata customization
                                , prio ? null                             # Agent priority
                                }: {
       name = containerName;
@@ -96,17 +95,15 @@ in with lib;
           services.ntp.enable = mkForce false;
 
           systemd.services.buildkite-agent.serviceConfig = {
-            ExecStart = mkForce "${config.services.buildkite-agent.package}/bin/buildkite-agent start --config /var/lib/buildkite-agent/buildkite-agent.cfg";
+            ExecStart = mkForce "${pkgs.buildkite-agent}/bin/buildkite-agent start --config /var/lib/buildkite-agent/buildkite-agent.cfg";
             LimitNOFILE = 1024 * 512;
           };
 
-          services.buildkite-agent = {
-            enable = true;
+          services.buildkite-agents.iohk = {
             name   = name + "-" + containerName;
-            openssh.privateKeyPath = "/run/keys/buildkite-ssh-iohk-devops-private";
-            openssh.publicKeyPath  = "/run/keys/buildkite-ssh-iohk-devops";
+            privateSshKeyPath      = "/run/keys/buildkite-ssh-iohk-devops-private";
             tokenPath              = "/run/keys/buildkite-token";
-            meta-data              = metadata;
+            inherit tags;
             runtimePackages        = with pkgs; [
                bash gnutar gzip bzip2 xz
                git git-lfs
@@ -136,15 +133,16 @@ in with lib;
             '';
             hooks.pre-exit = ''
               # Clean up the scratch and tmp directories
-              rm -rf /scratch/* /tmp/* &> /dev/null || true
+              rm -rf /scratch/* &> /dev/null || true
             '';
             extraConfig = ''
               git-clean-flags="-ffdqx"
               ${if prio != null then "priority=${prio}" else ""}
             '';
           };
-          users.users.buildkite-agent = {
-            # To ensure buildkite-agent user sharing of keys in guests
+          users.users.buildkite-agent-iohk = {
+            isSystemUser = true;
+            # To ensure buildkite-agent-iohk user sharing of keys in guests
             uid = 10000;
             extraGroups = [
               "keys"
@@ -174,14 +172,14 @@ in with lib;
     };
   in {
     users.users.root.openssh.authorizedKeys.keys = ssh-keys.ciInfra;
-    services.buildkite-agent.package = pkgs.buildkite-agent;
+    #services.buildkite-agents.package = pkgs.buildkite-agent;
 
     # To go on the host -- and get shared to the container(s)
     deployment.keys = {
       aws-creds = {
         keyFile = ../secrets/buildkite-hook;
         destDir = "/var/lib/buildkite-agent/hooks";
-        user    = "buildkite-agent";
+        user    = "buildkite-agent-iohk";
         permissions = "0770";
       };
 
@@ -189,105 +187,102 @@ in with lib;
       buildkite-extra-creds = {
         keyFile = ../secrets/buildkite-hook-extra-creds.sh;
         destDir = "/var/lib/buildkite-agent/hooks";
-        user    = "buildkite-agent";
+        user    = "buildkite-agent-iohk";
         permissions = "0770";
       };
 
       # SSH keypair for buildkite-agent user
       buildkite-ssh-private = {
         keyFile = ../secrets/buildkite-ssh;
-        user    = "buildkite-agent";
+        user    = "buildkite-agent-iohk";
       };
       buildkite-ssh-public = {
         keyFile = ../secrets/buildkite-ssh.pub;
-        user    = "buildkite-agent";
+        user    = "buildkite-agent-iohk";
       };
 
       # SSH keypair for buildkite-agent user (iohk-devops on Github)
       buildkite-ssh-iohk-devops-private = {
         keyFile = ../secrets/buildkite-iohk-devops-ssh;
-        user    = "buildkite-agent";
-      };
-      buildkite-ssh-iohk-devops = {
-        keyFile = ../secrets/buildkite-iohk-devops-ssh.pub;
-        user    = "buildkite-agent";
+        user    = "buildkite-agent-iohk";
       };
 
       # GitHub deploy key for input-output-hk/hackage.nix
       buildkite-hackage-ssh-private = {
         keyFile = ../secrets/buildkite-hackage-ssh;
-        user    = "buildkite-agent";
+        user    = "buildkite-agent-iohk";
       };
 
       # GitHub deploy key for input-output-hk/stackage.nix
       buildkite-stackage-ssh-private = {
         keyFile = ../secrets/buildkite-stackage-ssh;
-        user    = "buildkite-agent";
+        user    = "buildkite-agent-iohk";
       };
 
       # GitHub deploy key for input-output-hk/haskell.nix
       # (used to update gh-pages documentation)
       buildkite-haskell-dot-nix-ssh-private = {
         keyFile = ../secrets/buildkite-haskell-dot-nix-ssh;
-        user    = "buildkite-agent";
+        user    = "buildkite-agent-iohk";
       };
 
       # GitHub deploy key for input-output-hk/cardano-wallet
       # created with: ssh-keygen -t ed25519 -C "buildkite cardano-wallet" -f secrets/buildkite-cardano-wallet-ssh
       buildkite-cardano-wallet-ssh-private = {
         keyFile = ../secrets/buildkite-cardano-wallet-ssh;
-        user    = "buildkite-agent";
+        user    = "buildkite-agent-iohk";
       };
 
       # API Token for BuildKite
       buildkite-token = {
         keyFile = ../secrets/buildkite_token;
-        user    = "buildkite-agent";
+        user    = "buildkite-agent-iohk";
       };
 
       # DockerHub password/token (base64-encoded in json)
       dockerhub-auth = {
         keyFile = ../secrets/dockerhub-auth-config.json;
-        user    = "buildkite-agent";
+        user    = "buildkite-agent-iohk";
       };
 
       # Catalyst keystore
       "catalyst.keystore" = {
         keyFile = ../secrets/catalyst.keystore;
-        user    = "buildkite-agent";
+        user    = "buildkite-agent-iohk";
       };
 
       # Catalyst build spec
       "catalyst-android-build.json" = {
         keyFile = ../secrets/catalyst-android-build.json;
-        user    = "buildkite-agent";
+        user    = "buildkite-agent-iohk";
       };
 
       # Catalyst env vars
       "catalyst-env.sh" = {
         keyFile = ../secrets/catalyst-env.sh;
-        user    = "buildkite-agent";
+        user    = "buildkite-agent-iohk";
       };
 
       # Catalyst sentry spec
       "catalyst-sentry.properties" = {
         keyFile = ../secrets/catalyst-sentry.properties;
-        user    = "buildkite-agent";
+        user    = "buildkite-agent-iohk";
       };
     };
 
     system.activationScripts.cacheDir = {
       text = ''
         mkdir -p /cache
-        chown -R buildkite-agent:nogroup /cache || true
+        chown -R buildkite-agent-iohk:nogroup /cache || true
       '';
       deps = [];
     };
 
-    users.users.buildkite-agent = {
+    users.users.buildkite-agent-iohk = {
       home = "/var/lib/buildkite-agent";
+      isSystemUser = true;
       createHome = true;
-      # To ensure buildkite-agent user sharing of keys in guests
+      # To ensure buildkite-agent-iohk user sharing of keys in guests
       uid = 10000;
     };
 

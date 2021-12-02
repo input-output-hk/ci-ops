@@ -63,18 +63,19 @@ class HydraNotifier
   def queryEval(evalId)
     begin
       @db.query_one(<<-SQL, evalId, as: QUERY_EVALS)
-        SELECT id,
-               project,
-               jobset,
-               timestamp,
-               checkouttime,
-               evaltime,
-               hasnewbuilds,
-               hash,
-               nrbuilds,
-               nrsucceeded,
-               flake
-        FROM jobsetevals WHERE id = $1 LIMIT 1
+        SELECT jobsetevals.id,
+               jobsets.project,
+               jobsets.name as jobset,
+               jobsetevals.timestamp,
+               jobsetevals.checkouttime,
+               jobsetevals.evaltime,
+               jobsetevals.hasnewbuilds,
+               jobsetevals.hash,
+               jobsetevals.nrbuilds,
+               jobsetevals.nrsucceeded,
+               jobsetevals.flake
+        FROM jobsetevals LEFT JOIN jobsets ON jobsetevals.jobset_id = jobsets.id
+        WHERE jobsetevals.id = $1 LIMIT 1
       SQL
     rescue ex : DB::NoResultsError
       Log.error { "queryEval(#{evalId}) -- EXCEPTION: \"#{ex.message}\"" }
@@ -89,18 +90,19 @@ class HydraNotifier
     evals = [] of QUERY_EVALS_TYPE
     begin
       @db.query(<<-SQL, buildId) do |rs|
-        SELECT id,
-               project,
-               jobset,
-               timestamp,
-               checkouttime,
-               evaltime,
-               hasnewbuilds,
-               hash,
-               nrbuilds,
-               nrsucceeded,
-               flake
-        FROM jobsetevals WHERE id in (SELECT eval FROM jobsetevalmembers WHERE build = $1)
+        SELECT jobsetevals.id,
+               jobsets.project,
+               jobsets.name as jobset,
+               jobsetevals.timestamp,
+               jobsetevals.checkouttime,
+               jobsetevals.evaltime,
+               jobsetevals.hasnewbuilds,
+               jobsetevals.hash,
+               jobsetevals.nrbuilds,
+               jobsetevals.nrsucceeded,
+               jobsetevals.flake
+        FROM jobsetevals LEFT JOIN jobsets ON jobsetevals.jobset_id = jobsets.id
+        WHERE jobsetevals.id in (SELECT eval FROM jobsetevalmembers WHERE build = $1)
       SQL
         rs.each do
           evals << rs.read(**QUERY_EVALS)

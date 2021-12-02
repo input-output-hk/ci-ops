@@ -2,10 +2,11 @@
 let
   inherit (builtins) typeOf trace attrNames toString;
   sources = import ./sources.nix;
+  self = builtins.getFlake (toString ./..);
 in {
-  cachecache = callPackage (sources.cachecache) { pkgs = import sources.hydra-nixpkgs {}; };
+  cachecache = self.inputs.cachecache.packages.x86_64-linux.cachecache;
   crystalPkgs = callPackage ../pkgs/hydra-crystal-notify {};
-  hydra = callPackage ../pkgs/hydra.nix {};
+  hydra = self.inputs.hydra.outputs.packages.x86_64-linux.hydra;
   pp = v:
     let type = typeOf v;
     in if type == "list" then

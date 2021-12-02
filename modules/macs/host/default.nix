@@ -117,6 +117,10 @@ let
           type = types.str;
           example = "192.168.20.20:0";
         };
+        spicePort = mkOption {
+          type = types.port;
+          example = 5950;
+        };
       };
       network = {
         guestSshPort = mkOption {

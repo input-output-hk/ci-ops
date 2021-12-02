@@ -8,13 +8,16 @@
     autoPrune.flags = [ "--all" "--force" ];
   };
 
+  # Work around for https://github.com/docker/cli/issues/2104
+  systemd.enableUnifiedCgroupHierarchy = false;
+
   # Provide dockerhub credentials to buildkite
-  systemd.services.buildkite-agent-setup-docker = {
-    wantedBy = [ "buildkite-agent.service" ];
+  systemd.services.buildkite-agent-iohk-setup-docker = {
+    wantedBy = [ "buildkite-agent-iohk.service" ];
     script = ''
-      mkdir -p ~buildkite-agent/.docker
-      ln -sf /run/keys/dockerhub-auth ~buildkite-agent/.docker/config.json
-      chown -R buildkite-agent:nogroup ~buildkite-agent/.docker
+      mkdir -p ~buildkite-agent-iohk/.docker
+      ln -sf /run/keys/dockerhub-auth ~buildkite-agent-iohk/.docker/config.json
+      chown -R buildkite-agent-iohk:nogroup ~buildkite-agent-iohk/.docker
     '';
     serviceConfig = {
       Type = "oneshot";

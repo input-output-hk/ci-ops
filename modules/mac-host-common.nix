@@ -24,7 +24,7 @@ in {
       };
     };
     boot = {
-      initrd.availableKernelModules = [ "xhci_pci" "ahci" "usb_storage" "usbhid" "sd_mod" "zfsUnstable" "nvme" ];
+      initrd.availableKernelModules = [ "xhci_pci" "ahci" "usb_storage" "usbhid" "sd_mod" "zfs" "nvme" ];
       kernelModules = [ "kvm-intel" ];
       extraModulePackages = with config.boot.kernelPackages; lib.mkForce [ zfsUnstable wireguard ];
       loader = {
@@ -42,7 +42,11 @@ in {
     nixpkgs = {
       config.allowUnfree = true;
     };
-    networking.firewall.allowedTCPPorts = [ 5900 5901 8081 ];
+    networking.firewall.allowedTCPPorts = [
+      5900 5901 # vnc
+      5950 5951 # spice
+      8081
+    ];
     networking.firewall.extraCommands = lib.mkAfter ''
       iptables -t nat -A nixos-nat-pre -i wg0 -p tcp -m tcp --dport 2200 -j DNAT --to-destination 192.168.3.2:22
       iptables -t nat -A nixos-nat-pre -i wg0 -p tcp -m tcp --dport 2201 -j DNAT --to-destination 192.168.4.2:22
@@ -200,10 +204,11 @@ in {
             sockets = 1;
             memoryInMegs = 24 * 1024;
             ovmfCodeFile = ./macs/dist/OVMF_CODE.fd;
-            ovmfVarsFile = ./macs/dist/OVMF_VARS-1024x768.fd;
+            ovmfVarsFile = "${pkgs.OVMF.fd}/FV/OVMF_VARS.fd";
             cloverImage = (pkgs.callPackage ./macs/clover-image.nix { csrFlag = "0x23"; }).clover-image;
             MACAddress = "52:54:00:c9:18:27";
             vncListen = "0.0.0.0:0";
+            spicePort = 5950;
           };
         };
         signing = {
@@ -222,10 +227,11 @@ in {
             sockets = 1;
             memoryInMegs = 12 * 1024;
             ovmfCodeFile = ./macs/dist/OVMF_CODE.fd;
-            ovmfVarsFile = ./macs/dist/OVMF_VARS-1024x768.fd;
+            ovmfVarsFile = "${pkgs.OVMF.fd}/FV/OVMF_VARS.fd";
             cloverImage = (pkgs.callPackage ./macs/clover-image.nix { csrFlag = "0x23"; }).clover-image;
             MACAddress = "52:54:00:c9:18:28";
             vncListen = "0.0.0.0:1";
+            spicePort = 5951;
           };
         };
       };

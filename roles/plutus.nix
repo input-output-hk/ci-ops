@@ -7,7 +7,7 @@ in {
   deployment.keys = {
     "buildkite-github-token" = {
       keyFile = ../secrets/buildkite_github_token;
-      user = "buildkite-agent";
+      user = "buildkite-agent-iohk";
     };
   };
 
@@ -26,6 +26,13 @@ in {
   };
 
   services.buildkite-containers.containerList = [
-    { containerName = "ci${cfg.hostIdSuffix}-1"; guestIp = "10.254.1.11"; metadata = "system=x86_64-linux,queue=plutus"; }
+    {
+      containerName = "ci${cfg.hostIdSuffix}-1";
+      guestIp = "10.254.1.11";
+      tags = {
+        system = "x86_64-linux";
+        queue = "plutus";
+      };
+    }
   ];
 }

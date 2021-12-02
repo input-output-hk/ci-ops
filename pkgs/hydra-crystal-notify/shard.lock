@@ -1,22 +1,22 @@
-version: 1.0
+version: 2.0
 shards:
   crest:
-    github: mamantoha/crest
+    git: https://github.com/mamantoha/crest.git
     version: 0.25.0
 
   db:
-    github: crystal-lang/crystal-db
+    git: https://github.com/crystal-lang/crystal-db.git
     version: 0.9.0
 
   deep-merge:
-    github: peterhoeg/deep-merge.cr
-    commit: 5832aa704c85f8ba562a702a38df490be12f08fb
+    git: https://github.com/peterhoeg/deep-merge.cr.git
+    version: 0.1.0+git.commit.5832aa704c85f8ba562a702a38df490be12f08fb
 
   http-client-digest_auth:
-    github: mamantoha/http-client-digest_auth
+    git: https://github.com/mamantoha/http-client-digest_auth.git
     version: 0.3.0
 
   pg:
-    github: will/crystal-pg
+    git: https://github.com/will/crystal-pg.git
     version: 0.21.0
 

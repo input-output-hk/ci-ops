@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
 let
   hostname = "bors-ng.aws.iohkdev.io";
   keysDir = "/var/lib/keys";
@@ -92,6 +92,10 @@ in {
         };
       };
     };
+  };
+  security.acme = lib.mkIf (config.deployment.targetEnv != "libvirtd") {
+    email = "devops@iohk.io";
+    acceptTerms = true; # https://letsencrypt.org/repository/
   };
 
   networking.firewall.allowedTCPPorts = [ 80 443 ];

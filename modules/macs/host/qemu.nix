@@ -14,7 +14,7 @@ in {
       clonedVol = "${zvolName}-${key}";
       clonedZvolDevice = "/dev/zvol/${clonedVol}";
       inherit (value.guest) cores threads sockets memoryInMegs ovmfCodeFile ovmfVarsFile cloverImage MACAddress;
-      deps = [ "create-macos-secrets-${key}.service" "dhcpd4.service" "kresd.service" "network-online.target" ];
+      deps = [ "create-macos-secrets-${key}.service" "dhcpd4.service" "kresd@.service" "network-online.target" ];
     in [ {
       name = "run-macos-vm-${key}";
       value = {
@@ -65,15 +65,17 @@ in {
               -drive if=pflash,format=raw,snapshot=on,file=${ovmfVarsFile} \
               -smbios type=2 \
               -device ich9-intel-hda -device hda-duplex \
-              -device ide-drive,bus=ide.2,drive=Clover \
+              -device ich9-ahci,id=sata \
+              -device ide-hd,bus=sata.0,drive=Clover \
               -drive id=Clover,if=none,snapshot=on,format=qcow2,file='${cloverImage}' \
-              -device ide-drive,bus=ide.1,drive=MacHDD \
+              -device ide-hd,bus=sata.1,drive=MacHDD \
               -drive id=MacHDD,cache=unsafe,if=none,file=${clonedZvolDevice},format=raw \
-              -device ide-drive,bus=ide.0,drive=config \
+              -device ide-cd,bus=sata.2,drive=config \
               -drive id=config,if=none,snapshot=on,media=cdrom,file=/tmp/config.iso \
               -netdev tap,id=net0,ifname=tap-${key},script=no,downscript=no -device e1000-82545em,netdev=net0,id=net0,mac=${MACAddress} \
               -global PIIX4_PM.disable_s3=1 -global PIIX4_PM.disable_s5=1 \
               -vnc ${value.guest.vncListen} \
+              -spice port=${toString value.guest.spicePort},addr=0.0.0.0,image-compression=auto_glz,playback-compression=off,agent-mouse=on,zlib-glz-wan-compression=never,jpeg-wan-compression=never,seamless-migration=on,disable-ticketing=on,plaintext-channel=main,plaintext-channel=display,plaintext-channel=inputs,plaintext-channel=cursor,plaintext-channel=playback,plaintext-channel=record,plaintext-channel=usbredir,streaming-video=filter \
               -monitor unix:/tmp/monitor-socket,server,nowait
         '';
       };

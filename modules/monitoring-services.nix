@@ -107,7 +107,7 @@ in {
 
       logging = mkOption {
         type = types.bool;
-        default = true;
+        default = false;
         description = ''
           Enable log collection via graylog and journalbeat.
           This option installs graylog, elasticsearch, mongodb and
@@ -361,8 +361,6 @@ in {
                      ++ (optional config.services.nginx.enable "nginx.service");
       };
 
-      boot.extraModulePackages = [ config.boot.kernelPackages.wireguard ];
-
       networking.wg-quick.interfaces.wg0 = {
         listenPort = 17777;
         address = [ "${config.node.wireguardIP}/24" ];
@@ -509,6 +507,10 @@ in {
         enableACME = true;
         forceSSL = true;
       };
+      security.acme = lib.mkIf (config.deployment.targetEnv != "libvirtd") {
+        email = "devops@iohk.io";
+        acceptTerms = true; # https://letsencrypt.org/repository/
+      };
     })
 
     (lib.mkIf cfg.grafanaAutoLogin {
@@ -632,7 +634,8 @@ in {
 
         prometheus = {
           enable = true;
-          listenAddress = "127.0.0.1:9090";
+          listenAddress = "127.0.0.1";
+          port = 9090;
           webExternalUrl = "https://${cfg.webhost}/prometheus/";
           extraFlags = [ "--storage.tsdb.retention=4380h" ];
 

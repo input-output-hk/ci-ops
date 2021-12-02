@@ -43,6 +43,7 @@ let
 
   mkBenchmarkHydra = hostIdSuffix: {
     imports = [
+      ../roles/hydra-slave.nix
       medium-ng-cpr
     ];
     deployment.packet = {

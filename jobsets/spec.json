@@ -20,6 +20,7 @@
          ,"cardanoFaucetPrsJSON": { "type": "githubpulls", "value": "input-output-hk cardano-faucet", "emailresponsible": false }
          ,"cardanoGraphQLPrsJSON": { "type": "githubpulls", "value": "input-output-hk cardano-graphql", "emailresponsible": false }
          ,"cardanoLedgerSpecsPrsJSON": { "type": "githubpulls", "value": "input-output-hk cardano-ledger-specs", "emailresponsible": false }
+         ,"cardanoMemoryBenchmarkPrsJSON": { "type": "githubpulls", "value": "input-output-hk cardano-memory-benchmark", "emailresponsible": false }
          ,"cardanoNodeP2PPrsJSON": { "type": "githubpulls", "value": "input-output-hk cardano-node", "emailresponsible": false }
          ,"cardanoNodePrsJSON": { "type": "githubpulls", "value": "input-output-hk cardano-node", "emailresponsible": false }
          ,"cardanoOpsPrsJSON": { "type": "githubpulls", "value": "input-output-hk cardano-ops", "emailresponsible": false }

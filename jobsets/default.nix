@@ -29,6 +29,7 @@
 , cardanoFaucetPrsJSON ? ./simple-pr-dummy.json
 , cardanoGraphQLPrsJSON ? ./simple-pr-dummy.json
 , cardanoLedgerSpecsPrsJSON ? ./simple-pr-dummy.json
+, cardanoMemoryBenchmarkPrsJSON ? ./simple-pr-dummy.json
 , cardanoNodeP2PPrsJSON ? ./simple-pr-dummy.json
 , cardanoNodePrsJSON ? ./simple-pr-dummy.json
 , cardanoOpsPrsJSON ? ./simple-pr-dummy.json
@@ -138,6 +139,15 @@ let
       branch = "master";
       prs = ledgerPrsJSON;
       bors = true;
+    };
+
+    cardano-memory-benchmark = {
+      description = "Cardano memory benchmarking";
+      url = "github:input-output-hk/cardano-memory-benchmark";
+      prs = cardanoMemoryBenchmarkPrsJSON;
+      flake = true;
+      prFilter = dontBuildPrsFilter;
+      bors = false;
     };
 
     cardano-node = {

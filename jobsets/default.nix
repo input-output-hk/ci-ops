@@ -329,6 +329,7 @@ let
     purescript-web-common = {
       description = "Shared library for web development";
       url = "github:input-output-hk/purescript-web-common";
+      branch = "main";
       prs = purescriptWebCommonPrsJSON;
       flake = true;
     };

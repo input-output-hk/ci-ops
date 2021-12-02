@@ -7,7 +7,7 @@ in {
   deployment.keys = {
     "buildkite-github-token" = {
       keyFile = ../secrets/buildkite_github_token;
-      user = "buildkite-agent";
+      user = "buildkite-agent-iohk";
     };
   };
 

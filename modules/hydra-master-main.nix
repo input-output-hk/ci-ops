@@ -144,6 +144,7 @@ in {
       (mkLinux "packet-ipxe-2.ci.iohkdev.io")
       (mkLinux "packet-ipxe-3.ci.iohkdev.io")
       (mkLinuxBench "packet-benchmark-hydra-1.ci.iohkdev.io")
+      (mkLinuxBench "packet-benchmark-hydra-2.ci.iohkdev.io")
 
       # Tmp extra builders
       (mkLinux "packet-ipxe-5.ci.iohkdev.io")

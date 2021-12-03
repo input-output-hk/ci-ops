@@ -25,14 +25,22 @@ in with lib;
         '';
         example = "1";
       };
+      queue = mkOption {
+        type = types.str;
+        default = "default";
+        description = ''
+          The queue the buildite agent is configured to accept jobs for.
+        '';
+        example = "1";
+      };
 
       containerList = mkOption {
         type = types.listOf types.attrs;
         default = [
-          { containerName = "ci${cfg.hostIdSuffix}-1"; guestIp = "10.254.1.11"; prio = "9"; }
-          { containerName = "ci${cfg.hostIdSuffix}-2"; guestIp = "10.254.1.12"; prio = "8"; }
-          { containerName = "ci${cfg.hostIdSuffix}-3"; guestIp = "10.254.1.13"; prio = "7"; }
-          { containerName = "ci${cfg.hostIdSuffix}-4"; guestIp = "10.254.1.14"; prio = "6"; }
+          { containerName = "ci${cfg.hostIdSuffix}-1"; guestIp = "10.254.1.11"; prio = "9"; tags.queue = cfg.queue; }
+          { containerName = "ci${cfg.hostIdSuffix}-2"; guestIp = "10.254.1.12"; prio = "8"; tags.queue = cfg.queue; }
+          { containerName = "ci${cfg.hostIdSuffix}-3"; guestIp = "10.254.1.13"; prio = "7"; tags.queue = cfg.queue; }
+          { containerName = "ci${cfg.hostIdSuffix}-4"; guestIp = "10.254.1.14"; prio = "6"; tags.queue = cfg.queue; }
         ];
         description = ''
           This parameter allows container customization on a per server basis.

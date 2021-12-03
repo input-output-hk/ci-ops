@@ -27,18 +27,18 @@ let
     services.buildkite-containers.hostIdSuffix = hostIdSuffix;
   };
 
-  mkBenchmarkBuildkite = hostIdSuffix: {
+  mkBenchmarkBuildkite = hostIdSuffix: instance: facility: queue: {
     imports = [
-      smaller
+      instance
       ../roles/buildkite-benchmark-agent-container.nix
     ];
     deployment.packet = {
-      inherit ipxeScriptUrl;
-      facility = "sjc1";
+      inherit nixosVersion facility;
     };
     node.isBuildkite = true;
     node.isHydraSlave = false;
     services.buildkite-containers.hostIdSuffix = hostIdSuffix;
+    services.buildkite-containers.queue = queue;
   };
 
   mkBenchmarkHydra = hostIdSuffix: {
@@ -103,19 +103,19 @@ let
       };
     };
 
+    # TODO: rename ipxe-# to ci-builder-#
     packet-ipxe-1 = mkHydraSlaveBuildkite "1";
     packet-ipxe-2 = mkHydraSlaveBuildkite "2";
     packet-ipxe-3 = mkHydraSlaveBuildkite "3";
-    packet-ipxe-4 = mkBenchmarkBuildkite "4";
-
-    # Tmp extra builders
     packet-ipxe-5 = mkHydraSlaveBuildkite "5";
 
-    # Tmp locally for testing -- do not commit
-    #packet-ipxe-6 = mkHydraSlaveBuildkite "6" // { deployment.packet = { inherit ipxeScriptUrl facility; }; };
+    # TODO: rename ipxe-4 to buildkite-bench-1
+    packet-ipxe-4 = mkBenchmarkBuildkite "4" small "sjc1" "benchmark";
+    packet-buildkite-bench-2 = mkBenchmarkBuildkite "8" medium-ng-cpr "da11" "benchmark_large";
 
     # benchmarking hydra slave
      packet-benchmark-hydra-1 = mkBenchmarkHydra "6";
+     packet-benchmark-hydra-2 = mkBenchmarkHydra "7";
   };
 
   macs = mkMacs {

@@ -13,6 +13,6 @@ in {
   };
 
   services.buildkite-containers.containerList = let
-    mkContainer = n: prio: { containerName = "ci${cfg.hostIdSuffix}-${toString n}"; guestIp = "10.254.1.1${toString n}"; inherit prio; tags.system = "x86_64-linux"; };
+    mkContainer = n: prio: { containerName = "ci${cfg.hostIdSuffix}-${toString n}"; guestIp = "10.254.1.1${toString n}"; inherit prio; tags = { system = "x86_64-linux"; queue = cfg.queue; }; };
   in map (n: mkContainer n (toString (10-n))) (lib.range 1 5);
 }

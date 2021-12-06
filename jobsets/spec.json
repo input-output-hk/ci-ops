@@ -52,5 +52,6 @@
          ,"toolsPrsJSON": { "type": "githubpulls", "value": "input-output-hk tools", "emailresponsible": false }
          ,"votingToolsPrsJSON": { "type": "githubpulls", "value": "input-output-hk voting-tools", "emailresponsible": false }
          ,"walletPrsJSON": { "type": "githubpulls", "value": "input-output-hk cardano-wallet", "emailresponsible": false }
+         ,"walletFlakePrsJSON": { "type": "githubpulls", "value": "input-output-hk cardano-wallet", "emailresponsible": false }
     }
 }

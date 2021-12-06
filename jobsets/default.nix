@@ -61,6 +61,7 @@
 , toolsPrsJSON ? ./simple-pr-dummy.json
 , votingToolsPrsJSON ? ./simple-pr-dummy.json
 , walletPrsJSON ? ./simple-pr-dummy.json
+, walletFlakePrsJSON ? ./simple-pr-dummy.json
 }:
 
 let pkgs = import nixpkgs {}; in
@@ -218,6 +219,16 @@ let
       branch = "master";
       prs = walletPrsJSON;
       bors = true;
+    };
+
+    cardano-wallet-flake = {
+      description = "Cardano Wallet Backend";
+      url = "github:input-output-hk/cardano-wallet";
+      branch = "flake";
+      prs = walletFlakePrsJSON;
+      flake = true;
+      prFilter = dontBuildPrsFilter;
+      bors = false;
     };
 
     ci-ops = {

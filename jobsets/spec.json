@@ -45,6 +45,7 @@
          ,"ouroborosNetworkPrsJSON": { "type": "githubpulls", "value": "input-output-hk ouroboros-network", "emailresponsible": false }
          ,"plutusPrsJSON": { "type": "githubpulls", "value": "input-output-hk plutus", "emailresponsible": false }
          ,"plutusAppsPrsJSON": { "type": "githubpulls", "value": "input-output-hk plutus-apps", "emailresponsible": false }
+         ,"plutusOsPrsJSON": { "type": "githubpulls", "value": "input-output-hk plutus-ops", "emailresponsible": false }
          ,"plutusStarterPrsJSON": { "type": "githubpulls", "value": "input-output-hk plutus-starter", "emailresponsible": false }
          ,"purescriptWebCommonPrsJSON": { "type": "githubpulls", "value": "input-output-hk purescript-web-common", "emailresponsible": false }
          ,"shellPrsJSON": { "type": "githubpulls", "value": "input-output-hk cardano-shell", "emailresponsible": false }

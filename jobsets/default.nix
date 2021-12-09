@@ -54,6 +54,7 @@
 , ouroborosNetworkPrsJSON ? ./simple-pr-dummy.json
 , plutusPrsJSON ? ./simple-pr-dummy.json
 , plutusAppsPrsJSON ? ./simple-pr-dummy.json
+, plutusOpsPrsJSON ? ./simple-pr-dummy.json
 , plutusStarterPrsJSON ? ./simple-pr-dummy.json
 , purescriptWebCommonPrsJSON ? ./simple-pr-dummy.json
 , shellPrsJSON ? ./simple-pr-dummy.json
@@ -337,6 +338,13 @@ let
       url = "https://github.com/input-output-hk/plutus-apps.git";
       prs = plutusAppsPrsJSON;
       branch = "main";
+    };
+
+    plutus-ops = {
+      description = "Plutus ecosystem deployments";
+      url = "github:input-output-hk/plutus-ops";
+      prs = plutusOpsPrsJSON;
+      flake = true;
     };
 
     plutus-starter = {

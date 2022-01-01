@@ -63,6 +63,7 @@
 , votingToolsPrsJSON ? ./simple-pr-dummy.json
 , walletPrsJSON ? ./simple-pr-dummy.json
 , walletFlakePrsJSON ? ./simple-pr-dummy.json
+, acpPrsJSON ? ./simple-pr-dummy.json
 }:
 
 let pkgs = import nixpkgs {}; in
@@ -383,6 +384,14 @@ let
       url = "https://github.com/input-output-hk/voting-tools.git";
       branch = "master";
       prs = votingToolsPrsJSON;
+      bors = true;
+    };
+
+    acp = {
+      description = "Adrestia Change Proposals";
+      url = "https://github.com/input-output-hk/acp.git";
+      branch = "master";
+      prs = acpPrsJSON;
       bors = true;
     };
   };

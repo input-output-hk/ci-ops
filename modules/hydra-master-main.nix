@@ -97,6 +97,7 @@ let
       { jobset = "smash"; }
       { jobset = "tools"; }
       { jobset = "voting-tools"; }
+      { jobset = "acp"; }
     ]}
 
     # DEVOPS-1208 This CI status for cardano-sl is needed while the

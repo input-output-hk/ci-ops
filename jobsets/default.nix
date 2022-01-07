@@ -303,6 +303,7 @@ let
       url = "https://github.com/input-output-hk/marlowe-cardano.git";
       prs = marloweCardanoPrsJSON;
       branch = "main";
+      flake = true;
     };
 
     marlowe-website = {

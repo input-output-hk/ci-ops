@@ -4,10 +4,7 @@ with lib; {
   nix = {
     # autoOptimiseStore = true;
     extraOptions = ''
-      allowed-uris = ${toString (lib.concatMap
-        (r: ["https://github.com/${r}" "https://api.github.com/repos/${r}"])
-        ["NixOS" "input-output-hk" "moretea/yarn2nix" "mozilla/nixpkgs-mozilla" "LnL7/nix-darwin"]
-      )}
+      allowed-uris = [ "https://github.com" "https://api.github.com" ];
 
       # Max of 2 hours to build any given derivation on Linux.
       # See ../nix-darwin/modules/basics.nix for macOS.

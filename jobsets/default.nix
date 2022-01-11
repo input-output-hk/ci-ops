@@ -231,6 +231,8 @@ let
       flake = true;
       prFilter = dontBuildPrsFilter;
       bors = false;
+      prAttr = "hydraJobsPr";
+      borsAttr = "hydraJobsBors";
     };
 
     ci-ops = {
@@ -459,11 +461,11 @@ let
     (builtins.fromJSON (builtins.readFile path));
 
   # Make jobset for a project default build
-  mkJobset = { name, description, url, input, branch, modifier ? {}, flake }: let
+  mkJobset = { name, description, url, input, branch, modifier ? {}, flake, flakeattr }: let
     jobset = recursiveUpdate (if flake
     then flakeDefaultSettings // {
       flake = "${url}/${branch}";
-      inherit description;
+      inherit description flakeattr;
     } else legacyDefaultSettings // {
       nixexprpath = "release.nix";
       nixexprinput = input;
@@ -476,17 +478,18 @@ let
     nameValuePair name jobset;
 
   # Make jobsets for extra project branches (e.g. release branches)
-  mkJobsetBranches = { name, description, url, input, modifier ? {}, flake }:
+  mkJobsetBranches = { name, description, url, input, modifier ? {}, flake, flakeattr }:
     mapAttrsToList (suffix: branch:
-      mkJobset { name = "${name}-${suffix}"; inherit description url input branch modifier flake; });
+      mkJobset { name = "${name}-${suffix}"; inherit description url input branch modifier flake flakeattr; });
 
   # Make a jobset for a GitHub PRs
-  mkJobsetPR = { name, input, modifier ? {}, flake }: num: info: {
+  mkJobsetPR = { name, input, modifier ? {}, flake, flakeattr }: num: info: {
     name = "${name}-pr-${num}";
     value = recursiveUpdate (if flake
     then flakeDefaultSettings // {
       description = "PR ${num}: ${info.title}";
       flake = "github:${info.head.repo.owner.login}/${info.head.repo.name}/${info.head.ref}";
+      inherit flakeattr;
     } else legacyDefaultSettings // {
       description = "PR ${num}: ${info.title}";
       nixexprinput = input;
@@ -499,9 +502,9 @@ let
   };
 
   # Load the PRs json and make a jobset for each
-  mkJobsetPRs = { name, input, prs, prFilter, modifier ? {}, flake }:
+  mkJobsetPRs = { name, input, prs, prFilter, modifier ? {}, flake, flakeattr }:
     mapAttrsToList
-      (mkJobsetPR { inherit name input modifier flake; })
+      (mkJobsetPR { inherit name input modifier flake flakeattr; })
       (loadPrsJSON prFilter prs);
 
   # Add two extra jobsets for the bors staging and trying branches.
@@ -524,7 +527,8 @@ let
       branch = info.branch or "master";
       modifier = info.modifier or {};
       flake = info.flake or false;
-      params = { inherit name input modifier flake; inherit (info) description url; };
+      flakeattr = info.flakeattr or null;
+      params = { inherit name input modifier flake flakeattr; inherit (info) description url; };
     in concatLists
       [ (optional (branch != null)
           (mkJobset (params // { inherit branch; })))
@@ -535,9 +539,10 @@ let
             inherit (info) prs;
             prFilter = info.prFilter or exclusionFilter;
             modifier = recursiveUpdate modifier (info.prModifier or {});
+            flakeattr = info.prAttr or flakeattr;
           }))
         (optionals (info.bors or false)
-          (mkJobsetBors params))
+          (mkJobsetBors (params // { flakeattr = info.borsAttr or flakeattr; })))
       ];
   in
     rs: listToAttrs (concatLists (mapAttrsToList mkRepo rs));

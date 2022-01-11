@@ -62,7 +62,6 @@
 , toolsPrsJSON ? ./simple-pr-dummy.json
 , votingToolsPrsJSON ? ./simple-pr-dummy.json
 , walletPrsJSON ? ./simple-pr-dummy.json
-, walletFlakePrsJSON ? ./simple-pr-dummy.json
 , acpPrsJSON ? ./simple-pr-dummy.json
 }:
 
@@ -217,20 +216,11 @@ let
 
     cardano-wallet = {
       description = "Cardano Wallet Backend";
-      url = "https://github.com/input-output-hk/cardano-wallet.git";
+      url = "github:input-output-hk/cardano-wallet";
       branch = "master";
       prs = walletPrsJSON;
-      bors = true;
-    };
-
-    cardano-wallet-flake = {
-      description = "Cardano Wallet Backend";
-      url = "github:input-output-hk/cardano-wallet";
-      branch = "flake";
-      prs = walletFlakePrsJSON;
       flake = true;
-      prFilter = dontBuildPrsFilter;
-      bors = false;
+      bors = true;
       prAttr = "hydraJobsPr";
       borsAttr = "hydraJobsBors";
     };

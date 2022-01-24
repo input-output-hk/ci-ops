@@ -159,6 +159,14 @@ let
       bors = true;
     };
 
+    cardano-node-flake-temp = {
+      description = "Cardano Node";
+      url = "https://github.com/input-output-hk/cardano-node.git";
+      #prs = cardanoNodePrsJSON;
+      bors = false;
+      flake = true;
+    };
+
     cardano-node-p2p = {
       description = "Cardano Node Peer to Peer";
       url = "https://github.com/input-output-hk/cardano-node.git";

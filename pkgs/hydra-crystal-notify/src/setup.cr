@@ -29,6 +29,7 @@ NOTIFY_URL        = ENV.fetch("NOTIFY_URL", "DEFAULT")
 
 DB_CONN_STR       = "postgres://#{DB_USER}/#{DB_DATABASE}?host=#{DB_HOST}&retry_attempts=#{DB_RETRY_ATTEMPTS}&retry_delay=#{DB_RETRY_DELAY}"
 URI_VAL           = %r([:/](?<owner>[^/]+)/(?<repo>[^/]+?)(?:.git)?$)
+FLAKE_REF           = %r([:](?<owner>[^/]+)/(?<repo>[^/]+?)/(?<rev>[^/]+?)$)
 DAMPING_ASYMPTOTE = 1.1
 DAMPING_CONSTANT  = API_PERIOD * Math.log(2) / Math.log(11)
 

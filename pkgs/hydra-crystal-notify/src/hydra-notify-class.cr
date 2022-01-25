@@ -195,22 +195,35 @@ class HydraNotifier
         else
           jobSet = "#{i["project"]}:#{i["jobset"]}"
           Log.debug { "EVAL_ADDED: DB QUERY OBTAINED -- jobSet: #{jobSet}" }
-          # Obtain eval_added key info
-          jobsetInput = i["jobset"].gsub(/-(pr-\d+|bors-(staging|trying))/, "")
-          unless j = queryEvalInputs(evalId, jobsetInput)
-            Log.debug { "#{n.channel} : #{n.payload} -- MISSING EVAL INPUT FOR #{evalId}, #{jobsetInput}" }
-            return nil
+          unless flakeRef = i["flake"] # (non-flake)
+            # Obtain eval_added key info
+            jobsetInput = i["jobset"].gsub(/-(pr-\d+|bors-(staging|trying))/, "")
+            unless j = queryEvalInputs(evalId, jobsetInput)
+              Log.debug { "#{n.channel} : #{n.payload} -- MISSING EVAL INPUT FOR #{evalId}, #{jobsetInput}" }
+              return nil
+            else
+              uri = j["uri"]
+              rev = j["revision"]
+              key = "#{uri}|#{rev}"
+              Log.debug { "EVAL_ADDED: DB QUERY OBTAINED -- uri: #{uri}, rev: #{rev}" }
+              unless m = URI_VAL.match(uri.to_s)
+                Log.error { "#{n.channel}: #{n.payload}, Size: #{p.size} -- EVAL URI VALIDATION FAILED" }
+                return nil
+              end
+              owner = m["owner"]
+              repo = m["repo"]
+              Log.debug { "EVAL_ADDED: DB QUERY OBTAINED -- owner: #{owner}, repo: #{repo}" }
+            end
           else
-            uri = j["uri"]
-            rev = j["revision"]
-            key = "#{uri}|#{rev}"
-            Log.debug { "EVAL_ADDED: DB QUERY OBTAINED -- uri: #{uri}, rev: #{rev}" }
-            unless m = URI_VAL.match(uri.to_s)
-              Log.error { "#{n.channel}: #{n.payload}, Size: #{p.size} -- EVAL URI VALIDATION FAILED" }
+            unless m = FLAKE_REF.match(flakeRef)
+              Log.error { "#{n.channel} : #{n.payload}, Size: #{p.size} -- EVAL URI VALIDATION FAILED FOR #{evalId}, #{flakeRef}" }
               return nil
             else
               owner = m["owner"]
               repo = m["repo"]
+              uri = "https://github.com/#{owner}/#{repo}.git"
+              rev = m["rev"]
+              Log.debug { "EVAL_ADDED: DB QUERY OBTAINED -- uri: #{uri}, rev: #{rev}" }
               Log.debug { "EVAL_ADDED: DB QUERY OBTAINED -- owner: #{owner}, repo: #{repo}" }
             end
           end
@@ -472,14 +485,26 @@ class HydraNotifier
             # Verify the hashmap when multiple evals per build are found
             Log.debug { "buildHash map #{n.channel} #{build[:id]} #{eval[:id]} #{input}: #{buildSeen}" } if buildSeen.size > 0
 
-            # Skip notifying on evals which have missing inputs
-            unless i = queryEvalInputs(eval[:id], input)
-              Log.debug { "#{n.channel} : #{n.payload} -- MISSING EVAL INPUT FOR #{eval[:id]}, #{input}" }
-              next
+
+            unless flakeRef = eval[:flake]
+              # Skip notifying on evals which have missing inputs (for legacy jobs)
+              unless i = queryEvalInputs(eval[:id], input)
+                Log.debug { "#{n.channel} : #{n.payload} -- MISSING EVAL INPUT FOR #{eval[:id]}, #{input}" }
+                next
+              else
+                uri = i["uri"]
+                rev = i["revision"]
+              end
+            else
+              unless m = FLAKE_REF.match(flakeRef)
+                Log.error { "#{n.channel} : #{n.payload} -- EVAL URI VALIDATION FAILED FOR #{eval[:id]}, #{flakeRef}" }
+                next
+              else
+                uri = "https://github.com/#{m["owner"]}/#{m["repo"]}.git"
+                rev = m["rev"]
+              end
             end
 
-            uri = i["uri"]
-            rev = i["revision"]
             key = "#{uri}-#{rev}"
             next if buildSeen.dig?(input, key)
             buildSeen.deep_merge!({input => {key => true}})

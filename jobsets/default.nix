@@ -161,7 +161,7 @@ let
 
     cardano-node-flake-temp = {
       description = "Cardano Node";
-      url = "github.com:input-output-hk/cardano-node.git";
+      url = "github.com:input-output-hk/cardano-node";
       #prs = cardanoNodePrsJSON;
       bors = false;
       flake = true;

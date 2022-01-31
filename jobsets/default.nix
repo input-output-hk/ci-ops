@@ -298,6 +298,13 @@ let
       bors = true;
     };
 
+    marlowe-cardano-integration = {
+      description = "Integrate marlowe-cardano-starter with latest plutus-apps";
+      url = "https://github.com/input-output-hk/marlowe-cardano.git";
+      branch = "main";
+      extraInputs.plutus-apps = mkFetchGithub "https://github.com/input-output-hk/plutus-apps.git main";
+    };
+
     marlowe-cardano = {
       description = "Marlowe Cardano implementation";
       url = "https://github.com/input-output-hk/marlowe-cardano.git";

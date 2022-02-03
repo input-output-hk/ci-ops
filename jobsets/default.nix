@@ -184,6 +184,15 @@ let
       bors = true;
     };
 
+    cardano-ogmios = {
+      description = "Cardano ogmios nix build";
+      url = "https://github.com/input-output-hk/cardano-ogmios.git";
+      branch = "main";
+      prs = cardanoOgmiosPrsJSON;
+      flake = true;
+      bors = true;
+    };
+
     cardano-prelude = {
       description = "Cardano Prelude";
       url = "https://github.com/input-output-hk/cardano-prelude.git";

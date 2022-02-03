@@ -23,6 +23,7 @@
          ,"cardanoMemoryBenchmarkPrsJSON": { "type": "githubpulls", "value": "input-output-hk cardano-memory-benchmark", "emailresponsible": false }
          ,"cardanoNodeP2PPrsJSON": { "type": "githubpulls", "value": "input-output-hk cardano-node", "emailresponsible": false }
          ,"cardanoNodePrsJSON": { "type": "githubpulls", "value": "input-output-hk cardano-node", "emailresponsible": false }
+         ,"cardanoOgmiosPrsJSON": { "type": "githubpulls", "value": "input-output-hk cardano-ogmios", "emailresponsible": false }
          ,"cardanoOpsPrsJSON": { "type": "githubpulls", "value": "input-output-hk cardano-ops", "emailresponsible": false }
          ,"cardanoPreludePrsJSON": { "type": "githubpulls", "value": "input-output-hk cardano-prelude", "emailresponsible": false }
          ,"cardanoRestPrsJSON": { "type": "githubpulls", "value": "input-output-hk cardano-rest", "emailresponsible": false }

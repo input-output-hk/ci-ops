@@ -65,6 +65,7 @@ let
       { jobset = "cardano-memory-benchmark"; }
       { jobset = "cardano-node-p2p"; }
       { jobset = "cardano-node"; }                      # Below cardano-node-p2p for regex match
+      { jobset = "cardano-ogmios"; }
       { jobset = "cardano-ops"; }
       { jobset = "cardano-prelude"; }
       { jobset = "cardano-rest"; }

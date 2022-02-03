@@ -384,6 +384,8 @@ let
       url = "https://github.com/input-output-hk/voting-tools.git";
       branch = "master";
       prs = votingToolsPrsJSON;
+      flake = true;
+      flakeattr = "packages";
       bors = true;
     };
 

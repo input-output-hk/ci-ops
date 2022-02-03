@@ -394,7 +394,6 @@ let
       branch = "master";
       prs = votingToolsPrsJSON;
       flake = true;
-      flakeattr = "packages";
       bors = true;
     };
 

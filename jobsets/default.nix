@@ -390,7 +390,7 @@ let
 
     voting-tools = {
       description = "Voting Tools";
-      url = "https://github.com/input-output-hk/voting-tools.git";
+      url = "github:input-output-hk/voting-tools";
       branch = "master";
       prs = votingToolsPrsJSON;
       flake = true;

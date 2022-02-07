@@ -32,6 +32,7 @@
 , cardanoMemoryBenchmarkPrsJSON ? ./simple-pr-dummy.json
 , cardanoNodeP2PPrsJSON ? ./simple-pr-dummy.json
 , cardanoNodePrsJSON ? ./simple-pr-dummy.json
+, cardanoOgmiosPrsJSON ? ./simple-pr-dummy.json
 , cardanoOpsPrsJSON ? ./simple-pr-dummy.json
 , cardanoPreludePrsJSON ? ./simple-pr-dummy.json
 , cardanoRestPrsJSON ? ./simple-pr-dummy.json

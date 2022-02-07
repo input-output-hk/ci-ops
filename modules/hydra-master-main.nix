@@ -84,11 +84,13 @@ let
       { jobset = "jormungandr"; }
       { jobset = "kes-mmm-sumed25519"; }
       { jobset = "log-classifier"; }
-      { jobset = "marlowe-cardano"; }
+      { jobset = "marlowe-cardano-integration"; }
+      { jobset = "marlowe-cardano"; }                   # Below marlowe-cardano-integration for regex match
       { jobset = "marlowe-website"; }
       { jobset = "offchain-metadata-tools"; }
       { jobset = "ouroboros-network"; }
-      { jobset = "plutus-starter"; }
+      { jobset = "plutus-starter-integration"; }
+      { jobset = "plutus-starter"; }                    # Below plutus-starter-integration for regex match
       { jobset = "plutus-apps"; }
       { jobset = "plutus-ops"; }
       { jobset = "plutus"; }                            # Below plutus-* jobsets for regex match

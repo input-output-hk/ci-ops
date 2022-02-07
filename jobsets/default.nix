@@ -308,6 +308,13 @@ let
       bors = true;
     };
 
+    marlowe-cardano-integration = {
+      description = "Integrate marlowe-cardano-starter with latest plutus-apps";
+      url = "https://github.com/input-output-hk/marlowe-cardano.git";
+      branch = "main";
+      extraInputs.plutus-apps = mkFetchGithub "https://github.com/input-output-hk/plutus-apps.git main";
+    };
+
     marlowe-cardano = {
       description = "Marlowe Cardano implementation";
       url = "https://github.com/input-output-hk/marlowe-cardano.git";
@@ -356,6 +363,13 @@ let
       url = "github:input-output-hk/plutus-ops";
       prs = plutusOpsPrsJSON;
       flake = true;
+    };
+
+    plutus-starter-integration = {
+      description = "Integrate plutus-starter with latest plutus-apps";
+      url = "https://github.com/input-output-hk/plutus-starter.git";
+      branch = "main";
+      extraInputs.plutus-apps = mkFetchGithub "https://github.com/input-output-hk/plutus-apps.git main";
     };
 
     plutus-starter = {
@@ -470,18 +484,19 @@ let
     (builtins.fromJSON (builtins.readFile path));
 
   # Make jobset for a project default build
-  mkJobset = { name, description, url, input, branch, modifier ? {}, flake, flakeattr }: let
+  mkJobset = { name, description, url, input, branch, modifier ? {}, flake, flakeattr, extraInputs ? {} }: let
     jobset = recursiveUpdate (if flake
     then flakeDefaultSettings // {
       flake = "${url}/${branch}";
       inherit description flakeattr;
+      inputs = extraInputs;
     } else legacyDefaultSettings // {
       nixexprpath = "release.nix";
       nixexprinput = input;
       inherit description;
       inputs = {
         "${input}" = mkFetchGithub "${url} ${branch}";
-      };
+      } // extraInputs;
     }) modifier;
   in
     nameValuePair name jobset;
@@ -537,6 +552,7 @@ let
       modifier = info.modifier or {};
       flake = info.flake or false;
       flakeattr = info.flakeattr or null;
+      extraInputs = info.extraInputs or {};
       params = { inherit name input modifier flake flakeattr; inherit (info) description url; };
     in concatLists
       [ (optional (branch != null)

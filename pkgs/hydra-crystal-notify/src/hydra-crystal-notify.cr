@@ -22,11 +22,11 @@ def maintenance(notify)
   # Expire hashes older than NOTIFIED_TTL and provide a maintenance update
   ts = Time.utc.to_unix
 
-  evalHash.delete_if { |k, v| (ts - v["at"].as(Int64)) > NOTIFIED_TTL }
+  evalHash.reject! { |k, v| (ts - v["at"].as(Int64)) > NOTIFIED_TTL }
   evalOldest = evalHash.size > 0 ? evalHash.min_of { |k, v| v["at"].as(Int64) } : ts
   evalNextPurge = NOTIFIED_TTL - (ts - evalOldest)
 
-  buildHash.delete_if { |k, v| (ts - v["at"].as(Int64)) > NOTIFIED_TTL }
+  buildHash.reject! { |k, v| (ts - v["at"].as(Int64)) > NOTIFIED_TTL }
   buildOldest = buildHash.size > 0 ? buildHash.min_of { |k, v| v["at"].as(Int64) } : ts
   buildNextPurge = NOTIFIED_TTL - (ts - buildOldest)
 

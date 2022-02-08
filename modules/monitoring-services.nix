@@ -105,19 +105,6 @@ in {
         '';
       };
 
-      logging = mkOption {
-        type = types.bool;
-        default = false;
-        description = ''
-          Enable log collection via graylog and journalbeat.
-          This option installs graylog, elasticsearch, mongodb and
-          a journalbeat graylog input.
-          See also the corresponding journalbeat exporter option in
-          the monitoring-exporters.nix module:
-          config.services.monitoring-exporters.logging
-        '';
-      };
-
       monitoringProject = mkOption {
         type = types.str;
         default = "Cardano";

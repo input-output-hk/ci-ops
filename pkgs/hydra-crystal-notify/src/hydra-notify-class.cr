@@ -696,11 +696,13 @@ class HydraNotifier
   end
 
   class ExistingState
-    JSON.mapping(
-      context: {type: String?, key: "context"},
-      updatedAt: {type: Time?, key: "updated_at"},
-      state: {type: String?, key: "state"}
-    )
+    include JSON::Serializable
+    @[JSON::Field(key: "context")]
+    property context : String?
+    @[JSON::Field(key: "updated_at")]
+    property updatedAt : Time?
+    @[JSON::Field(key: "state")]
+    property state : String?
   end
 
   def statusNotify(successMsgPrefix,

@@ -17,7 +17,7 @@
     script = ''
       mkdir -p ~buildkite-agent-iohk/.docker
       ln -sf /run/keys/dockerhub-auth ~buildkite-agent-iohk/.docker/config.json
-      chown -R buildkite-agent-iohk:nogroup ~buildkite-agent-iohk/.docker
+      chown -R buildkite-agent-iohk:buildkite-agent-iohk ~buildkite-agent-iohk/.docker
     '';
     serviceConfig = {
       Type = "oneshot";

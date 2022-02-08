@@ -171,7 +171,7 @@ in {
       evaluator_max_memory_size = 16384
       max_db_connections = 50
 
-      max_concurrent_evals = 3
+      max_concurrent_evals = 2
 
       store_uri = s3://iohk-nix-cache?secret-key=/etc/nix/hydra.iohk.io-1/secret&log-compression=br&region=eu-central-1
       server_store_uri = https://iohk-nix-cache.s3-eu-central-1.amazonaws.com/

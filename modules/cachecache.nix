@@ -12,9 +12,11 @@ in {
   config = mkIf cfg.enable {
     users.users.cachecache = {
       home = "/var/lib/cachecache";
+      group = "cachecache";
       isSystemUser = true;
       createHome = true;
     };
+    users.groups.cachecache = {};
     systemd.services.cachecache = {
       wantedBy = [ "multi-user.target" ];
       path = [ iohkops.cachecache ];

@@ -4,10 +4,10 @@ in {
   imports = [ ../modules/hydra-slave.nix ];
 
   services.auto-gc = {
-    nixAutoMaxFreedGB  = 900;
-    nixAutoMinFreeGB   = 120;
-    nixHourlyMaxFreedGB = 900;
-    nixHourlyMinFreeGB = 100;
+    nixAutoMaxFreedGB  = 150;
+    nixAutoMinFreeGB   = 90;
+    nixHourlyMaxFreedGB = 600;
+    nixHourlyMinFreeGB = 150;
     nixWeeklyGcFull = true;
     nixWeeklyGcOnCalendar = "Sat *-*-* 20:00:00";
   };

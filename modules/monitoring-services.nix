@@ -412,6 +412,8 @@ in {
           "/graylog/".extraConfig = oauthProxyConfig;
         };
       };
+      users.users.oauth2_proxy.group = "oauth2_proxy";
+      users.groups.oauth2_proxy = {};
     }))
     {
       networking.firewall.allowedTCPPorts = [ 80 ];

@@ -1,4 +1,4 @@
-{ targetEnv, smaller, small, small-cpr, medium, medium-cpr, medium-ng-cpr, medium-ng, medium-cpr-reserved, large-storage }:
+{ targetEnv, smaller, small, small-cpr, medium, medium-cpr, medium-ng-cpr, medium-ng, medium-cpr-reserved, large-storage, small-ng-cpr }:
 let
   mkNodes = import ../nix/mk-nodes.nix { inherit targetEnv; };
   mkMacs = import ../nix/mk-macs.nix;
@@ -44,12 +44,11 @@ let
   mkBenchmarkHydra = hostIdSuffix: {
     imports = [
       ../roles/hydra-slave.nix
-      medium-ng-cpr
+      small-ng-cpr
     ];
     deployment.packet = {
-      inherit nixosVersion;
+      nixosVersion = "nixos_21_11";
       facility = "ams1";
-      #plan = lib.mkForce "c3.medium.x86";
     };
     # boot.loader.grub = {
     #   efiSupport = false;
@@ -116,6 +115,7 @@ let
     # benchmarking hydra slave
      packet-benchmark-hydra-1 = mkBenchmarkHydra "6";
      packet-benchmark-hydra-2 = mkBenchmarkHydra "7";
+     packet-benchmark-hydra-3 = mkBenchmarkHydra "8";
   };
 
   macs = mkMacs {

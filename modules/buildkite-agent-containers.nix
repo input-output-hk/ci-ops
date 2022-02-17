@@ -150,12 +150,16 @@ in with lib;
           };
           users.users.buildkite-agent-iohk = {
             isSystemUser = true;
+            group = "buildkite-agent-iohk";
             # To ensure buildkite-agent-iohk user sharing of keys in guests
             uid = 10000;
             extraGroups = [
               "keys"
               "docker"
             ];
+          };
+          users.groups.buildkite-agent-iohk = {
+            gid = 10000;
           };
 
           # Globally enable stack's nix integration so that stack builds have
@@ -169,7 +173,7 @@ in with lib;
             wantedBy = [ "buildkite-agent.service" ];
             script = ''
               mkdir -p /build /scratch
-              chown -R buildkite-agent:nogroup /build /scratch
+              chown -R buildkite-agent-iohk:buildkite-agent-iohk /build /scratch
             '';
             serviceConfig = {
               Type = "oneshot";
@@ -281,7 +285,7 @@ in with lib;
     system.activationScripts.cacheDir = {
       text = ''
         mkdir -p /cache
-        chown -R buildkite-agent-iohk:nogroup /cache || true
+        chown -R buildkite-agent-iohk:buildkite-agent-iohk /cache || true
       '';
       deps = [];
     };
@@ -290,8 +294,12 @@ in with lib;
       home = "/var/lib/buildkite-agent";
       isSystemUser = true;
       createHome = true;
+      group = "buildkite-agent-iohk";
       # To ensure buildkite-agent-iohk user sharing of keys in guests
       uid = 10000;
+    };
+    users.groups.buildkite-agent-iohk = {
+      gid = 10000;
     };
 
     environment.systemPackages = [ pkgs.nixos-container ];

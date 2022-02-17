@@ -28,13 +28,6 @@
       enable = true;
       mockMode = false;
     };
-    postgresql = {
-      settings = {
-        max_connections = 200;
-        shared_preload_libraries = "pg_stat_statements";
-        "pg_stat_statements.track" = "all";
-      };
-    };
   };
 
   # An additional ZFS vol outside of the usual physical spec was created manually for ease of Hydra db snapshotting and backups with:

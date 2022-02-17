@@ -2,14 +2,14 @@
   crest = {
     owner = "mamantoha";
     repo = "crest";
-    rev = "v0.25.0";
-    sha256 = "0myshkfznz0z8ga2226s7jbq5abaq3fa9gwlkz8ywslrsns3s1xq";
+    rev = "v1.1.0";
+    sha256 = "0haa1jlfv42ayhbv3hcr94z5rmbcx3qvci7cz7hxsnghgd9arzaj";
   };
   db = {
     owner = "crystal-lang";
     repo = "crystal-db";
-    rev = "v0.9.0";
-    sha256 = "0am5njx9g0m7lqmzs4qpgrnqq2pl9yb9h6jfrwgarx15c4jdrrzd";
+    rev = "v0.10.1";
+    sha256 = "03c5h14z6h2mxnx949lihnyqjd19hcj38iasdwq9fp95h8cld376";
   };
   deep-merge = {
     owner = "peterhoeg";
@@ -20,13 +20,19 @@
   http-client-digest_auth = {
     owner = "mamantoha";
     repo = "http-client-digest_auth";
-    rev = "v0.3.0";
-    sha256 = "1vp4adifyrwncb5xl8c954x9j1mkazq815fn02scrbhghf7cg4l0";
+    rev = "v0.6.0";
+    sha256 = "1qd6k36bfyjx1c448y5s60rfs8n5mf1dc70cbpf1cjwkg2b1cp36";
+  };
+  http_proxy = {
+    owner = "mamantoha";
+    repo = "http_proxy";
+    rev = "v0.8.0";
+    sha256 = "1lyxp10wh7jfhmbhf0a31p6h0v1hnqdh3wqal252bjsmd22wsbi0";
   };
   pg = {
     owner = "will";
     repo = "crystal-pg";
-    rev = "v0.21.0";
-    sha256 = "0qqz2137fijh6c2chixx19bcmnxi1bj0p3aa0zv44jsdlkswp3lk";
+    rev = "v0.24.0";
+    sha256 = "07i5bqkv5j6y6f8v5cpqdxc5wzzrvgv3ds24znv4mzv6nc84csn4";
   };
 }

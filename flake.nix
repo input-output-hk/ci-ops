@@ -1,6 +1,6 @@
 {
   inputs = {
-    hydra.url = "github:input-output-hk/hydra/iohk-master-rebased";
+    hydra.url = "github:input-output-hk/hydra/nixUnstable";
     cachecache.url = "github:cleverca22/cachecache";
   };
   outputs = { ... }: {

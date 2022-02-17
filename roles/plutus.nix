@@ -17,10 +17,10 @@ in {
   '';
 
   services.auto-gc = {
-    nixAutoMaxFreedGB  = 200;
+    nixAutoMaxFreedGB  = 100;
     nixAutoMinFreeGB   = 60;
     nixHourlyMaxFreedGB = 200;
-    nixHourlyMinFreeGB = 40;
+    nixHourlyMinFreeGB = 100;
     nixWeeklyGcFull = true;
     nixWeeklyGcOnCalendar = "Sat *-*-* 20:00:00";
   };

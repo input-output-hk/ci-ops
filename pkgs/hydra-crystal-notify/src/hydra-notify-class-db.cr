@@ -30,26 +30,29 @@ class HydraNotifier
   def queryBuild(buildId)
     begin
       @db.query_one(<<-SQL, buildId, as: QUERY_BUILD)
-        SELECT id,
-               finished,
-               timestamp,
-               project,
-               jobset,
-               job,
-               nixname,
-               drvpath,
-               system,
-               iscurrent,
-               starttime,
-               stoptime,
-               iscachedbuild,
-               buildstatus,
-               size,
-               closuresize,
-               keep,
-               notificationpendingsince,
-               jobset_id
-        FROM builds WHERE id = $1 LIMIT 1
+        SELECT b.id,
+               b.finished,
+               b.timestamp,
+               j.project as project,
+               j.name as jobset,
+               b.job,
+               b.nixname,
+               b.drvpath,
+               b.system,
+               b.iscurrent,
+               b.starttime,
+               b.stoptime,
+               b.iscachedbuild,
+               b.buildstatus,
+               b.size,
+               b.closuresize,
+               b.keep,
+               b.notificationpendingsince,
+               b.jobset_id
+        FROM builds b
+        JOIN jobsets j on j.id = b.jobset_id
+        WHERE b.id = $1
+        LIMIT 1
       SQL
     rescue ex : DB::NoResultsError
       Log.error { "queryBuild(#{buildId}) -- EXCEPTION: \"#{ex.message}\"" }

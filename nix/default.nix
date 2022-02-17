@@ -5,13 +5,13 @@ let
   sources = import ./sources.nix { inherit pkgs; };
 
   overlay = self: super: {
-    crystal = self.crystal_0_34;
     packages = self.callPackages ./packages.nix { };
+    inherit (self.packages) nix;
     systemd-exporter = self.callPackage ../pkgs/systemd_exporter { };
     globals = import ../globals.nix;
 
     nixops = (import (sources.nixops-core + "/release.nix") {
-      nixpkgs = super.path;
+      nixpkgs = sources.nixpkgs-nixops;
       p = (p:
         let
           pluginSources = with sources; [

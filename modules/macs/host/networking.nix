@@ -106,7 +106,7 @@ in {
 
     services.kresd = {
       enable = true;
-      interfaces = [ "::1" "127.0.0.1" ] ++ map (x: x.routerIP) guestIPs;
+      listenPlain = map (ip: "${ip}:53") ([ "[::1]" "127.0.0.1" ] ++ map (x: x.routerIP) guestIPs);
       extraConfig = ''
         modules = {
           'policy',   -- Block queries to local zones/bad sites

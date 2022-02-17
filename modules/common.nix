@@ -40,7 +40,6 @@ in {
 
   services = {
     monitoring-exporters = {
-      graylogHost = if config.services.node-wireguard.enable then "monitoring-wg:5044" else "monitoring:5044";
       ownIp = config.node.wireguardIP;
       useWireguardListeners = true;
     };
@@ -61,7 +60,7 @@ in {
   };
 
   nix = rec {
-    package = pkgs.nixUnstable;
+    package = (import ../nix {}).packages.nix;
 
     # use nix sandboxing for greater determinism
     useSandbox = true;

@@ -187,7 +187,7 @@ let
 
     cardano-ogmios = {
       description = "Cardano ogmios nix build";
-      url = "https://github.com/input-output-hk/cardano-ogmios.git";
+      url = "github:input-output-hk/cardano-ogmios";
       branch = "main";
       prs = cardanoOgmiosPrsJSON;
       flake = true;

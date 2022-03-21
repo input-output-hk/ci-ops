@@ -45,10 +45,6 @@ let
           description = "The MAC address to assign the guest's NIC.";
           default = "52:54:00:c9:18:27";
         };
-        cloverImage = mkOption {
-          type = types.path;
-          description = "Path to the Clover bootloader.";
-        };
         sockets = mkOption {
           type = types.int;
           description = ''
@@ -104,14 +100,6 @@ let
             says this is the number of megs. Save 1G or 2G or so for
             the host and ZFS.
           '';
-        };
-        ovmfCodeFile = mkOption {
-          type = types.path;
-          description = "Path to the OVMF Code File.";
-        };
-        ovmfVarsFile = mkOption {
-          type = types.path;
-          description = "Path to the OVMF Variable File.";
         };
         vncListen = mkOption {
           type = types.str;

@@ -10,6 +10,11 @@
     ../modules/hydra-crystal-notify.nix
   ];
 
+  # Temporary runtime limit on hydra-queue-runner to work around builder jobs dying
+  systemd.services.hydra-queue-runner.serviceConfig.Restart = "always";
+  systemd.services.hydra-queue-runner.serviceConfig.RestartSec = "30s";
+  systemd.services.hydra-queue-runner.serviceConfig.RuntimeMaxSec = 4 * 60 * 60;
+
   services = {
     auto-gc = {
       nixAutoGcEnable = false;

@@ -45,10 +45,6 @@ let
           description = "The MAC address to assign the guest's NIC.";
           default = "52:54:00:c9:18:27";
         };
-        cloverImage = mkOption {
-          type = types.path;
-          description = "Path to the Clover bootloader.";
-        };
         sockets = mkOption {
           type = types.int;
           description = ''

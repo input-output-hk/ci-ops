@@ -1,9 +1,10 @@
 #!/usr/bin/env nix-shell
 #!nix-shell -p wireguard crystal -i crystal
+DO NOT USE
 
 keydir = "secrets/wireguard"
 
-needed = `nix eval --raw '((import ./scripts/nodes.nix).allStrings)'`.split(" ")
+needed = `nix-instantiate --eval -E '((import ./scripts/nodes.nix).allStrings)'`.split(" ")
 existing = Dir["#{keydir}/*.ip"].map{|f| File.basename(f, ".ip") }
 
 ips = needed.each.with_index.map{|(_, i)|

@@ -730,13 +730,24 @@ in {
                   rules = [
                     {
                       alert = "node_down";
-                      expr = "up == 0";
+                      expr = "up{alias!=\"packet-ipxe-hydra-1\"} == 0";
                       for = "5m";
                       labels = { severity = "page"; };
                       annotations = {
                         summary = "{{$labels.alias}}: Node is down.";
                         description =
                           "{{$labels.alias}} has been down for more than 5 minutes.";
+                      };
+                    }
+                    {
+                      alert = "node_down";
+                      expr = "up{alias=\"packet-ipxe-hydra-1\"} == 0";
+                      for = "15m";
+                      labels = { severity = "page"; };
+                      annotations = {
+                        summary = "{{$labels.alias}}: Node is down.";
+                        description =
+                          "{{$labels.alias}} has been down for more than 15 minutes.";
                       };
                     }
                     {

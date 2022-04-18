@@ -52,13 +52,13 @@
       alert = "hydra_build_queue_not_found";
       expr = ''
         ((hydra_builds_queued or on() vector(-1)) == bool -1) == 1'';
-      for = "10m";
+      for = "20m";
       labels = { severity = "page"; };
       annotations = {
         summary =
           "{{$labels.alias}}: Hydra build queue is missing.";
         description =
-          "{{$labels.alias}} Hydra build queue has been missing for 10 minutes or more.";
+          "{{$labels.alias}} Hydra build queue has been missing for 20 minutes or more.";
       };
     }
   ];

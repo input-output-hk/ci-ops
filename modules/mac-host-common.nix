@@ -183,7 +183,7 @@ in {
       };
       machines = {
         ci = {
-          zvolName = "tank/catalina-image1-128gb";
+          zvolName = "tank/monterey-image1-128gb";
           network = {
             interiorNetworkPrefix = "192.168.3";
             guestSshPort = 2200;
@@ -199,14 +199,13 @@ in {
             memoryInMegs = 24 * 1024;
             ovmfCodeFile = ./macs/dist/OVMF_CODE.fd;
             ovmfVarsFile = "${pkgs.OVMF.fd}/FV/OVMF_VARS.fd";
-            cloverImage = (pkgs.callPackage ./macs/clover-image.nix { csrFlag = "0x23"; }).clover-image;
             MACAddress = "52:54:00:c9:18:27";
             vncListen = "0.0.0.0:0";
             spicePort = 5950;
           };
         };
         signing = {
-          zvolName = "tank/catalina-image2-xcode-128gb";
+          zvolName = "tank/monterey-image2-xcode-128gb";
           network = {
             interiorNetworkPrefix = "192.168.4";
             guestSshPort = 2201;
@@ -222,7 +221,6 @@ in {
             memoryInMegs = 12 * 1024;
             ovmfCodeFile = ./macs/dist/OVMF_CODE.fd;
             ovmfVarsFile = "${pkgs.OVMF.fd}/FV/OVMF_VARS.fd";
-            cloverImage = (pkgs.callPackage ./macs/clover-image.nix { csrFlag = "0x23"; }).clover-image;
             MACAddress = "52:54:00:c9:18:28";
             vncListen = "0.0.0.0:1";
             spicePort = 5951;

@@ -7,6 +7,7 @@ let
     smaller = ../physical/packet/t3.small.nix;
     small = ../physical/packet/c1.small.nix;
     small-cpr = ../physical/packet/c1-cpr.small.nix;
+    small-ng-cpr = ../physical/packet/c3-cpr.small.nix;
     medium = ../physical/packet/c2.medium.nix;
     medium-cpr = ../physical/packet/c2-cpr.medium.nix;
     medium-ng = ../physical/packet/c3.medium.nix;

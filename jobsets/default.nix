@@ -51,6 +51,7 @@
 , offchainMetadataToolsPrsJSON ? ./simple-pr-dummy.json
 , marloweCardanoPrsJSON ? ./simple-pr-dummy.json
 , marloweWebsitePrsJSON ? ./simple-pr-dummy.json
+, marlowePrsJSON ? ./simple-pr-dummy.json
 , nixopsPrsJSON ? ./simple-pr-dummy.json
 , ouroborosNetworkPrsJSON ? ./simple-pr-dummy.json
 , plutusPrsJSON ? ./simple-pr-dummy.json
@@ -327,6 +328,12 @@ let
       url = "github:input-output-hk/marlowe-website";
       prs = marloweWebsitePrsJSON;
       flake = true;
+    };
+
+    marlowe = {
+      description = "Marlowe specs and prototype";
+      url = "https://github.com/input-output-hk/marlowe.git";
+      prs = marlowePrsJSON;
     };
 
     offchain-metadata-tools = {

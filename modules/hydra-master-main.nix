@@ -87,6 +87,7 @@ let
       { jobset = "marlowe-cardano-integration"; }
       { jobset = "marlowe-cardano"; }                   # Below marlowe-cardano-integration for regex match
       { jobset = "marlowe-website"; }
+      { jobset = "marlowe"; }
       { jobset = "offchain-metadata-tools"; }
       { jobset = "ouroboros-network"; }
       { jobset = "plutus-starter-integration"; }

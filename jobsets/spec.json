@@ -41,6 +41,7 @@
          ,"ledgerPrsJSON": { "type": "githubpulls", "value": "input-output-hk cardano-ledger", "emailresponsible": false }
          ,"marloweCardanoPrsJSON": { "type": "githubpulls", "value": "input-output-hk marlowe-cardano", "emailresponsible": false }
          ,"marloweWebsitePrsJSON": { "type": "githubpulls", "value": "input-output-hk marlowe-website", "emailresponsible": false }
+         ,"marlowePrsJSON": { "type": "githubpulls", "value": "input-output-hk marlowe", "emailresponsible": false }
          ,"offchainMetadataToolsPrsJSON": { "type": "githubpulls", "value": "input-output-hk offchain-metadata-tools", "emailresponsible": false }
          ,"nixopsPrsJSON": { "type": "githubpulls", "value": "input-output-hk iohk-ops", "emailresponsible": false }
          ,"ouroborosNetworkPrsJSON": { "type": "githubpulls", "value": "input-output-hk ouroboros-network", "emailresponsible": false }

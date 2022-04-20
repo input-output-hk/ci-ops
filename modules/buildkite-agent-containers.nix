@@ -302,6 +302,9 @@ in with lib;
       gid = 10000;
     };
 
+    environment.etc."mdadm.conf".text = ''
+      MAILADDR root
+    '';
     environment.systemPackages = [ pkgs.nixos-container ];
     networking.nat.enable = true;
     networking.nat.internalInterfaces = [ "ve-+" ];

@@ -12,9 +12,6 @@ in {
   };
 
   users.extraUsers.root.openssh.authorizedKeys.keys = ssh-keys.devOps ++ ssh-keys.plutus-developers;
-  environment.etc."mdadm.conf".text = ''
-    MAILADDR root
-  '';
 
   services.auto-gc = {
     nixAutoMaxFreedGB  = 100;

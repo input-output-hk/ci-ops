@@ -36,6 +36,7 @@
          ,"hydraPocPrsJSON": { "type": "githubpulls", "value": "input-output-hk hydra-poc", "emailresponsible": false }
          ,"iohkMonitoringPrsJSON": { "type": "githubpulls", "value": "input-output-hk iohk-monitoring-framework", "emailresponsible": false }
          ,"iohkNixPrsJSON": { "type": "githubpulls", "value": "input-output-hk iohk-nix", "emailresponsible": false }
+         ,"ioSimPrsJSON": { "type": "githubpulls", "value": "input-output-hk io-sim", "emailresponsible": false }
          ,"jormungandrPrsJSON": { "type": "githubpulls", "value": "input-output-hk jormungandr-nix", "emailresponsible": false }
          ,"kesPrsJSON": { "type": "githubpulls", "value": "input-output-hk kes-mmm-sumed25519", "emailresponsible": false }
          ,"ledgerPrsJSON": { "type": "githubpulls", "value": "input-output-hk cardano-ledger", "emailresponsible": false }
@@ -53,6 +54,7 @@
          ,"shellPrsJSON": { "type": "githubpulls", "value": "input-output-hk cardano-shell", "emailresponsible": false }
          ,"smashPrsJSON": { "type": "githubpulls", "value": "input-output-hk smash", "emailresponsible": false }
          ,"toolsPrsJSON": { "type": "githubpulls", "value": "input-output-hk tools", "emailresponsible": false }
+         ,"typedProtocolsPrsJSON": { "type": "githubpulls", "value": "input-output-hk typed-protocols", "emailresponsible": false }
          ,"votingToolsPrsJSON": { "type": "githubpulls", "value": "input-output-hk voting-tools", "emailresponsible": false }
          ,"walletPrsJSON": { "type": "githubpulls", "value": "input-output-hk cardano-wallet", "emailresponsible": false }
          ,"acpPrsJSON": { "type": "githubpulls", "value": "input-output-hk acp", "emailresponsible": false }

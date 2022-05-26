@@ -62,7 +62,6 @@
 , purescriptWebCommonPrsJSON ? ./simple-pr-dummy.json
 , shellPrsJSON ? ./simple-pr-dummy.json
 , smashPrsJSON ? ./simple-pr-dummy.json
-, toolsPrsJSON ? ./simple-pr-dummy.json
 , typedProtocolsPrsJSON ? ./simple-pr-dummy.json
 , votingToolsPrsJSON ? ./simple-pr-dummy.json
 , walletPrsJSON ? ./simple-pr-dummy.json
@@ -410,13 +409,6 @@ let
       branch = "master";
       prs = smashPrsJSON;
       bors = true;
-    };
-
-    tools = {
-      description = "Loony Tools";
-      url = "https://github.com/input-output-hk/tools.git";
-      branch = "master";
-      prs = toolsPrsJSON;
     };
 
     typed-protocols = {

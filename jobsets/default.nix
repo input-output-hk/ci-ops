@@ -38,6 +38,7 @@
 , cardanoRestPrsJSON ? ./simple-pr-dummy.json
 , cardanoRosettaPrsJSON ? ./simple-pr-dummy.json
 , cardanoRTViewPrsJSON ? ./simple-pr-dummy.json
+, cardanoWorldPrsJSON ? ./simple-pr-dummy.json
 , ciOpsPrsJSON ? ./simple-pr-dummy.json
 , daedalusPrsJSON ? ./simple-pr-dummy.json
 , decentralizedSoftwareUpdatesPrsJSON ? ./simple-pr-dummy.json
@@ -243,6 +244,14 @@ let
       bors = true;
       prAttr = "hydraJobsPr";
       borsAttr = "hydraJobsBors";
+    };
+
+    cardano-world = {
+      description = "Cardano World";
+      url = "github:input-output-hk/cardano-world";
+      prs = cardanoWorldPrsJSON;
+      bors = false;
+      flake = true;
     };
 
     ci-ops = {

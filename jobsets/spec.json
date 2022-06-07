@@ -29,6 +29,7 @@
          ,"cardanoRestPrsJSON": { "type": "githubpulls", "value": "input-output-hk cardano-rest", "emailresponsible": false }
          ,"cardanoRosettaPrsJSON": { "type": "githubpulls", "value": "input-output-hk cardano-rosetta", "emailresponsible": false }
          ,"cardanoRTViewPrsJSON": { "type": "githubpulls", "value": "input-output-hk cardano-rt-view", "emailresponsible": false }
+         ,"cardanoWorldPrsJSON": { "type": "githubpulls", "value": "input-output-hk cardano-world", "emailresponsible": false }
          ,"ciOpsPrsJSON": { "type": "githubpulls", "value": "input-output-hk ci-ops", "emailresponsible": false }
          ,"daedalusPrsJSON": { "type": "githubpulls", "value": "input-output-hk daedalus", "emailresponsible": false }
          ,"decentralizedSoftwareUpdatesPrsJSON": { "type": "githubpulls", "value": "input-output-hk decentralized-software-updates", "emailresponsible": false }

@@ -73,6 +73,7 @@ let
       { jobset = "cardano-rt-view"; }
       { jobset = "cardano-shell"; }
       { jobset = "cardano-wallet"; }
+      { jobset = "cardano-world"; }
       { jobset = "cardano"; }                           # Below all other cardano-.* jobsets for regex match
       { jobset = "ci-ops"; }
       { jobset = "decentralized-software-updates"; }

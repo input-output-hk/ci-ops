@@ -349,8 +349,9 @@ let
 
     marlowe = {
       description = "Marlowe specs and prototype";
-      url = "https://github.com/input-output-hk/marlowe.git";
+      url = "github:input-output-hk/marlowe";
       prs = marlowePrsJSON;
+      flake = true;
     };
 
     offchain-metadata-tools = {

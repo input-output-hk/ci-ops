@@ -82,7 +82,6 @@ let
       { jobset = "iohk-monitoring"; }
       { jobset = "iohk-nix"; }
       { jobset = "iohk-ops"; inputs = "jobsets"; }
-      { jobset = "io-sim"; }
       { jobset = "jormungandr"; }
       { jobset = "kes-mmm-sumed25519"; }
       { jobset = "log-classifier"; }
@@ -101,7 +100,6 @@ let
       { jobset = "rust-libs"; }
       { jobset = "smash"; }
       { jobset = "tools"; }
-      { jobset = "typed-protocols"; }
       { jobset = "voting-tools"; }
       { jobset = "acp"; }
     ]}

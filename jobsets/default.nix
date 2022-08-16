@@ -47,7 +47,6 @@
 , hydraPocPrsJSON ? ./simple-pr-dummy.json
 , iohkMonitoringPrsJSON ? ./simple-pr-dummy.json
 , iohkNixPrsJSON ? ./simple-pr-dummy.json
-, ioSimPrsJSON ? ./simple-pr-dummy.json
 , kesPrsJSON ? ./simple-pr-dummy.json
 , ledgerPrsJSON ? ./simple-pr-dummy.json
 , offchainMetadataToolsPrsJSON ? ./simple-pr-dummy.json
@@ -63,7 +62,6 @@
 , purescriptWebCommonPrsJSON ? ./simple-pr-dummy.json
 , shellPrsJSON ? ./simple-pr-dummy.json
 , smashPrsJSON ? ./simple-pr-dummy.json
-, typedProtocolsPrsJSON ? ./simple-pr-dummy.json
 , votingToolsPrsJSON ? ./simple-pr-dummy.json
 , walletPrsJSON ? ./simple-pr-dummy.json
 , acpPrsJSON ? ./simple-pr-dummy.json
@@ -312,13 +310,6 @@ let
       bors = true;
     };
 
-    io-sim = {
-      description = "IO simulator monad";
-      url = "https://github.com/input-output-hk/io-sim.git";
-      branch = "main";
-      prs = ioSimPrsJSON;
-    };
-
     kes-mmm-sumed25519 = {
       description = "key evolving signature";
       url = "https://github.com/input-output-hk/kes-mmm-sumed25519.git";
@@ -419,13 +410,6 @@ let
       branch = "master";
       prs = smashPrsJSON;
       bors = true;
-    };
-
-    typed-protocols = {
-      description = "Robust session type framework which supports protocol pipelining.";
-      url = "https://github.com/input-output-hk/typed-protocols.git";
-      branch = "main";
-      prs = typedProtocolsPrsJSON;
     };
 
     voting-tools = {

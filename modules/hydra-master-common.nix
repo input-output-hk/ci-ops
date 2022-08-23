@@ -15,6 +15,7 @@ with lib; {
           "moretea/yarn2nix"
           "mozilla/nixpkgs-mozilla"
           "numtide/flake-utils"
+          "divnix"
         ]
       )}
 

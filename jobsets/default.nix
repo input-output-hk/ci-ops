@@ -369,6 +369,13 @@ let
       prs = plutusPrsJSON;
     };
 
+    plutus-flaked = {
+      description = "Plutus Language (flaked)";
+      url = "github:input-output-hk/plutus";
+      prs = plutusPrsJSON;
+      flake = true;
+    };
+
     plutus-apps = {
       description = "Plutus Application Framework";
       url = "https://github.com/input-output-hk/plutus-apps.git";

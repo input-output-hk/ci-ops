@@ -77,6 +77,7 @@ let
       { jobset = "cardano"; }                           # Below all other cardano-.* jobsets for regex match
       { jobset = "ci-ops"; }
       { jobset = "decentralized-software-updates"; }
+      { jobset = "formal-ledger-specifications"; }
       { jobset = "haskell-nix"; }
       { jobset = "hydra-poc"; }
       { jobset = "iohk-monitoring"; }

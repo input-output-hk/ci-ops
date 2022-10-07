@@ -43,6 +43,7 @@
 , daedalusPrsJSON ? ./simple-pr-dummy.json
 , decentralizedSoftwareUpdatesPrsJSON ? ./simple-pr-dummy.json
 , explorerPrsJSON ? ./simple-pr-dummy.json
+, formalLedgerSpecificationsPrsJSON ? ./simple-pr-dummy.json
 , haskellNixPrsJSON ? ./simple-pr-dummy.json
 , hydraPocPrsJSON ? ./simple-pr-dummy.json
 , iohkMonitoringPrsJSON ? ./simple-pr-dummy.json
@@ -273,6 +274,14 @@ let
       url = "https://github.com/input-output-hk/decentralized-software-updates";
       branch = "master";
       prs = decentralizedSoftwareUpdatesPrsJSON;
+      bors = true;
+    };
+
+    formal-ledger-specifications = {
+      description = "Formal ledger specifications";
+      url = "https://github.com/input-output-hk/formal-ledger-specifications";
+      branch = "master";
+      prs = formalLedgerSpecificationsPrsJSON;
       bors = true;
     };
 

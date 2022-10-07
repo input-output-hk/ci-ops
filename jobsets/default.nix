@@ -291,7 +291,7 @@ let
       url = "https://github.com/input-output-hk/hydra-poc.git";
       branch = "master";
       prs = hydraPocPrsJSON;
-      bors = true;
+      bors = false;
     };
 
     iohk-monitoring = {

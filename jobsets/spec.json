@@ -33,6 +33,7 @@
          ,"ciOpsPrsJSON": { "type": "githubpulls", "value": "input-output-hk ci-ops", "emailresponsible": false }
          ,"daedalusPrsJSON": { "type": "githubpulls", "value": "input-output-hk daedalus", "emailresponsible": false }
          ,"decentralizedSoftwareUpdatesPrsJSON": { "type": "githubpulls", "value": "input-output-hk decentralized-software-updates", "emailresponsible": false }
+	 , "formalLedgerSpecificationsPrsJSON": { "type": "githubpulls", "value": "input-output-hk formal-ledger-specifications", "emailresponsible": false}
          ,"haskellNixPrsJSON": { "type": "githubpulls", "value": "input-output-hk haskell.nix", "emailresponsible": false }
          ,"hydraPocPrsJSON": { "type": "githubpulls", "value": "input-output-hk hydra-poc", "emailresponsible": false }
          ,"iohkMonitoringPrsJSON": { "type": "githubpulls", "value": "input-output-hk iohk-monitoring-framework", "emailresponsible": false }

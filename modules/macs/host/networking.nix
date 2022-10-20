@@ -118,6 +118,14 @@ in {
       '';
     };
 
+    services.ziti-edge-tunnel = {
+      enable = true;
+      enableResolved = false;
+
+      # Use the kresd binding for the knot resolver module enhancements
+      dnsUpstream = "127.0.0.1";
+    };
+
     services.prometheus.exporters.node = {
       enable = true;
     };

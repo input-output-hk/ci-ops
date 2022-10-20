@@ -233,5 +233,6 @@ in {
     ./networking.nix
     ./qemu.nix
     ./monitorama.nix
+    ./ziti-edge-tunnel.nix
   ];
 }

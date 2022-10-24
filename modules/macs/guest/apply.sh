@@ -62,8 +62,10 @@ echo "%admin ALL = NOPASSWD: ALL" > /etc/sudoers.d/passwordless
     # shellcheck disable=SC2030,SC2031
     export HOME=~root
     export ALLOW_PREEXISTING_INSTALLATION=1
+    #export NIX_INSTALL_SCRIPT=https://nixos.org/releases/nix/nix-2.3.10/install
+    export NIX_INSTALL_SCRIPT=https://github.com/numtide/nix-unstable-installer/releases/download/nix-2.4pre20210823_af94b54/install
     env
-    curl https://nixos.org/releases/nix/nix-2.3.10/install > ~nixos/install-nix
+    curl -L $NIX_INSTALL_SCRIPT > ~nixos/install-nix
     sudo -i -H -u nixos -- sh ~nixos/install-nix --daemon --darwin-use-unencrypted-nix-store-volume < /dev/null
 )
 
@@ -78,6 +80,7 @@ echo "%admin ALL = NOPASSWD: ALL" > /etc/sudoers.d/passwordless
 cat <<EOF > /etc/nix/nix.conf
 substituters = http://@host@:8081
 trusted-public-keys = cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY= hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ=
+experimental-features = nix-command flakes
 EOF
 
     # shellcheck disable=SC1091

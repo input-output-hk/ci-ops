@@ -100,4 +100,7 @@ in {
     from = 60000;
     to = 61000;
   }];
+
+  # CVE-2021-4034 (polkit disabled until upgrade to nixos-21.11)
+  security.polkit.enable = false;
 }

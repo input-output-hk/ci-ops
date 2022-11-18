@@ -286,11 +286,11 @@ let
       modifier.schedulingshares = 10;
     };
 
-    hydra-poc = {
+    hydra = {
       description = "Proof of concept for the Hydra Head protocol";
-      url = "https://github.com/input-output-hk/hydra-poc.git";
+      url = "https://github.com/input-output-hk/hydra.git";
       branch = "master";
-      prs = hydraPocPrsJSON;
+      prs = hydraPrsJSON;
       bors = false;
     };
 

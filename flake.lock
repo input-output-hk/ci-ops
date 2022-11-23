@@ -81,14 +81,14 @@
         "lastModified": 1644948313,
         "narHash": "sha256-7lBS88sEic/c5CiMBqWZEw768iSP3Ytt4EEr942qIpc=",
         "owner": "input-output-hk",
-        "repo": "hydra",
+        "repo": "hydra-ci",
         "rev": "e49dd9c221117cf42661dfc45df163b4435110c8",
         "type": "github"
       },
       "original": {
         "owner": "input-output-hk",
         "ref": "nixUnstable",
-        "repo": "hydra",
+        "repo": "hydra-ci",
         "type": "github"
       }
     },

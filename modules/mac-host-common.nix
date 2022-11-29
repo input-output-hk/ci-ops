@@ -50,22 +50,26 @@ in {
     networking.firewall.extraCommands = lib.mkAfter ''
       iptables -t nat -A nixos-nat-pre -i wg0 -p tcp -m tcp --dport 2200 -j DNAT --to-destination 192.168.3.2:22
       iptables -t nat -A nixos-nat-pre -i wg0 -p tcp -m tcp --dport 2201 -j DNAT --to-destination 192.168.4.2:22
-      iptables -t nat -A nixos-nat-pre -i wg-zt -p tcp -m tcp --dport 22 -j DNAT --to-destination 192.168.3.2:22
+      iptables -t nat -A nixos-nat-pre -i wg-zt -p tcp -m iprange --dst-range 10.10.0.1-10.10.0.99 -j DNAT --to-destination 192.168.3.2:22
+      iptables -t nat -A nixos-nat-pre -i wg-zt -p tcp -m iprange --dst-range 10.10.0.101-10.10.0.199 -j DNAT --to-destination 192.168.4.2:22
     '';
 
     # Temporary wg replacement for zt
     networking.wireguard.interfaces.wg-zt = let
-      wgIpOctet = builtins.head (builtins.match ".*-([0-9]+)$" config.networking.hostName);
+      wgIpOctet = lib.toInt (builtins.head (builtins.match ".*-([0-9]+)$" config.networking.hostName));
     in {
       listenPort = 51821;
-      ips = ["10.10.0.${wgIpOctet}/32"];
+      ips = [
+        "10.10.0.${toString wgIpOctet}/32"
+        "10.10.0.${toString (100 + wgIpOctet)}/32"
+      ];
       privateKeyFile = "/etc/wireguard/private.key";
       peers = [
         {
           publicKey = "ET2Hbi1sywNSCWhGYGqBham7ZhNdMYyuhUNRiOqILlQ=";
           allowedIPs = [
-            "10.10.0.${wgIpOctet}/32"
-            "10.10.0.254/32"
+            "10.10.0.${toString wgIpOctet}/32"
+            "10.10.0.${toString (100 + wgIpOctet)}/32"
             # The CIDRs below could be source NATd at the zt gateway, but since they are
             # currently non-collisional with existing mac CIDR ranges in use,
             # we'll use them unNATed for easier packet debug.

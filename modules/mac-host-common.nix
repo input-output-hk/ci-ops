@@ -50,8 +50,8 @@ in {
     networking.firewall.extraCommands = lib.mkAfter ''
       iptables -t nat -A nixos-nat-pre -i wg0 -p tcp -m tcp --dport 2200 -j DNAT --to-destination 192.168.3.2:22
       iptables -t nat -A nixos-nat-pre -i wg0 -p tcp -m tcp --dport 2201 -j DNAT --to-destination 192.168.4.2:22
-      iptables -t nat -A nixos-nat-pre -i wg-zt -p tcp -m iprange --dst-range 10.10.0.1-10.10.0.99 -j DNAT --to-destination 192.168.3.2:22
-      iptables -t nat -A nixos-nat-pre -i wg-zt -p tcp -m iprange --dst-range 10.10.0.101-10.10.0.199 -j DNAT --to-destination 192.168.4.2:22
+      iptables -t nat -A nixos-nat-pre -i wg-zt -p tcp -m tcp --dport 22 -m iprange --dst-range 10.10.0.1-10.10.0.99 -j DNAT --to-destination 192.168.3.2:22
+      iptables -t nat -A nixos-nat-pre -i wg-zt -p tcp -m tcp --dport 22 -m iprange --dst-range 10.10.0.101-10.10.0.199 -j DNAT --to-destination 192.168.4.2:22
     '';
 
     # Temporary wg replacement for zt

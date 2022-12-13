@@ -50,6 +50,7 @@ in {
 
     sandbox = false
     extra-sandbox-paths = /System/Library/Frameworks /usr/lib /System/Library/PrivateFrameworks
+    experimental-features = nix-command flakes
   '';
 
   nix.binaryCachePublicKeys = [

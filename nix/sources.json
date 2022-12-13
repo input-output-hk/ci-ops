@@ -77,10 +77,10 @@
         "homepage": null,
         "owner": "input-output-hk",
         "repo": "nixops-packet",
-        "rev": "f7d00f8c0ab55a082afcb9d86e960512f27373f1",
-        "sha256": "1g0p1qkv92d0x6f0r4j8i8r6c8y7zlh12vxhji1idl4zqajfj6c9",
+        "rev": "08992f6f69dbe1d7f98783d43bb2be758f8d6676",
+        "sha256": "1m0b1zka7gqivrbkgb229y3cbw4bnax96q27715lyammz1xy1l39",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/nixops-packet/archive/f7d00f8c0ab55a082afcb9d86e960512f27373f1.tar.gz",
+        "url": "https://github.com/input-output-hk/nixops-packet/archive/08992f6f69dbe1d7f98783d43bb2be758f8d6676.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "nixpkgs": {
@@ -113,10 +113,10 @@
         "homepage": null,
         "owner": "input-output-hk",
         "repo": "ops-lib",
-        "rev": "3d4a1db3442255cb9f8ae05dbcd2b921827b483e",
-        "sha256": "0x9pa3l357mphj828ryrjaakvfmaffk653gfp8hfnwi164jbrfgb",
+        "rev": "e912143646cabf796c17d5847060f1cd96a117a6",
+        "sha256": "0ij3rpbwccw7ajxb5xmcq8w52vrn6j3c375xxclc7dmi12r1pgdv",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/ops-lib/archive/3d4a1db3442255cb9f8ae05dbcd2b921827b483e.tar.gz",
+        "url": "https://github.com/input-output-hk/ops-lib/archive/e912143646cabf796c17d5847060f1cd96a117a6.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     }
 }

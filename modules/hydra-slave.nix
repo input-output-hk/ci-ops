@@ -28,7 +28,7 @@ in with lib;
     nix = {
       buildCores = mkForce cfg.cores;
       trustedBinaryCaches = mkForce [];
-      binaryCaches = mkForce [ "https://cache.nixos.org" "https://hydra.iohk.io" ];
+      binaryCaches = mkForce [ "https://cache.nixos.org" "https://cache.iog.io" ];
       binaryCachePublicKeys = mkForce [
         "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
         "hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ="

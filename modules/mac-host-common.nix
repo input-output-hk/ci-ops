@@ -106,7 +106,6 @@ in {
           endpoint = "99.192.62.202:51820";
           persistentKeepalive = 30;
         }
-        (genPeer 2 "hydra" "hydra.iohk.io:51820")
         (genPeer 3 "cardano-deployer" "${lib.strings.removeSuffix "\n" (builtins.readFile ../secrets/old-deployer-ip.txt)}:51820")
         {
           publicKey = "MRowDI1eC9B5Hx/zgPk5yyq2eWSq6kYFW5Sjm7w52AY=";

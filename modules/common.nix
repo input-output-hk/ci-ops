@@ -83,7 +83,7 @@ in {
     nixPath = [ "nixpkgs=/run/current-system/nixpkgs" ];
 
     # use our hydra builds
-    trustedBinaryCaches = [ "https://cache.nixos.org" "https://hydra.iohk.io" ];
+    trustedBinaryCaches = [ "https://cache.nixos.org" "https://cache.iog.io" ];
     binaryCaches = trustedBinaryCaches;
     binaryCachePublicKeys = [
       "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="

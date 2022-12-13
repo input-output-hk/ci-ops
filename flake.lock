@@ -6,11 +6,11 @@
         "utils": "utils"
       },
       "locked": {
-        "lastModified": 1603733758,
-        "narHash": "sha256-sFs85Rap0afZPlEJOW0H/UhK2GXOr8ikRDTKEMPycyU=",
+        "lastModified": 1670009079,
+        "narHash": "sha256-2ZKywbty/bFtkvpjj8oR71CtnN5KpNdHIDGcqOXFv1w=",
         "owner": "cleverca22",
         "repo": "cachecache",
-        "rev": "342b890ee88d22432edcab452fe70a675ee2fb23",
+        "rev": "6b5001c889874bc40a69d6a5f013322dec1b628a",
         "type": "github"
       },
       "original": {

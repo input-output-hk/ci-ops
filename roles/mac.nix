@@ -1,4 +1,15 @@
 { lib, name, config, ... }: {
+
+  # Remove when ZFS >= 2.1.5
+  # Ref:
+  #   https://github.com/openzfs/zfs/pull/12746
+  system.activationScripts.zfsAccurateHoleReporting = {
+    text = ''
+      echo 1 > /sys/module/zfs/parameters/zfs_dmu_offset_next_sync
+    '';
+    deps = [];
+  };
+
   # Generic mac wireguard and buildkite key config
   deployment = {
     keys = {

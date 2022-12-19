@@ -1,6 +1,10 @@
 { config, lib, pkgs, ... }:
 
 let
+  # Installing nix in modules/macs/guests/apply.sh will install a system profile nix version.
+  # The nix-darwin configuration here should also be set to the same version.
+  nixpkgs-unstable = import <nixpkgs-unstable> {};
+
   ssh-keys = import ../../lib/ssh-keys.nix lib;
 
   allowedKeys = ssh-keys.allKeysFrom (ssh-keys.remoteBuilderKeys // ssh-keys.devOps);
@@ -11,7 +15,7 @@ in {
   # List packages installed in system profile. To search by name, run:
   # $ nix-env -qaP | grep wget
   environment.systemPackages = with pkgs; [
-    nix
+    nixpkgs-unstable.nix
     tmux
     ncdu
     git
@@ -31,11 +35,7 @@ in {
   # $ darwin-rebuild changelog
   system.stateVersion = 2;
 
-  # You should generally set this to the total number of logical cores in your system.
-  # $ sysctl -n hw.ncpu
-  nix.maxJobs = 4;
-  nix.buildCores = 0;
-  nix.useSandbox = false;  # this seems to break things when enabled
+  nix.package = nixpkgs-unstable.nix;
   nix.extraOptions = ''
     gc-keep-derivations = true
     gc-keep-outputs = true
@@ -51,16 +51,25 @@ in {
     sandbox = false
     extra-sandbox-paths = /System/Library/Frameworks /usr/lib /System/Library/PrivateFrameworks
     experimental-features = nix-command flakes
+
+    accept-flake-config = true
   '';
 
-  nix.binaryCachePublicKeys = [
-    "hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ="
-    "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
-  ];
+  nix.settings = {
+    cores = 0;
 
-  nix.binaryCaches = [ "http://192.168.3.1:8081" ];
+    # You should generally set this to the total number of logical cores in your system.
+    # $ sysctl -n hw.ncpu
+    max-jobs = 4;
 
-  nix.trustedUsers = [ "@admin" ];
+    sandbox = false;
+    substituters = [ "http://192.168.3.1:8081" ];
+    trusted-public-keys = [
+      "hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ="
+      "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
+    ];
+    trusted-users = [ "@admin" ];
+  };
 
   nix.nixPath = [
     "nixpkgs=/nix/var/nix/profiles/per-user/root/channels/nixpkgs"

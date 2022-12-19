@@ -23,7 +23,7 @@ in
     shell = "/bin/bash";
   };
 
-  nix.trustedUsers = [ "root" "builder" ];
+  nix.settings.trusted-users = [ "root" "builder" ];
 
   # Create a ~/.bashrc containing source /etc/profile
   # (bash doesn't source the ones in /etc for non-interactive

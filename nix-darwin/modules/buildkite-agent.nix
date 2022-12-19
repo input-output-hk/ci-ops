@@ -18,17 +18,9 @@ in with lib; {
   };
 
   config = {
-    services.buildkite-agent = let
-      # nixos-unstable channel as of 2018-04-30
-      unstablePkgs = import (pkgs.fetchFromGitHub {
-        owner = "NixOS";
-        repo = "nixpkgs";
-        rev = "af55a0c300224fe9debfc4a57d7ee789e00e649d";
-        sha256 = "13kgv7gr9p7fb51pqxx9dr51qz7f8ghqy57afzww1zhgmh4ismrx";
-      }) { inherit (pkgs) config system; };
-    in {
+    services.buildkite-agent = {
       enable = true;
-      package = pkgs.buildkite-agent3;
+      package = pkgs.buildkite-agent;
       runtimePackages = with pkgs; [
         bash gnutar gzip bzip2 xz
         git git-lfs

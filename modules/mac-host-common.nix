@@ -50,7 +50,39 @@ in {
     networking.firewall.extraCommands = lib.mkAfter ''
       iptables -t nat -A nixos-nat-pre -i wg0 -p tcp -m tcp --dport 2200 -j DNAT --to-destination 192.168.3.2:22
       iptables -t nat -A nixos-nat-pre -i wg0 -p tcp -m tcp --dport 2201 -j DNAT --to-destination 192.168.4.2:22
+      iptables -t nat -A nixos-nat-pre -i wg-zt -p tcp -m tcp --dport 22 -m iprange --dst-range 10.10.0.1-10.10.0.99 -j DNAT --to-destination 192.168.3.2:22
+      iptables -t nat -A nixos-nat-pre -i wg-zt -p tcp -m tcp --dport 22 -m iprange --dst-range 10.10.0.101-10.10.0.199 -j DNAT --to-destination 192.168.4.2:22
     '';
+
+    # Temporary wg replacement for zt
+    networking.wireguard.interfaces.wg-zt = let
+      wgIpOctet = lib.toInt (builtins.head (builtins.match ".*-([0-9]+)$" config.networking.hostName));
+    in {
+      listenPort = 51821;
+      ips = [
+        "10.10.0.${toString wgIpOctet}/32"
+        "10.10.0.${toString (100 + wgIpOctet)}/32"
+      ];
+      privateKeyFile = "/etc/wireguard/private.key";
+      peers = [
+        {
+          publicKey = "ET2Hbi1sywNSCWhGYGqBham7ZhNdMYyuhUNRiOqILlQ=";
+          allowedIPs = [
+            "10.10.0.${toString wgIpOctet}/32"
+            "10.10.0.${toString (100 + wgIpOctet)}/32"
+            # The CIDRs below could be source NATd at the zt gateway, but since they are
+            # currently non-collisional with existing mac CIDR ranges in use,
+            # we'll use them unNATed for easier packet debug.
+            "10.24.0.0/16"
+            "10.32.0.0/16"
+            "10.52.0.0/16"
+            "172.16.0.0/16"
+          ];
+          endpoint = "zt.ci.iog.io:51820";
+          persistentKeepalive = 30;
+        }
+      ];
+    };
     networking.wireguard.interfaces.wg0 = let
       genPeer = n: name: endpoint: {
         publicKey = lib.strings.removeSuffix "\n" (builtins.readFile (../secrets/wireguard + "/${name}.public"));
@@ -74,7 +106,6 @@ in {
           endpoint = "99.192.62.202:51820";
           persistentKeepalive = 30;
         }
-        (genPeer 2 "hydra" "hydra.iohk.io:51820")
         (genPeer 3 "cardano-deployer" "${lib.strings.removeSuffix "\n" (builtins.readFile ../secrets/old-deployer-ip.txt)}:51820")
         {
           publicKey = "MRowDI1eC9B5Hx/zgPk5yyq2eWSq6kYFW5Sjm7w52AY=";

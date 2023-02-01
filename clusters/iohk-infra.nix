@@ -7,7 +7,7 @@ let
   globals = import ../globals.nix;
 
   ipxeScriptUrl = "https://netboot.gsc.io/installer-pre/x86/netboot.ipxe";
-  nixosVersion = "nixos_21_05.01";
+  nixosVersion = "nixos_22_11.01";
   # ipxeScriptUrl = "http://images.platformequinix.net/nixos/installer-pre/x86/netboot.ipxe";
 
   facility = "ams1";
@@ -61,63 +61,67 @@ let
   };
 
   nodes = mkNodes {
-    monitoring = {
-      imports = [ small ../roles/monitor.nix ];
-      deployment.packet = { inherit ipxeScriptUrl facility; };
-      node.isMonitoring = true;
-    };
+    #monitoring = {
+    #  imports = [ small ../roles/monitor.nix ];
+    #  deployment.packet = { inherit ipxeScriptUrl facility; };
+    #  node.isMonitoring = true;
+    #};
 
-    packet-ipxe-hydra-1 = {
-      imports = [
-        medium-cpr
-        ../roles/hydra.nix
-        ../roles/bors.nix
-      ];
-      deployment.packet = { inherit ipxeScriptUrl facility reservationId; };
-      node.isHydra = true;
-      node.isBors = true;
-    };
+    #packet-ipxe-hydra-1 = {
+    #  imports = [
+    #    medium-cpr
+    #    ../roles/hydra.nix
+    #    ../roles/bors.nix
+    #  ];
+    #  deployment.packet = { inherit ipxeScriptUrl facility reservationId; };
+    #  node.isHydra = true;
+    #  node.isBors = true;
+    #};
 
-    packet-ipxe-sonarqube-1 = {
-      imports = [
-        medium-cpr
-      ];
-      deployment.packet = { inherit ipxeScriptUrl facility; };
-    };
+    #packet-ipxe-sonarqube-1 = {
+    #  imports = [
+    #    medium-cpr
+    #  ];
+    #  deployment.packet = { inherit ipxeScriptUrl facility; };
+    #};
 
-    packet-ipxe-plutus-1 = {
-      imports = [
-        small
-        ../roles/plutus.nix
-        ({ resources, lib, ... }:
-          {
-            deployment.packet.keyPair = lib.mkForce resources.packetKeyPairs.plutus;
-          }
-        )
-      ];
-      deployment.packet = {
-        inherit ipxeScriptUrl facility;
-        project = lib.mkForce (import ../secrets/packet-plutus-ci.nix).project;
-        accessKeyId = lib.mkForce (import ../secrets/packet-plutus-ci.nix).accessKeyId;
-      };
-    };
+    #packet-ipxe-plutus-1 = {
+    #  imports = [
+    #    small
+    #    ../roles/plutus.nix
+    #    ({ resources, lib, ... }:
+    #      {
+    #        deployment.packet.keyPair = lib.mkForce resources.packetKeyPairs.plutus;
+    #      }
+    #    )
+    #  ];
+    #  deployment.packet = {
+    #    inherit ipxeScriptUrl facility;
+    #    project = lib.mkForce (import ../secrets/packet-plutus-ci.nix).project;
+    #    accessKeyId = lib.mkForce (import ../secrets/packet-plutus-ci.nix).accessKeyId;
+    #  };
+    #};
 
-    # TODO: rename ipxe-# to ci-builder-#
-    packet-ipxe-1 = mkHydraSlaveBuildkite "1";
-    packet-ipxe-2 = mkHydraSlaveBuildkite "2";
-    packet-ipxe-3 = mkHydraSlaveBuildkite "3";
-    packet-ipxe-5 = mkHydraSlaveBuildkite "5";
+    ## TODO: rename ipxe-# to ci-builder-#
+    #packet-ipxe-1 = mkHydraSlaveBuildkite "1";
+    #packet-ipxe-2 = mkHydraSlaveBuildkite "2";
+    #packet-ipxe-3 = mkHydraSlaveBuildkite "3";
+    #packet-ipxe-5 = mkHydraSlaveBuildkite "5";
 
-    # TODO: rename ipxe-4 to p-bk-b-1
-    packet-ipxe-4 = mkBenchmarkBuildkite "4" small "sjc1" "benchmark";
-    # packet-buildkite-bench-2
-    p-bk-b-2 = mkBenchmarkBuildkite "9" small "sjc1" "benchmark";
-    packet-buildkite-bench-2 = mkBenchmarkBuildkite "8" medium-ng-cpr "da11" "benchmark_large";
+    ## packet-buildkite-bench-1
+    #p-bk-b-1 = mkBenchmarkBuildkite "4" small "sjc1" "benchmark";
+    ## packet-buildkite-bench-2
+    #p-bk-b-2 = mkBenchmarkBuildkite "9" small "sjc1" "benchmark";
+    #packet-buildkite-bench-2 = mkBenchmarkBuildkite "8" medium-ng-cpr "da11" "benchmark_large";
+    #packet-buildkite-bench-3 = mkBenchmarkBuildkite "9" medium-ng-cpr "da11" "benchmark";
 
-    # benchmarking hydra slave
-     packet-benchmark-hydra-1 = mkBenchmarkHydra "6";
-     packet-benchmark-hydra-2 = mkBenchmarkHydra "7";
-     packet-benchmark-hydra-3 = mkBenchmarkHydra "8";
+    ## benchmarking hydra slave
+    # packet-benchmark-hydra-1 = mkBenchmarkHydra "6";
+    # packet-benchmark-hydra-2 = mkBenchmarkHydra "7";
+    # packet-benchmark-hydra-3 = mkBenchmarkHydra "8";
+    # packet-benchmark-hydra-4 = mkBenchmarkHydra "10";
+    # packet-benchmark-hydra-5 = mkBenchmarkHydra "11";
+    # packet-benchmark-hydra-6 = mkBenchmarkHydra "12";
   };
 
   macs = mkMacs {

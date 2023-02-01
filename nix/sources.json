@@ -41,10 +41,10 @@
         "homepage": "",
         "owner": "LnL7",
         "repo": "nix-darwin",
-        "rev": "0dba44e04c33a69ec4c46e43de0ed024c1f7b75e",
-        "sha256": "1x9l1zp846ddjhwspialv16n8mq7a7b0a8afhr96sxp63ix1c4d5",
+        "rev": "6349b99bc2b96ded34d068a88c7c5ced406b7f7f",
+        "sha256": "1y1vvpi73i4cp7ykcdbclkj02h9sp8ca3rvvgsmzjg0qrh01as40",
         "type": "tarball",
-        "url": "https://github.com/LnL7/nix-darwin/archive/0dba44e04c33a69ec4c46e43de0ed024c1f7b75e.tar.gz",
+        "url": "https://github.com/LnL7/nix-darwin/archive/6349b99bc2b96ded34d068a88c7c5ced406b7f7f.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "nixops-core": {
@@ -77,10 +77,10 @@
         "homepage": null,
         "owner": "input-output-hk",
         "repo": "nixops-packet",
-        "rev": "f7d00f8c0ab55a082afcb9d86e960512f27373f1",
-        "sha256": "1g0p1qkv92d0x6f0r4j8i8r6c8y7zlh12vxhji1idl4zqajfj6c9",
+        "rev": "08992f6f69dbe1d7f98783d43bb2be758f8d6676",
+        "sha256": "1m0b1zka7gqivrbkgb229y3cbw4bnax96q27715lyammz1xy1l39",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/nixops-packet/archive/f7d00f8c0ab55a082afcb9d86e960512f27373f1.tar.gz",
+        "url": "https://github.com/input-output-hk/nixops-packet/archive/08992f6f69dbe1d7f98783d43bb2be758f8d6676.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "nixpkgs": {
@@ -113,10 +113,10 @@
         "homepage": null,
         "owner": "input-output-hk",
         "repo": "ops-lib",
-        "rev": "3d4a1db3442255cb9f8ae05dbcd2b921827b483e",
-        "sha256": "0x9pa3l357mphj828ryrjaakvfmaffk653gfp8hfnwi164jbrfgb",
+        "rev": "2fdfc6051e69f66d9a8fce7f9a09cf6bc8dd185e",
+        "sha256": "07lxgnjpwpa0ksllzclflp3c2fr1wsjvgbc485bc72b8cm33agap",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/ops-lib/archive/3d4a1db3442255cb9f8ae05dbcd2b921827b483e.tar.gz",
+        "url": "https://github.com/input-output-hk/ops-lib/archive/2fdfc6051e69f66d9a8fce7f9a09cf6bc8dd185e.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     }
 }

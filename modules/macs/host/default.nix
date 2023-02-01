@@ -1,6 +1,7 @@
 { lib, config, ... }:
 
 let
+  self = builtins.getFlake (toString ./../../..);
   inherit (lib) mkOption types mkDefault;
   guestOptions = { name, config, ... }: {
     options = {
@@ -233,5 +234,6 @@ in {
     ./networking.nix
     ./qemu.nix
     ./monitorama.nix
+    self.inputs.openziti.nixosModules.ziti-edge-tunnel
   ];
 }

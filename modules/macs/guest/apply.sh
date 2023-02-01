@@ -63,7 +63,11 @@ echo "%admin ALL = NOPASSWD: ALL" > /etc/sudoers.d/passwordless
     export HOME=~root
     export ALLOW_PREEXISTING_INSTALLATION=1
     env
-    curl https://nixos.org/releases/nix/nix-2.3.10/install > ~nixos/install-nix
+
+    # Installing nix will install a system profile nix of this version.
+    # The nix-darwin configuration should also be set to the same version
+    # (see nix-darwin/modules/basics.nix).
+    curl https://releases.nixos.org/nix/nix-2.12.0/install > ~nixos/install-nix
     sudo -i -H -u nixos -- sh ~nixos/install-nix --daemon --darwin-use-unencrypted-nix-store-volume < /dev/null
 )
 
@@ -87,15 +91,15 @@ EOF
     ls -la /private/var || true
     ls -la /private/var/run || true
     ln -s /private/var/run /run || true
-    nix-channel --add https://nixos.org/channels/nixos-20.09 nixpkgs
+    nix-channel --add https://nixos.org/channels/nixos-22.11 nixpkgs
+    nix-channel --add https://nixos.org/channels/nixos-unstable nixpkgs-unstable
     nix-channel --add @nixDarwinUrl@ darwin
     nix-channel --update
 
-    sudo -i -H -u nixos -- nix-channel --add https://nixos.org/channels/nixos-20.09 nixpkgs
+    sudo -i -H -u nixos -- nix-channel --add https://nixos.org/channels/nixos-22.11 nixpkgs
+    sudo -i -H -u nixos -- nix-channel --add https://nixos.org/channels/nixos-unstable nixpkgs-unstable
     sudo -i -H -u nixos -- nix-channel --add @nixDarwinUrl@ darwin
     sudo -i -H -u nixos -- nix-channel --update
-
-    export NIX_PATH=$NIX_PATH:darwin=@nixDarwinUrl@
 
     installer=$(nix-build @nixDarwinUrl@ -A installer --no-out-link)
     set +e
@@ -139,6 +143,9 @@ EOF
     rm -f /etc/nix/nix.conf
     test -f /Volumes/CONFIG/nix/netrc && cp /Volumes/CONFIG/nix/netrc /etc/nix
     sudo -iHu nixos -- darwin-rebuild -I /nix/var/nix/profiles/per-user/nixos/channels -I darwin-config=/Users/nixos/.nixpkgs/darwin-configuration.nix switch
+
+    # Restart the nix-daemon to ensure it is reading the current nix.conf file
+    launchctl kickstart -kp system/org.nixos.nix-daemon
 )
 (
     if [ -f /Volumes/CONFIG/signing-config.json ]; then

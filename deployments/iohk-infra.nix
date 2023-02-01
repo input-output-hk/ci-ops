@@ -30,10 +30,6 @@ let
         recordValues = [ resources.machines.${name} ];
       };
     }) (__filter (n: n != "network" && n != "resources" && n != "mac-mini-1" && n != "mac-mini-2") (__attrNames cluster)));
-    require = [
-      ../clusters/equinix
-      ../clusters/new-cluster.nix
-    ];
     # applies to EVERY machine in the cluster
     defaults = {
       imports = [

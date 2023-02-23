@@ -107,18 +107,6 @@ in {
           persistentKeepalive = 30;
         }
         (genPeer 3 "cardano-deployer" "${lib.strings.removeSuffix "\n" (builtins.readFile ../secrets/old-deployer-ip.txt)}:51820")
-        {
-          publicKey = "MRowDI1eC9B5Hx/zgPk5yyq2eWSq6kYFW5Sjm7w52AY=";
-          allowedIPs = [ "192.168.24.1/32" ];
-          persistentKeepalive = 30;
-          endpoint = "adaplanet.ddns.net:51820";
-        }
-        {
-          publicKey = "x/cUIzSdoeXonP5gSelaEfN8yYT8kJvi8E1w/myvkDg=";
-          allowedIPs = [ "192.168.24.2/32" ];
-          persistentKeepalive = 30;
-          endpoint = "serval.nrdxp.dev:51820";
-        }
         # TODO: Add preshared key; migrate all to port 17777
         { # New CI Deployer
           publicKey = "ZWLewe0yVJ45eW39quTiyvC/kaxy8xNcVpD9QVvxwkk=";

@@ -29,6 +29,11 @@ function finish {
     cd /
     sleep 1
     umount -f /Volumes/CONFIG
+
+    # Ensure build concurrency is enforced at max-jobs
+    # (see nix-darwin/modules/basics.nix).
+    for i in {2..32}; do dscl . -delete /Users/_nixbld$i || true; done
+    for i in {2..32}; do dscl . -delete /Groups/nixbld GroupMembership _nixbld$i || true; done
 }
 trap finish EXIT
 

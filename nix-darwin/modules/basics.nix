@@ -55,12 +55,22 @@ in {
     accept-flake-config = true
   '';
 
+  # This build user statement appears to have no effect as 32 build users are created in the OS
+  # for the initial bootstrap nix and nix-darwin installs, so we also clean users up in modules/macs/guests/apply.sh
+  nix.nrBuildUsers = 1;
+
   nix.settings = {
     cores = 0;
 
     # You should generally set this to the total number of logical cores in your system.
     # $ sysctl -n hw.ncpu
-    max-jobs = 4;
+    #
+    # Due to limited builder storage and large storage requirements per build job,
+    # decrease to 1 to improve builder reliability.
+    #
+    # Apply a nixbld user reduction mod above with nix.nrBuildUsers to enforce reduced concurrency.
+    # Also modules/macs/guests/apply.sh as nrBuildUsers above does not clean up previously created build users.
+    max-jobs = 1;
 
     sandbox = false;
     substituters = [ "http://192.168.3.1:8081" ];

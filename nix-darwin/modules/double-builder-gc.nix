@@ -23,7 +23,7 @@ in {
 
   # This GC is run on 15 minute intervals
   nix.builder-gc = {
-    enable = true;
+    enable = false;
     inherit maxFreedMB minFreeMB;
   };
 }

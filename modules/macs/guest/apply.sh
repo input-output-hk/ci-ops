@@ -30,10 +30,9 @@ function finish {
     sleep 1
     umount -f /Volumes/CONFIG
 
-    # Ensure build concurrency is enforced at max-jobs
-    # (see nix-darwin/modules/basics.nix).
-    for i in {2..32}; do dscl . -delete /Users/_nixbld$i || true; done
-    for i in {2..32}; do dscl . -delete /Groups/nixbld GroupMembership _nixbld$i || true; done
+    # Check build concurrency is enforced at max-jobs (see modules/basics.nix).
+    dscl . -list /Users | grep _nixbld
+    dscl . -read /Groups/nixbld GroupMembership
 }
 trap finish EXIT
 
@@ -66,14 +65,11 @@ echo "%admin ALL = NOPASSWD: ALL" > /etc/sudoers.d/passwordless
     export USER=root
     # shellcheck disable=SC2030,SC2031
     export HOME=~root
-    export ALLOW_PREEXISTING_INSTALLATION=1
     env
 
     # Installing nix will install a system profile nix of this version.
-    # The nix-darwin configuration should also be set to the same version
-    # (see nix-darwin/modules/basics.nix).
-    curl https://releases.nixos.org/nix/nix-2.12.0/install > ~nixos/install-nix
-    sudo -i -H -u nixos -- sh ~nixos/install-nix --daemon --darwin-use-unencrypted-nix-store-volume < /dev/null
+    curl https://releases.nixos.org/nix/nix-2.13.3/install > ~nixos/install-nix
+    sudo -i -H -u nixos -- sh ~nixos/install-nix --daemon --daemon-user-count 1 < /dev/null
 )
 
 (
@@ -105,6 +101,15 @@ EOF
     sudo -i -H -u nixos -- nix-channel --add @nixpkgsUnstableUrl@ nixpkgs-unstable
     sudo -i -H -u nixos -- nix-channel --add @nixDarwinUrl@ darwin
     sudo -i -H -u nixos -- nix-channel --update
+
+    # Set nrBuildUsers in the initial nix-darwin install as subsequent changes in the darwin-config have no effect on OS users.
+    sudo -i -H -u nixos -- bash -c 'mkdir -p ~/.nixpkgs && cat >~/.nixpkgs/darwin-configuration.nix' <<EOF
+{
+  nix.nrBuildUsers = 1;
+  services.nix-daemon.enable = true;
+  system.stateVersion = 4;
+}
+EOF
 
     installer=$(nix-build @nixDarwinUrl@ -A installer --no-out-link)
     set +e
@@ -151,6 +156,13 @@ EOF
 
     # Restart the nix-daemon to ensure it is reading the current nix.conf file
     launchctl kickstart -kp system/org.nixos.nix-daemon
+
+    # Remove the initially installed nix profiles which may version conflict with the nix-darwin config activation
+    nix profile remove 0 1
+    # shellcheck disable=SC1091
+    . /etc/profile
+    nix doctor
+    rm ~nixos/install-nix
 )
 (
     if [ -f /Volumes/CONFIG/signing-config.json ]; then

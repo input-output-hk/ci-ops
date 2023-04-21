@@ -1,8 +1,6 @@
 { config, lib, pkgs, ... }:
 
 let
-  # Installing nix in modules/macs/guests/apply.sh will install a system profile nix version.
-  # The nix-darwin configuration here should also be set to the same version.
   nixpkgs-unstable = import <nixpkgs-unstable> {};
 
   ssh-keys = import ../../lib/ssh-keys.nix lib;
@@ -33,7 +31,7 @@ in {
 
   # Used for backwards compatibility, please read the changelog before changing.
   # $ darwin-rebuild changelog
-  system.stateVersion = 2;
+  system.stateVersion = 4;
 
   nix.package = nixpkgs-unstable.nix;
   nix.extraOptions = ''
@@ -55,8 +53,7 @@ in {
     accept-flake-config = true
   '';
 
-  # This build user statement appears to have no effect as 32 build users are created in the OS
-  # for the initial bootstrap nix and nix-darwin installs, so we also clean users up in modules/macs/guests/apply.sh
+  # Also see max-jobs below and nrBuildUsers in the apply.sh nix-darwin bootstrap config to enforce concurrency.
   nix.nrBuildUsers = 1;
 
   nix.settings = {
@@ -68,8 +65,7 @@ in {
     # Due to limited builder storage and large storage requirements per build job,
     # decrease to 1 to improve builder reliability.
     #
-    # Apply a nixbld user reduction mod above with nix.nrBuildUsers to enforce reduced concurrency.
-    # Also modules/macs/guests/apply.sh as nrBuildUsers above does not clean up previously created build users.
+    # Also see nrBuildUsers above and in the apply.sh nix-darwin bootstrap config to enforce concurrency.
     max-jobs = 1;
 
     sandbox = false;

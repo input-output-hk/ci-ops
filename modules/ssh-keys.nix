@@ -27,7 +27,7 @@ in with types; {
         type = attrsOf (listOf str);
         default = {
           macos = allKeysFrom devOps ++ allKeysFrom remoteBuilderKeys;
-          linux = remoteBuilderKeys.hydraBuildFarm;
+          linux = allKeysFrom remoteBuilderKeys;
         };
         description = "Default buildSlave ssh authorized keys";
       };

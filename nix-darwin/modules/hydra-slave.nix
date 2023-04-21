@@ -6,7 +6,6 @@ let
   ssh-keys = import ../../lib/ssh-keys.nix lib;
 
   allowedKeys = ssh-keys.allKeysFrom (ssh-keys.remoteBuilderKeys // ssh-keys.devOps);
-  extraSshKeys = ["ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGnB2GWvJ4jnh07JbkIicLjR+JHl4VwkAhXToHFENZnA buildfarm-ng"];
 
   environment = concatStringsSep " "
     [ "NIX_REMOTE=daemon"
@@ -37,6 +36,5 @@ in
   '';
 
   environment.etc."per-user/builder/ssh/authorized_keys".text =
-    concatMapStringsSep "\n" (key: ''command="${environment} ${config.nix.package}/bin/nix-store --serve --write" ${key}'') (allowedKeys ++ extraSshKeys) + "\n";
-
+    concatMapStringsSep "\n" (key: ''command="${environment} ${config.nix.package}/bin/nix-store --serve --write" ${key}'') allowedKeys + "\n";
 }

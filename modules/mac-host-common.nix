@@ -221,28 +221,29 @@ in {
             spicePort = 5950;
           };
         };
-        signing = {
-          zvolName = "tank/monterey-image2-xcode-128gb";
-          network = {
-            interiorNetworkPrefix = "192.168.4";
-            guestSshPort = 2201;
-            prometheusPort = 9102;
-            tapDevice = "tap-signing";
-            guestIP = "192.168.4.2";
-          };
-          guest = {
-            guestConfigDir = guestConfDir2 "192.168.4.1" "1515" "${config.networking.hostName}-signing";
-            cores = 2;
-            threads = 2;
-            sockets = 1;
-            memoryInMegs = 12 * 1024;
-            ovmfCodeFile = ./macs/dist/OVMF_CODE.fd;
-            ovmfVarsFile = "${pkgs.OVMF.fd}/FV/OVMF_VARS.fd";
-            MACAddress = "52:54:00:c9:18:28";
-            vncListen = "0.0.0.0:1";
-            spicePort = 5951;
-          };
-        };
+        # Disable signing guest while Xcode image is legacy
+        # signing = {
+        #   zvolName = "tank/monterey-image2-xcode-128gb";
+        #   network = {
+        #     interiorNetworkPrefix = "192.168.4";
+        #     guestSshPort = 2201;
+        #     prometheusPort = 9102;
+        #     tapDevice = "tap-signing";
+        #     guestIP = "192.168.4.2";
+        #   };
+        #   guest = {
+        #     guestConfigDir = guestConfDir2 "192.168.4.1" "1515" "${config.networking.hostName}-signing";
+        #     cores = 2;
+        #     threads = 2;
+        #     sockets = 1;
+        #     memoryInMegs = 12 * 1024;
+        #     ovmfCodeFile = ./macs/dist/OVMF_CODE.fd;
+        #     ovmfVarsFile = "${pkgs.OVMF.fd}/FV/OVMF_VARS.fd";
+        #     MACAddress = "52:54:00:c9:18:28";
+        #     vncListen = "0.0.0.0:1";
+        #     spicePort = 5951;
+        #   };
+        # };
       };
     };
   };

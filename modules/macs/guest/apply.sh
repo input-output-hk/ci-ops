@@ -97,12 +97,12 @@ EOF
     ls -la /private/var/run || true
     ln -s /private/var/run /run || true
     nix-channel --add https://nixos.org/channels/nixos-22.11 nixpkgs
-    nix-channel --add https://nixos.org/channels/nixos-unstable nixpkgs-unstable
+    nix-channel --add @nixpkgsUnstableUrl@ nixpkgs-unstable
     nix-channel --add @nixDarwinUrl@ darwin
     nix-channel --update
 
     sudo -i -H -u nixos -- nix-channel --add https://nixos.org/channels/nixos-22.11 nixpkgs
-    sudo -i -H -u nixos -- nix-channel --add https://nixos.org/channels/nixos-unstable nixpkgs-unstable
+    sudo -i -H -u nixos -- nix-channel --add @nixpkgsUnstableUrl@ nixpkgs-unstable
     sudo -i -H -u nixos -- nix-channel --add @nixDarwinUrl@ darwin
     sudo -i -H -u nixos -- nix-channel --update
 

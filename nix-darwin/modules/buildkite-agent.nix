@@ -1,6 +1,7 @@
 { config, lib, pkgs, ... }:
 
 let
+  nixpkgs-unstable = import <nixpkgs-unstable> {};
   keys = "/Users/nixos/buildkite";
   cfg = config.services.buildkite-services-darwin;
 in with lib; {
@@ -24,7 +25,7 @@ in with lib; {
       runtimePackages = with pkgs; [
         bash gnutar gzip bzip2 xz
         git git-lfs
-        nix
+        nixpkgs-unstable.nix
       ];
       meta-data = cfg.metadata;
       tokenPath = "${keys}/buildkite_token_*";

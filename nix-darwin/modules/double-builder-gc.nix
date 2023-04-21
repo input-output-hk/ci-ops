@@ -4,10 +4,11 @@ let
   # To avoid multiple locks on /nix/var/nix/gc.lock and subsequent GC hang,
   # minFreeMB should be significantly higher than nixAutoMinFreeMB.
   # The closer those two numbers are, the more likely GC locking will occur.
-  nixAutoMaxFreedMB = 33000;     # An absolute amount to free
-  nixAutoMinFreeMB = 4000;
-  maxFreedMB = 25000;            # A relative amount to free
-  minFreeMB = 15000;
+  nixAutoMaxFreedMB = 50000;     # An absolute amount to free
+  nixAutoMinFreeMB = 13000;      # 100 - (~13 / 128 GB) = ~90% trigger threshold
+
+  maxFreedMB = 70000;            # A relative amount to free
+  minFreeMB = 25000;
 
 in {
   imports = [ ../services/builder-gc.nix ];

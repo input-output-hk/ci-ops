@@ -1,19 +1,25 @@
 { config, lib, pkgs, ... }:
 
 let
-  nixpkgs-unstable = import <nixpkgs-unstable> {};
-
   ssh-keys = import ../../lib/ssh-keys.nix lib;
 
   allowedKeys = ssh-keys.allKeysFrom (ssh-keys.remoteBuilderKeys // ssh-keys.devOps);
   nix-darwin = (import ../test.nix { host = null; port = null; hostname = null; }).nix-darwin;
 in {
-  imports = [ ./double-builder-gc.nix ./caffeinate.nix ./expire-pids.nix ];
+  imports = [
+    ./nix-version.nix
+    ./double-builder-gc.nix
+    ./caffeinate.nix
+    ./expire-pids.nix
+  ];
+
+  # Nix 2.15.1 from 2.15-maintenance branch
+  services.nix-version.flakeRef = "github:NixOS/nix/ab14087ea3d96f04e8b0248af2502a8b381d0e23";
 
   # List packages installed in system profile. To search by name, run:
   # $ nix-env -qaP | grep wget
   environment.systemPackages = with pkgs; [
-    nixpkgs-unstable.nix
+    config.services.nix-version.package
     tmux
     ncdu
     git
@@ -33,7 +39,7 @@ in {
   # $ darwin-rebuild changelog
   system.stateVersion = 4;
 
-  nix.package = nixpkgs-unstable.nix;
+  nix.package = config.services.nix-version.package;
   nix.extraOptions = ''
     gc-keep-derivations = true
     gc-keep-outputs = true

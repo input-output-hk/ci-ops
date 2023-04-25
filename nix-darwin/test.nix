@@ -4,7 +4,6 @@ let
   sources = import ../nix/sources.nix;
   pkgs = import (sources.nixpkgs) {};
   nix-darwin = sources.nix-darwin;
-  nixpkgs-unstable = sources.nixpkgs-unstable;
   system = (import nix-darwin {
     nixpkgs = sources.nixpkgs;
     configuration = "${guestConfDir}/darwin-configuration.nix";
@@ -17,7 +16,6 @@ let
   guestConfDir = pkgs.runCommand "guest-config-dir-${hostname}" {
     inherit host port hostname;
     nixDarwinUrl = nix-darwin.url;
-    nixpkgsUnstableUrl = nixpkgs-unstable.url;
   } ''
     mkdir -pv $out
     cd $out

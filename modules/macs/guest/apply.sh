@@ -83,6 +83,7 @@ echo "%admin ALL = NOPASSWD: ALL" > /etc/sudoers.d/passwordless
 cat <<EOF > /etc/nix/nix.conf
 substituters = http://@host@:8081
 trusted-public-keys = cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY= hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ=
+experimental-features = nix-command flakes
 EOF
 
     # shellcheck disable=SC1091
@@ -93,20 +94,31 @@ EOF
     ls -la /private/var/run || true
     ln -s /private/var/run /run || true
     nix-channel --add https://nixos.org/channels/nixos-22.11 nixpkgs
-    nix-channel --add @nixpkgsUnstableUrl@ nixpkgs-unstable
     nix-channel --add @nixDarwinUrl@ darwin
     nix-channel --update
 
     sudo -i -H -u nixos -- nix-channel --add https://nixos.org/channels/nixos-22.11 nixpkgs
-    sudo -i -H -u nixos -- nix-channel --add @nixpkgsUnstableUrl@ nixpkgs-unstable
     sudo -i -H -u nixos -- nix-channel --add @nixDarwinUrl@ darwin
     sudo -i -H -u nixos -- nix-channel --update
 
     # Set nrBuildUsers in the initial nix-darwin install as subsequent changes in the darwin-config have no effect on OS users.
     sudo -i -H -u nixos -- bash -c 'mkdir -p ~/.nixpkgs && cat >~/.nixpkgs/darwin-configuration.nix' <<EOF
 {
-  nix.nrBuildUsers = 1;
   services.nix-daemon.enable = true;
+  nix = {
+    nrBuildUsers = 1;
+    extraOptions = ''
+      experimental-features = nix-command flakes
+      allow-import-from-derivation = true
+    '';
+    settings = {
+      substituters = [ "https://cache.nixos.org" "https://cache.iog.io" ];
+      trusted-public-keys = [
+        "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
+        "hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ="
+      ];
+    };
+  };
   system.stateVersion = 4;
 }
 EOF
@@ -117,7 +129,7 @@ EOF
     echo $?
     sudo launchctl kickstart system/org.nixos.nix-daemon
     set -e
-    sleep 30
+    sleep 10
 )
 (
     if [ -d /Volumes/CONFIG/buildkite ]
@@ -150,9 +162,10 @@ EOF
     cp -vrf /Volumes/CONFIG/ci-ops ~nixos/.nixpkgs/ci-ops
     chown -R nixos ~nixos/.nixpkgs
     sudo -iHu nixos -- darwin-rebuild -I /nix/var/nix/profiles/per-user/nixos/channels -I darwin-config=/Users/nixos/.nixpkgs/darwin-configuration.nix build
-    rm -f /etc/nix/nix.conf
     test -f /Volumes/CONFIG/nix/netrc && cp /Volumes/CONFIG/nix/netrc /etc/nix
     sudo -iHu nixos -- darwin-rebuild -I /nix/var/nix/profiles/per-user/nixos/channels -I darwin-config=/Users/nixos/.nixpkgs/darwin-configuration.nix switch
+    rm -f /etc/nix/nix.conf
+    /nix/var/nix/profiles/system/activate
 
     # Restart the nix-daemon to ensure it is reading the current nix.conf file
     launchctl kickstart -kp system/org.nixos.nix-daemon

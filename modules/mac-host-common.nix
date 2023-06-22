@@ -112,23 +112,53 @@ in {
           persistentKeepalive = 25;
           endpoint = "${globals.deployerIp}:17777";
         }
-        { # New CI Monitoring
-          publicKey = "Xfbn71lJWmyj64OKHvjrd33l03I42qe+7v8FA/QM4hc=";
-          allowedIPs = [ "10.90.0.1/32" ];
+        # Devx-ci cluster
+        {
+          endpoint = "65.109.100.223:51820"; # ci.iog.io
+          allowedIPs = ["10.100.0.1/32"];
+          publicKey = "52aw4lh3H+x4fXdry2vzZ0yQ/TzmHmG5JTc61/Fu/mM=";
           persistentKeepalive = 25;
-          endpoint = "monitoring.ci.iohkdev.io:17777";
-          presharedKeyFile = "/etc/wireguard/wg_shared";
         }
-        { # New CI Hydra
-          publicKey = "kGVeMqf0nrEfTt1goLPRwoRc7Mt61jhoz2QkWXs07yk=";
-          allowedIPs = [ "10.90.0.2/32" ];
+        {
+          endpoint = "65.109.100.224:51820";
+          allowedIPs = ["10.100.0.2/32"];
+          publicKey = "XF90HyfTTlDJ+8V+L0vRpD/mLYal/6vWUdjXXhauUxQ=";
           persistentKeepalive = 25;
-          endpoint = "hydra.ci.iohkdev.io:17777";
         }
-        { # Newer P42 Hydra
-          publicKey = "yDQMpW8Qkc89LmcZSlIOIHodVpYp2QF6wIlq3EZGNlE=";
-          allowedIPs = [ "192.168.142.3/32" ];
-          endpoint = "hydra-wg.p42.at:17777";
+        {
+          endpoint = "65.109.100.225:51820";
+          allowedIPs = ["10.100.0.3/32"];
+          publicKey = "SLFctAtZXGCQ8BPfy1aivR7IHXwypjJgTvIXIwKxamY=";
+          persistentKeepalive = 25;
+        }
+        {
+          endpoint = "65.109.100.226:51820";
+          allowedIPs = ["10.100.0.4/32"];
+          publicKey = "5B981U7qiMXtuoCfyzY9vyhR953cwcLl6Onx21qPrVo=";
+          persistentKeepalive = 25;
+        }
+        {
+          endpoint = "65.109.100.227:51820";
+          allowedIPs = ["10.100.0.5/32"];
+          publicKey = "+ek1olvdILegvVCDCmmUJk+f0N0VQu48Ha4XTyw3Wz0=";
+          persistentKeepalive = 25;
+        }
+        {
+          endpoint = "65.109.100.228:51820";
+          allowedIPs = ["10.100.0.6/32"];
+          publicKey = "tSWXADCEKG2yz2Cm4OB6AQRPW22ofuywOYFjfYZt328=";
+          persistentKeepalive = 25;
+        }
+        {
+          endpoint = "65.109.100.229:51820";
+          allowedIPs = ["10.100.0.7/32"];
+          publicKey = "0BMk9CC/fp4Jr0y84BenfaZgwTtLPBR7kX/dRBusiBU=";
+          persistentKeepalive = 25;
+        }
+        {
+          endpoint = "65.109.100.230:51820";
+          allowedIPs = ["10.100.0.8/32"];
+          publicKey = "hf7PW+dZzFVowvIGyMO4hm6/UapKVZkTJokjaQLCRjU=";
           persistentKeepalive = 25;
         }
       ];

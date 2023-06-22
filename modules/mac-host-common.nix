@@ -79,39 +79,6 @@ in {
           endpoint = "zt.ci.iog.io:51820";
           persistentKeepalive = 30;
         }
-      ];
-    };
-    networking.wireguard.interfaces.wg0 = let
-      genPeer = n: name: endpoint: {
-        publicKey = lib.strings.removeSuffix "\n" (builtins.readFile (../secrets/wireguard + "/${name}.public"));
-        allowedIPs = [ "192.168.20.${toString n}/32" ];
-        persistentKeepalive = 30;
-        inherit endpoint;
-      };
-    in {
-      listenPort = 51820;
-      privateKeyFile = "/etc/wireguard/private.key";
-      peers = [
-        {
-          publicKey = "kf/f+PWsMPVtV0vMvjG7A8ShgRfdwFAb99u+ixBboBE=";
-          allowedIPs = [ "192.168.20.0/24" ];
-          endpoint = "monitoring.aws.iohkdev.io:51820";
-          persistentKeepalive = 30;
-        }
-        {
-          publicKey = "oycbQ1DhtRh0hhD5gpyiKTUh0USkAwbjMer6/h/aHg8=";
-          allowedIPs = [ "192.168.21.1/32" ];
-          endpoint = "99.192.62.202:51820";
-          persistentKeepalive = 30;
-        }
-        (genPeer 3 "cardano-deployer" "${lib.strings.removeSuffix "\n" (builtins.readFile ../secrets/old-deployer-ip.txt)}:51820")
-        # TODO: Add preshared key; migrate all to port 17777
-        { # New CI Deployer
-          publicKey = "ZWLewe0yVJ45eW39quTiyvC/kaxy8xNcVpD9QVvxwkk=";
-          allowedIPs = [ "10.90.1.1/32" ];
-          persistentKeepalive = 25;
-          endpoint = "${globals.deployerIp}:17777";
-        }
         # Devx-ci cluster
         {
           endpoint = "65.109.100.223:51820"; # ci.iog.io
@@ -160,6 +127,39 @@ in {
           allowedIPs = ["10.100.0.8/32"];
           publicKey = "hf7PW+dZzFVowvIGyMO4hm6/UapKVZkTJokjaQLCRjU=";
           persistentKeepalive = 25;
+        }
+      ];
+    };
+    networking.wireguard.interfaces.wg0 = let
+      genPeer = n: name: endpoint: {
+        publicKey = lib.strings.removeSuffix "\n" (builtins.readFile (../secrets/wireguard + "/${name}.public"));
+        allowedIPs = [ "192.168.20.${toString n}/32" ];
+        persistentKeepalive = 30;
+        inherit endpoint;
+      };
+    in {
+      listenPort = 51820;
+      privateKeyFile = "/etc/wireguard/private.key";
+      peers = [
+        {
+          publicKey = "kf/f+PWsMPVtV0vMvjG7A8ShgRfdwFAb99u+ixBboBE=";
+          allowedIPs = [ "192.168.20.0/24" ];
+          endpoint = "monitoring.aws.iohkdev.io:51820";
+          persistentKeepalive = 30;
+        }
+        {
+          publicKey = "oycbQ1DhtRh0hhD5gpyiKTUh0USkAwbjMer6/h/aHg8=";
+          allowedIPs = [ "192.168.21.1/32" ];
+          endpoint = "99.192.62.202:51820";
+          persistentKeepalive = 30;
+        }
+        (genPeer 3 "cardano-deployer" "${lib.strings.removeSuffix "\n" (builtins.readFile ../secrets/old-deployer-ip.txt)}:51820")
+        # TODO: Add preshared key; migrate all to port 17777
+        { # New CI Deployer
+          publicKey = "ZWLewe0yVJ45eW39quTiyvC/kaxy8xNcVpD9QVvxwkk=";
+          allowedIPs = [ "10.90.1.1/32" ];
+          persistentKeepalive = 25;
+          endpoint = "${globals.deployerIp}:17777";
         }
       ];
     };

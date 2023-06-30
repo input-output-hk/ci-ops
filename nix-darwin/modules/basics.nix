@@ -50,13 +50,14 @@ in {
     timeout = ${toString (3600 * 8)}
 
     # Quickly kill stuck builds
-    max-silent-time = ${toString (60 * 15)}
+    max-silent-time = ${toString (60 * 30)}
 
     sandbox = false
     extra-sandbox-paths = /System/Library/Frameworks /usr/lib /System/Library/PrivateFrameworks
     experimental-features = nix-command flakes
 
     accept-flake-config = true
+    connect-timeout = 30
   '';
 
   # Also see max-jobs below and nrBuildUsers in the apply.sh nix-darwin bootstrap config to enforce concurrency.
